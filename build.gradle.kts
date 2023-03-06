@@ -1,6 +1,6 @@
 plugins {
 	val kotlinVersion = "1.8.10"
-	id("org.springframework.boot") version "2.7.9"
+	id("org.springframework.boot") version "3.0.4"
 	id("io.spring.dependency-management") version "1.1.0"
 	kotlin("jvm") version kotlinVersion
 	kotlin("plugin.spring") version kotlinVersion
@@ -28,22 +28,21 @@ dependencies {
 }
 
 allOpen {
-	annotation("javax.persistence.Entity")
-	annotation("javax.persistence.Embeddable")
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.Embeddable")
 }
 
 tasks {
-
 	compileKotlin {
 		kotlinOptions {
 			freeCompilerArgs = listOf("-Xjsr305=strict")
-			jvmTarget = "11"
+			jvmTarget = "17"
 		}
 	}
 
 	compileJava {
-		sourceCompatibility = JavaVersion.VERSION_11.toString()
-		targetCompatibility = JavaVersion.VERSION_11.toString()
+		sourceCompatibility = JavaVersion.VERSION_17.toString()
+		targetCompatibility = JavaVersion.VERSION_17.toString()
 	}
 
 	test {

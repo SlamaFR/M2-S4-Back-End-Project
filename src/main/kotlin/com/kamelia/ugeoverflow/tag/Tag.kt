@@ -1,22 +1,23 @@
 package com.kamelia.ugeoverflow.tag
 
-import java.util.UUID
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.validation.constraints.NotEmpty
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import jakarta.validation.constraints.NotEmpty
 import org.hibernate.annotations.GenericGenerator
 
 @Entity
 @Table(name = "tags")
-class Tag(
+open class Tag(
     var name: String,
+
     @Id
     @NotEmpty
     @GenericGenerator(name = "uuid", strategy = "uuid4")
     var id: String? = null
 ) {
 
+    constructor(): this("")
 
 //    @field:javax.persistence.Transient
 //    var id: UUID
