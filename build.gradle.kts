@@ -4,6 +4,8 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.0"
 	kotlin("jvm") version kotlinVersion
 	kotlin("plugin.spring") version kotlinVersion
+	kotlin("plugin.allopen") version kotlinVersion
+	kotlin("plugin.jpa") version kotlinVersion
 }
 
 group = "com.kamelia"
@@ -20,6 +22,14 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.hibernate.validator:hibernate-validator")
+}
+
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.Embeddable")
 }
 
 tasks {
