@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BackendProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <envs>
+      <env name="DB_URL" value="jdbc:h2:mem:ugeoverflowdb" />
+      <env name="DB_CONSOLE_ENABLED" value="true" />
+    </envs>
+    <module name="uge-overflow.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.kamelia.ugeoverflow.BackendProjectApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
