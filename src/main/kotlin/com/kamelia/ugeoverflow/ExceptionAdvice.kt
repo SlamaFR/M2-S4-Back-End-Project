@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [InvalidRequestException::class])
-    fun handleForbidden(ex: InvalidRequestException): ResponseEntity<Any> =
+    fun handleInvalidRequest(ex: InvalidRequestException): ResponseEntity<Any> =
         ResponseEntity.status(ex.statusCode).body(ex.message)
 
 }
