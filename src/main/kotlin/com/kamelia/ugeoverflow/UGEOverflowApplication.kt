@@ -18,7 +18,7 @@ class BackendProjectApplication {
 
     companion object {
 
-        private val LOGGER = LoggerFactory.getLogger(this::class.java)
+        private val LOGGER = LoggerFactory.getLogger(BackendProjectApplication::class.java)
     }
 }
 
