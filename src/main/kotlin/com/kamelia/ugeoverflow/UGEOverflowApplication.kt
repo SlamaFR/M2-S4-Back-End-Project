@@ -17,9 +17,6 @@ class BackendProjectApplication {
         .modulesToInstall(kotlinModule())
         .also { LOGGER.info("Loaded Kotlin Jackson module") }
 
-    @Bean
-    fun hasher(): Hasher = Hasher()
-
     companion object {
 
         private val LOGGER = LoggerFactory.getLogger(BackendProjectApplication::class.java)

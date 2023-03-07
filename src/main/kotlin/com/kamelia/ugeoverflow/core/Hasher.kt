@@ -2,9 +2,10 @@ package com.kamelia.ugeoverflow.core
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import at.favre.lib.crypto.bcrypt.LongPasswordStrategies
+import org.springframework.stereotype.Service
 import java.security.SecureRandom
 
-
+@Service
 class Hasher {
 
     private val version = BCrypt.Version.VERSION_2B
