@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.tag
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
