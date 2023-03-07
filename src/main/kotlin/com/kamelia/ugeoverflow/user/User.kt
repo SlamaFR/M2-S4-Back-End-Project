@@ -16,8 +16,8 @@ import jakarta.validation.constraints.NotBlank
 class User(
     username: String,
     password: String,
-    following: Set<User>,
-    trustEvaluations: Set<TrustEvaluation>,
+    following: Set<User> = emptySet(),
+    trustEvaluations: Set<TrustEvaluation> = emptySet(),
 ) : AbstractIdEntity() {
 
     @JoinTable(
