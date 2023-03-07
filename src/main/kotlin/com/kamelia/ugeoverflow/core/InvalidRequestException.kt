@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.util
+package com.kamelia.ugeoverflow.core
 
 import org.springframework.http.HttpStatus
 

@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow
 
-import com.kamelia.ugeoverflow.util.InvalidRequestException
+import com.kamelia.ugeoverflow.core.InvalidRequestException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
