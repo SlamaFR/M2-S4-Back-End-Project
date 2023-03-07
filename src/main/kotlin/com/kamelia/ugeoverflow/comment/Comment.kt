@@ -4,6 +4,8 @@ import com.kamelia.ugeoverflow.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
@@ -18,10 +20,18 @@ class Comment(
     var owner: User,
     content: String,
     votes: Set<User>,
-    @PastOrPresent
     creationDate: Instant = Instant.now(),
 ) : AbstractIdEntity() {
 
+    init {
+        require(!creationDate.isAfter(Instant.now())) { "Comment creation date cannot be in the future" }
+    }
+
+    @JoinTable(
+        name = "comment_votes",
+        joinColumns = [JoinColumn(name = "comment_id")],
+        inverseJoinColumns = [JoinColumn(name = "voter_id")]
+    )
     @ManyToMany
     @Column(name = "votes")
     private var _votes: MutableSet<User> = votes.toMutableSet()
@@ -33,18 +43,17 @@ class Comment(
             field = value
         }
 
+    @PastOrPresent
     @Column(name = "creation_date")
     var creationDate: Instant = creationDate
         set(value) {
-            val now = Instant.now()
             require(!value.isAfter(Instant.now())) { "Comment creation date cannot be in the future" }
             field = value
         }
 
-    var votes: Set<User> = _votes
+    var votes: Set<User>
         get() = _votes
         set(value) {
-            field = value
             _votes = value.toMutableSet()
         }
 
