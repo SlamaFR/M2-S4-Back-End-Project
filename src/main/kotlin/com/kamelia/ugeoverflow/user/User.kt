@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.AbstractIdEntity
 import com.kamelia.ugeoverflow.evaluation.TrustEvaluation
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
@@ -18,9 +19,11 @@ class User(
 ) : AbstractIdEntity() {
 
     @ManyToMany
+    @Column(name = "following")
     private var _following: MutableSet<User> = following.toMutableSet()
 
     @OneToMany
+    @Column(name = "trust_evaluations")
     private var _trustEvaluations: MutableSet<TrustEvaluation> = trustEvaluations.toMutableSet()
 
     @NotBlank
