@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
 	val kotlinVersion = "1.8.10"
 	id("org.springframework.boot") version "3.0.4"
@@ -18,13 +20,17 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	runtimeOnly("com.h2database:h2")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	implementation("org.hibernate.validator:hibernate-validator")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("at.favre.lib:bcrypt:0.10.2")
+
+	runtimeOnly("com.h2database:h2")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 allOpen {
@@ -33,12 +39,18 @@ allOpen {
 	annotation("jakarta.persistence.MappedSuperclass")
 }
 
+fun KotlinCompile.kotlinConfig() = kotlinOptions {
+	freeCompilerArgs = listOf("-Xjsr305=strict")
+	jvmTarget = "17"
+}
+
 tasks {
 	compileKotlin {
-		kotlinOptions {
-			freeCompilerArgs = listOf("-Xjsr305=strict")
-			jvmTarget = "17"
-		}
+		kotlinConfig()
+	}
+
+	compileTestKotlin {
+		kotlinConfig()
 	}
 
 	compileJava {
