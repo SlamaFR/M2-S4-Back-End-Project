@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.Hasher
+import com.kamelia.ugeoverflow.util.InvalidRequestException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -14,7 +15,9 @@ class UserService(
     fun create(user: UserCredentialsDTO): UserDTO {
         val (username, password) = user
 
-        require(!userRepository.existsByUsernameIgnoreCase(username)) { "Username $username already exists" }
+        if (userRepository.existsByUsernameIgnoreCase(username)) {
+            throw InvalidRequestException.forbidden("Username $username already exists")
+        }
 
         val hashedPassword = hasher.hash(password)
         val userEntity = User(username, hashedPassword)
