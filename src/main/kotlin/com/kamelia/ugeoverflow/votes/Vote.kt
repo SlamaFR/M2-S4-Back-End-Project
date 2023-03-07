@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.votes
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

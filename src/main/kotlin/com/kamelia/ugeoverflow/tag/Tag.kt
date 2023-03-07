@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.tag
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
@@ -17,7 +17,6 @@ class Tag(
     }
 
     @NotBlank
-    @Column(unique = true)
     var name: String = name
         set(value) {
             require(value.isNotBlank()) { "Tag name cannot be blank" }

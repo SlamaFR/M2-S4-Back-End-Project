@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.post
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.user.User
@@ -13,7 +13,6 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.validation.constraints.PastOrPresent
 import java.time.Instant
-import org.springframework.data.annotation.CreatedDate
 
 @Entity
 @Table(name = "post")

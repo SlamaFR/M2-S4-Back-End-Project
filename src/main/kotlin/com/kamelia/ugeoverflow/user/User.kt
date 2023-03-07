@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.user
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.evaluation.TrustEvaluation
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
