@@ -5,7 +5,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import jakarta.persistence.Transient
 import jakarta.validation.constraints.NotBlank
 import java.util.*
 import org.hibernate.annotations.GenericGenerator
@@ -21,10 +20,10 @@ class Tag(
     @Column(name = "id")
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    private var _id: String? = null
+    private var _id: UUID? = null
 
-    @delegate:Transient
-    val id: UUID by lazy { UUID.fromString(_id) }
+    val id: UUID
+        get() = _id!!
 
     init {
         require(name.isNotBlank()) { "Tag name cannot be blank" }
