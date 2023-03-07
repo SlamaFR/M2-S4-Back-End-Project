@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.evaluation
 
-import com.kamelia.ugeoverflow.AbstractIdEntity
+import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne

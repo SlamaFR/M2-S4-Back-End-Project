@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow
+package com.kamelia.ugeoverflow.core
 
 import jakarta.persistence.Column
 import jakarta.persistence.GeneratedValue
