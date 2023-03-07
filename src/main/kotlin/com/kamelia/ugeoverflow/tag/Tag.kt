@@ -8,12 +8,18 @@ import jakarta.validation.constraints.NotBlank
 @Entity
 @Table(name = "tag")
 class Tag(
-    @NotBlank
-    var name: String,
+    name: String,
 ) : AbstractIdEntity() {
 
     init {
         require(name.isNotBlank()) { "Tag name cannot be blank" }
     }
+
+    @NotBlank
+    var name: String = name
+        set(value) {
+            require(value.isNotBlank()) { "Tag name cannot be blank" }
+            field = value
+        }
 
 }
