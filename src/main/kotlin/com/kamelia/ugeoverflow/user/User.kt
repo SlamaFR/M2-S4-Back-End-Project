@@ -34,6 +34,7 @@ class User(
     private var _trustEvaluations: MutableSet<TrustEvaluation> = trustEvaluations.toMutableSet()
 
     @NotBlank
+    @Column(unique = true)
     var username: String = username
         set(value) {
             require(value.isNotBlank()) { "Username cannot be blank" }
