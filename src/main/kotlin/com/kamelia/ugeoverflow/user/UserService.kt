@@ -1,7 +1,7 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.Hasher
-import com.kamelia.ugeoverflow.util.InvalidRequestException
+import com.kamelia.ugeoverflow.core.InvalidRequestException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
