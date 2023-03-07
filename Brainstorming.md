@@ -1,6 +1,8 @@
 # DB
+</details>
 
 ## Users
+<details>
 
 - **PK** : `uuid`
 - Username : `string`
@@ -14,8 +16,10 @@
 - Votes : `set<Vote>` (profile page)
 - Posts : `set<Post>` (profile page)
 - Comments : `set<Comment>` (profile page)
+</details>
 
 ## Votes
+<details>
 
 - **PK** : `uuid`
 - Voter : `User`
@@ -24,8 +28,10 @@
 **(optional)**
 
 - Comment : `Comment` (to display user votes on his profile page)
+</details>
 
 ## Posts
+<details>
 
 - **PK** : `uuid`
 - Owner : `User`
@@ -38,26 +44,33 @@
 **(optional)**
 
 - LastEditDate : `date`
+</details>
 
 ## Comments
+<details>
 
 - **PK** : `uuid`
 - Owner : `User`
 - Content : `string`
 - CreationDate : `date`
 - Votes : `set<Vote>`
+</details>
 
 ## Tags
+<details>
 
 - **PK** : `uuid`
 - Name : `string`
-
 **(optional)**
 
 - Color : `string`
+</details>
+
 
 ## TrustEvaluations
+<details>
 
 - **PK** : `uuid`
 - Evaluated : `User`
 - Note : `int` (\[-50, 50\])
+</details>
