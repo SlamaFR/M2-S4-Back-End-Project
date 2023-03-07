@@ -1,11 +1,13 @@
 package com.kamelia.ugeoverflow.user
 
+import com.kamelia.ugeoverflow.core.Hasher
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
+    private val hasher: Hasher,
 ) {
 
     @Transactional
@@ -14,8 +16,8 @@ class UserService(
 
         require(!userRepository.existsByUsernameIgnoreCase(username)) { "Username $username already exists" }
 
-        // TODO +hashing
-        val userEntity = User(username, password)
+        val hashedPassword = hasher.hash(password)
+        val userEntity = User(username, hashedPassword)
         userRepository.save(userEntity)
         return userEntity.toDTO()
     }

@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow
 
 import com.fasterxml.jackson.module.kotlin.kotlinModule
+import com.kamelia.ugeoverflow.core.Hasher
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
@@ -15,6 +16,9 @@ class BackendProjectApplication {
     fun objectMapperBuilder(): Jackson2ObjectMapperBuilder = Jackson2ObjectMapperBuilder()
         .modulesToInstall(kotlinModule())
         .also { LOGGER.info("Loaded Kotlin Jackson module") }
+
+    @Bean
+    fun hasher(): Hasher = Hasher()
 
     companion object {
 
