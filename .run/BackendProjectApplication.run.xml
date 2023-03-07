@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="BackendProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="BackendProjectApplication (dev)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <envs>
       <env name="DB_URL" value="jdbc:h2:mem:ugeoverflowdb" />
       <env name="DB_CONSOLE_ENABLED" value="true" />
