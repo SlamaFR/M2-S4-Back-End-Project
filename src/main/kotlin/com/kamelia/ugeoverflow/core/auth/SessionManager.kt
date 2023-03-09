@@ -5,7 +5,7 @@ import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.util.InvalidRequestException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class SessionManager(
@@ -17,12 +17,12 @@ class SessionManager(
 
     private val userIdToSessions = mutableMapOf<UUID, UserSessionContext>()
 
-    private fun addSession(user: User): TokenData = synchronized(lock) {
+    private fun addSession(user: User): TokensDTO = synchronized(lock) {
         val tokenData = TokenData.fromUser(user)
         val sessionContext = userIdToSessions.computeIfAbsent(user.id) { UserSessionContext(user) }
         sessionContext.addSessionToken(tokenData.accessToken)
         sessionContext.addRefreshToken(tokenData.refreshToken)
-        return tokenData
+        return tokenData.toDTO()
     }
 
     private fun removeSession(userId: UUID, token: UUID): Unit = synchronized(lock) {
@@ -55,7 +55,7 @@ class SessionManager(
             ?: false
     }
 
-    fun login(username: String, password: String): TokenData {
+    fun login(username: String, password: String): TokensDTO {
         val user = userService.findByUsernameOrNull(username)
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
 
