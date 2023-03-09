@@ -1,9 +1,8 @@
 package com.kamelia.ugeoverflow.user
 
-import com.kamelia.ugeoverflow.core.auth.TokenData
 import jakarta.validation.constraints.NotBlank
-import java.util.UUID
 import org.springframework.validation.annotation.Validated
+import java.util.*
 
 data class UserDTO(
     val id: UUID,

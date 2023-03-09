@@ -29,46 +29,21 @@ import org.springframework.web.filter.OncePerRequestFilter
 @RequestMapping("/api/v1/foo")
 class Foo(
     private val fooService: FooService,
-    private val authenticationManager: AuthenticationManager,
 ) {
-    private val securityContextRepository: HttpSessionSecurityContextRepository = HttpSessionSecurityContextRepository()
 
     @GetMapping("/baz")
     fun baz(): String {
         return "BAZ"
     }
 
-    @Secured("ADMIN")
+    @Secured("ROLE_ADMIN")
     @GetMapping("/foo")
-    fun foo(auth: Authentication?) = fooService.foo().also { println(auth?.credentials) }
+    fun foo(auth: Authentication?) = fooService.foo().also { println(auth?.principal) }
 
-    @Secured("USER")
+    @Secured("ROLE_USER")
     @GetMapping("/bar")
     fun bar(request: HttpServletRequest): String {
-        println(request.cookies.contentToString())
-        println(SecurityContextHolder.getContext().authentication?.credentials)
-        println(RequestContextHolder.currentRequestAttributes().sessionId)
-        return fooService.bar()
-    }
-
-
-    @PostMapping("/bim")
-    fun bim(@RequestBody dto: UserCredentialsDTO, response: HttpServletResponse): ResponseEntity<String> {
-        val (username, password) = dto
-        val dummy = UsernamePasswordAuthenticationToken(username, password)
-        val auth = authenticationManager.authenticate(dummy)
-        if (!auth.isAuthenticated) return ResponseEntity.badRequest().build()
-
-        val sessionId = RequestContextHolder.currentRequestAttributes().sessionId
-        println(sessionId)
-        SecurityContextHolder.getContext().authentication = auth
-
-        val cookie = Cookie("JSESSIONID", sessionId)
-        cookie.secure = true
-        cookie.isHttpOnly = true
-        cookie.path = "/"
-        response.addCookie(cookie)
-        return ResponseEntity.ok("BIM")
+        return "BAR"
     }
 
 }

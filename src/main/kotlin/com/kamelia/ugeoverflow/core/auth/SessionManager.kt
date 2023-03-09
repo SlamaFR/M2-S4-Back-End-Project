@@ -43,16 +43,14 @@ class SessionManager(
         }
     }
 
-    fun verify(userId: UUID, sessionId: UUID): Boolean = synchronized(lock) {
-        userIdToSessions[userId]
-            ?.hasSessionToken(sessionId)
-            ?: false
+    fun verify(userId: UUID, sessionId: UUID): User? = synchronized(lock) {
+        val context = userIdToSessions[userId] ?: return null
+        return if (context.hasSessionToken(sessionId)) context.user else null
     }
 
-    fun verifyRefresh(userId: UUID, refreshToken: UUID): Boolean = synchronized(lock) {
-        userIdToSessions[userId]
-            ?.hasRefreshToken(refreshToken)
-            ?: false
+    fun verifyRefresh(userId: UUID, refreshToken: UUID): User? = synchronized(lock) {
+        val context = userIdToSessions[userId] ?: return null
+        return if (context.hasRefreshToken(refreshToken)) context.user else null
     }
 
     fun login(username: String, password: String): TokensDTO {
