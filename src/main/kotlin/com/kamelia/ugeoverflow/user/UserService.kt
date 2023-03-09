@@ -3,9 +3,11 @@ package com.kamelia.ugeoverflow.user
 import com.kamelia.ugeoverflow.core.Hasher
 import com.kamelia.ugeoverflow.util.InvalidRequestException
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UserService(
@@ -28,15 +30,10 @@ class UserService(
     }
 
     @Transactional
-    fun checkIdentity(username: String, password: String): UserDTO {
-        val user = userRepository.findByUsernameIgnoreCase(username)
-            ?: throw BadCredentialsException("Invalid credentials")
+    fun findByUsernameOrNull(username: String): User? = userRepository
+        .findByUsernameIgnoreCase(username)
 
-        if (!hasher.matches(password, user.password)) {
-            throw BadCredentialsException("Invalid credentials")
-        }
-
-        return user.toDTO()
-    }
+    @Transactional
+    fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
 
 }

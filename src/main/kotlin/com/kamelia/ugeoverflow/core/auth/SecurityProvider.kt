@@ -1,9 +1,5 @@
-package com.kamelia.ugeoverflow.core
+package com.kamelia.ugeoverflow.core.auth
 
-import com.kamelia.ugeoverflow.user.UserService
-import jakarta.servlet.FilterChain
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -11,12 +7,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.filter.OncePerRequestFilter
 
 
 @Component
 class SecurityProvider(
-    private val userService: UserService,
+    private val sessionManager: SessionManager,
 ) : AuthenticationProvider {
 
     @Value("\${ugeoverflow.admin.username}")
@@ -29,7 +24,7 @@ class SecurityProvider(
         println(RequestContextHolder.currentRequestAttributes().sessionId)
         println("Authenticating $username with password $password")
         kotlin.runCatching {
-            userService.checkIdentity(username, password)
+            // sessionManager.checkIdentity(username, password)
         }.onFailure {
             return auth
         }
