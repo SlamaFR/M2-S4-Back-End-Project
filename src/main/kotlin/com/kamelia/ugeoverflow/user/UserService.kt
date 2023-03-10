@@ -1,10 +1,8 @@
 package com.kamelia.ugeoverflow.user
 
-import com.kamelia.ugeoverflow.core.Hasher
-import com.kamelia.ugeoverflow.util.InvalidRequestException
+import com.kamelia.ugeoverflow.core.InvalidRequestException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
