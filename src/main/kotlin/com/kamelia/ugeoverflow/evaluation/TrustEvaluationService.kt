@@ -3,8 +3,8 @@ package com.kamelia.ugeoverflow.evaluation
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserRepository
+import com.kamelia.ugeoverflow.utils.currentUser
 import java.util.UUID
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,7 +15,7 @@ class TrustEvaluationService(
 
     fun evaluateUser(evaluatedUserId: UUID, trust: Int) {
         // TODO: get current user from security context
-        val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
+        val currentUser: User = currentUser ?: throw InvalidRequestException.unauthorized()
         val evaluatedUser = userRepository.findById(evaluatedUserId).orElseThrow {
             throw InvalidRequestException.notFound("User not found.")
         }
@@ -39,7 +39,7 @@ class TrustEvaluationService(
 
     fun removeEvaluation(evaluatedUserId: UUID) {
         // TODO: get current user from security context
-        val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
+        val currentUser: User = currentUser ?: throw InvalidRequestException.unauthorized()
 
         if (!trustEvaluationRepository.deleteByEvaluatorIdAndEvaluatedId(currentUser.id, evaluatedUserId)) {
             throw InvalidRequestException.notFound("You did not evaluate this user.")
