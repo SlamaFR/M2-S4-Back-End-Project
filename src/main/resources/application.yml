@@ -22,3 +22,7 @@ ugeoverflow:
   admin:
     username: ${ADMIN_USERNAME:admin}
     password: ${ADMIN_PASSWORD:admin}
+  session:
+    purge-rate: ${SESSION_PURGE_RATE:300000}
+    access-token-lifetime: ${ACCESS_TOKEN_LIFETIME:3600000}
+    refresh-token-lifetime: ${REFRESH_TOKEN_LIFETIME:2592000000}

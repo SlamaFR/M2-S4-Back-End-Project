@@ -1,13 +1,17 @@
 package com.kamelia.ugeoverflow.core.auth
 
+import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
-import com.kamelia.ugeoverflow.core.InvalidRequestException
 import java.util.*
+import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
+@EnableAsync
 class SessionManager(
     private val userService: UserService,
     private val passwordEncoder: PasswordEncoder,
@@ -88,6 +92,29 @@ class SessionManager(
         }
     }
 
+    @Scheduled(fixedRateString = "\${ugeoverflow.session.purge-rate:300000}")
+    private fun purgeExpiredSessions() {
+        val now = System.currentTimeMillis()
+        var removedCount = 0
+        synchronized(lock) {
+            val iterator = userIdToSessions.iterator()
+            while (iterator.hasNext()) {
+                val sessionContext = iterator.next().value
+                removedCount += sessionContext.removeExpiredTokens(now)
+                if (sessionContext.isEmpty()) {
+                    iterator.remove()
+                }
+            }
+        }
+        logger.info("Purged $removedCount expired sessions")
+    }
+
+    private companion object {
+
+        private val logger = LoggerFactory.getLogger(SessionManager::class.java)
+
+    }
+
 }
 
 private class UserSessionContext(val user: User) {
@@ -115,4 +142,17 @@ private class UserSessionContext(val user: User) {
     fun hasRefreshToken(token: UUID) = token in refreshTokens
 
     fun isEmpty(): Boolean = sessionTokens.isEmpty() && refreshTokens.isEmpty()
+
+    fun removeExpiredTokens(now: Long): Int {
+        var count = 0
+        sessionTokens.entries.removeIf {
+            (it.value < now).also { removed -> if (removed) count++ }
+        }
+        refreshTokens.entries.removeIf {
+            (it.value.first < now).also { removed -> if (removed) count++ }
+        }
+        return count
+    }
+
+
 }
