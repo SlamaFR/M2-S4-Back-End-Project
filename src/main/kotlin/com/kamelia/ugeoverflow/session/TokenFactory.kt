@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.core.auth
+package com.kamelia.ugeoverflow.session
 
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.util.toBase64

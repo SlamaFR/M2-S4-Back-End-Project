@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.user
 
-import com.kamelia.ugeoverflow.core.auth.SessionManager
+import com.kamelia.ugeoverflow.session.SessionManager
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity

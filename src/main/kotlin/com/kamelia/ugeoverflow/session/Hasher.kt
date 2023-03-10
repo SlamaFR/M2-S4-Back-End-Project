@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.core
+package com.kamelia.ugeoverflow.session
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import at.favre.lib.crypto.bcrypt.LongPasswordStrategies
