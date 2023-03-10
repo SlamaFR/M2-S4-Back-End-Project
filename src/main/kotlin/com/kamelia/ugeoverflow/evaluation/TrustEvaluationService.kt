@@ -17,21 +17,19 @@ class TrustEvaluationService(
         // TODO: get current user from security context
         val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
         val evaluatedUser = userRepository.findById(evaluatedUserId).orElseThrow {
-            InvalidRequestException.notFound("User not found.")
+            throw InvalidRequestException.notFound("User not found.")
         }
 
         if (evaluatedUser == currentUser) {
-            InvalidRequestException.forbidden("You cannot evaluate yourself.")
+            throw InvalidRequestException.forbidden("You cannot evaluate yourself.")
         }
         if (evaluatedUser !in currentUser.following) {
-            InvalidRequestException.forbidden("You cannot evaluate a user you are not following.")
+            throw InvalidRequestException.forbidden("You cannot evaluate a user you are not following.")
         }
 
         // If the user has already evaluated the user, update the evaluation.
-        // TODO: change this piece of junk
-        currentUser.trustEvaluations.firstOrNull { it.evaluated == evaluatedUser }?.let {
-            it.trust = trust
-            trustEvaluationRepository.save(it)
+        if (trustEvaluationRepository.existsByEvaluatorAndEvaluated(currentUser, evaluatedUser)) {
+            trustEvaluationRepository.updateTrustEvaluation(currentUser.id, evaluatedUserId, trust)
             return
         }
 
@@ -43,12 +41,8 @@ class TrustEvaluationService(
         // TODO: get current user from security context
         val currentUser: User = SecurityContextHolder.getContext().authentication.principal as User
 
-        // TODO: change this piece of junk
-        currentUser.trustEvaluations.firstOrNull { it.evaluated.id == evaluatedUserId }?.let {
-            trustEvaluationRepository.delete(it)
-            return
-        } ?: run {
-            InvalidRequestException.notFound("You did not evaluate this user.")
+        if (!trustEvaluationRepository.deleteByEvaluatorIdAndEvaluatedId(currentUser.id, evaluatedUserId)) {
+            throw InvalidRequestException.notFound("You did not evaluate this user.")
         }
     }
 }
