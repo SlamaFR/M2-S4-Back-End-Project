@@ -18,6 +18,8 @@ class InvalidRequestException(val statusCode: Int, message: String) : RuntimeExc
 
         fun badRequest(message: String) = InvalidRequestException(HttpStatus.BAD_REQUEST, message)
 
+        fun unauthorized() = InvalidRequestException(HttpStatus.UNAUTHORIZED, "You must be logged in")
+
     }
 
 }
