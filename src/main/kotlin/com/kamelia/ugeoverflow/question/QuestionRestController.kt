@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.post
+package com.kamelia.ugeoverflow.question
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/posts")
-class PostRestController(
-    private val postRepository: PostRepository,
+class QuestionRestController(
+    private val questionRepository: QuestionRepository,
 ) {
 
     @GetMapping
-    fun getPage(page: Pageable): Page<PostLightDTO> = postRepository
+    fun getPage(page: Pageable): Page<PostLightDTO> = questionRepository
         .findAll(page)
-        .map(Post::toLightDTO)
+        .map(Question::toLightDTO)
 
 }

@@ -15,7 +15,7 @@
 - Followers : `set<User>` (profile page)
 - Votes : `set<Vote>` (profile page)
 - Posts : `set<Post>` (profile page)
-- Comments : `set<Comment>` (profile page)
+- Answers : `set<Answer>` (profile page)
 </details>
 
 ## Votes
@@ -27,7 +27,7 @@
 
 **(optional)**
 
-- Comment : `Comment` (to display user votes on his profile page)
+- Answer : `Answer` (to display user votes on his profile page)
 </details>
 
 ## Posts
@@ -37,7 +37,7 @@
 - Owner : `User`
 - Title : `string`
 - Content : `string`
-- Comments : `set<Comment>`
+- Answers : `set<Answer>`
 - CreationDate : `date`
 - Tags : `set<Tag>`
 
@@ -46,7 +46,7 @@
 - LastEditDate : `date`
 </details>
 
-## Comments
+## Answers
 <details>
 
 - **PK** : `uuid`
