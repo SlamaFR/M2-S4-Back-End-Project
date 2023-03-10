@@ -1,9 +1,12 @@
 package com.kamelia.ugeoverflow.core.auth
 
-import com.kamelia.ugeoverflow.util.InvalidRequestException
+import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
+import com.kamelia.ugeoverflow.util.toUUIDOrNull
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import java.util.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -11,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -44,18 +46,17 @@ class BearerTokenFilter(
 
     private fun getAuth(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
         val userId = request.getHeader("User-Id")
-            ?.let(UUID::fromString)
+            ?.let {
+                it.toUUIDOrNull() ?: throw InvalidRequestException.badRequest("Invalid credentials")
+            }
 
         val base64Token = request.getHeader("Authorization")
             ?.removePrefix("Bearer ")
 
         if (!checkAuthHeaders(userId, base64Token)) return null
 
-        val token = try {
-            UUID.fromString(Base64.getDecoder().decode(base64Token).toString(Charsets.UTF_8))
-        } catch (_: IllegalArgumentException) {
-            throw InvalidRequestException.badRequest("Invalid token")
-        }
+        val token = base64Token.toUUIDFromBase64OrNull()
+            ?: throw InvalidRequestException.badRequest("Invalid token")
         val user = sessionManager.verify(userId, token) ?: return null
 
         val roles = if (user.username == adminName) listOf("ROLE_USER", "ROLE_ADMIN") else listOf("ROLE_USER")
@@ -69,10 +70,17 @@ class BearerTokenFilter(
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
-        val auth = getAuth(request)
-            ?: UsernamePasswordAuthenticationToken(null, null)
+        val auth = try {
+            getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
+        } catch (e: InvalidRequestException) {
+            response.status = e.statusCode
+            val writer = response.writer
+            writer.write(e.message ?: "Invalid request")
+            writer.flush()
+            return
+        }
 
         auth.details = WebAuthenticationDetailsSource().buildDetails(request)
 
