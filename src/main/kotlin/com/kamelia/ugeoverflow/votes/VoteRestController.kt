@@ -13,12 +13,12 @@ class VoteRestController(
     private val voteService: VoteService,
 ) {
 
-    @PutMapping("/answer/{answerId}/upvote")
+    @PutMapping("/answers/{answerId}/upvote")
     fun upvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
         return ResponseEntity.ok(voteService.upvoteAnswer(answerId))
     }
 
-    @PutMapping("/answer/{answerId}/downvote")
+    @PutMapping("/answers/{answerId}/downvote")
     fun downvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
         return ResponseEntity.ok(voteService.downvoteAnswer(answerId))
     }
