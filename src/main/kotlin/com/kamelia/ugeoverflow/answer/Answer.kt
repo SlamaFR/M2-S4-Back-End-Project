@@ -15,12 +15,12 @@ import java.time.Instant
 @Entity
 @Table(name = "answer")
 class Answer(
-    owner: User,
+    author: User,
     content: String,
     comments: Set<Comment>,
     votes: Set<Vote>,
     creationDate: Instant = Instant.now(),
-) : AbstractCommentablePost(owner, content, comments) {
+) : AbstractCommentablePost(author, content, comments) {
 
     init {
         require(!creationDate.isAfter(Instant.now())) { "Answer creation date cannot be in the future" }

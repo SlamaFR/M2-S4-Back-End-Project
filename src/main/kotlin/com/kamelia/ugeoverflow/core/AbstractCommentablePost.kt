@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank
 @MappedSuperclass
 abstract class AbstractCommentablePost(
     @ManyToOne
-    var owner: User,
+    var author: User,
     content: String,
     comments: Set<Comment>,
 ) : AbstractIdEntity() {
@@ -26,5 +26,19 @@ abstract class AbstractCommentablePost(
     @OneToMany
     @JoinColumn(name = "parentId")
     private var _comments: MutableSet<Comment> = comments.toMutableSet()
+
+    var comments: Set<Comment>
+        get() = _comments
+        set(value) {
+            _comments = value.toMutableSet()
+        }
+
+    fun addComment(comment: Comment) {
+        _comments.add(comment)
+    }
+
+    fun removeComment(comment: Comment) {
+        _comments.remove(comment)
+    }
 
 }

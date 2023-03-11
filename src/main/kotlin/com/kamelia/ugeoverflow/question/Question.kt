@@ -18,14 +18,14 @@ import java.time.Instant
 @Entity
 @Table(name = "question")
 class Question(
-    owner: User,
+    author: User,
     title: String,
     comments: Set<Comment>,
     content: String,
     answers: Set<Answer>,
     tags: Set<Tag>,
     creationDate: Instant = Instant.now(),
-) : AbstractCommentablePost(owner, content, comments) {
+) : AbstractCommentablePost(author, content, comments) {
 
     @JoinTable(
         name = "question_answer",
