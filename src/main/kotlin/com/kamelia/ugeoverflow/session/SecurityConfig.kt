@@ -19,7 +19,9 @@ class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity, bearerTokenFilter: BearerTokenFilter): SecurityFilterChain {
         http {
-            csrf { disable() }
+            csrf {
+                disable()
+            }
             sessionManagement {
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
@@ -27,10 +29,9 @@ class SecurityConfig {
                 authorize(anyRequest, permitAll)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(bearerTokenFilter)
-            formLogin {
-                permitAll()
+            httpBasic {
+                disable()
             }
-            httpBasic {}
         }
         return http.build()
     }

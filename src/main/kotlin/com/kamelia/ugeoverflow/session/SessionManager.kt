@@ -3,12 +3,12 @@ package com.kamelia.ugeoverflow.session
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
-import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 @EnableAsync
@@ -153,6 +153,5 @@ private class UserSessionContext(val user: User) {
         }
         return count
     }
-
 
 }
