@@ -14,7 +14,7 @@ import java.time.Instant
 @Table(name = "comment")
 class Comment(
     @ManyToOne
-    var owner: User,
+    var author: User,
     content: String,
     creationDate: Instant = Instant.now(),
 ) : AbstractIdEntity() {
