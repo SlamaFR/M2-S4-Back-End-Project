@@ -43,7 +43,7 @@
                 <div class="flex flex-col">
                     <div>
                         <label for="loginUsername">Username</label>
-                        <input type="text" id="loginUsername" name="username" th:field="*{username}" required/>
+                        <input type="text" id="loginUsername" name="username" th:field="*{username}" required pattern="[a-zA-Z0-9_]+"/>
                     </div>
                     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="flex flex-col">
                     <div>
                         <label for="registerUsername">Username</label>
-                        <input type="text" id="registerUsername" name="username" th:field="*{username}" required/>
+                        <input type="text" id="registerUsername" name="username" th:field="*{username}" required pattern="[a-zA-Z0-9_]+"/>
                     </div>
                     <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
                 </div>

@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.session
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,7 +16,7 @@ class AuthMVCController {
 
     @GetMapping
     fun auth(
-        @Valid @ModelAttribute("loginForm") loginForm: LoginForm,
+        @ModelAttribute("loginForm") loginForm: LoginForm,
         @ModelAttribute("registerForm") registerForm: RegisterForm,
     ): String = "session/auth"
 
@@ -41,14 +42,14 @@ class AuthMVCController {
 }
 
 class LoginForm(
-    @NotBlank
+    @NotBlank @Pattern(regexp = "[a-zA-Z0-9_]+")
     var username: String = "",
     @NotBlank
     var password: String = "",
 )
 
 class RegisterForm(
-    @NotBlank
+    @NotBlank @Pattern(regexp = "[a-zA-Z0-9_]+")
     var username: String = "",
     @NotBlank
     var password: String = "",
