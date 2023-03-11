@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("/auth")
-class AuthMVCController {
+class AuthMVController {
 
     @GetMapping
     fun auth(
