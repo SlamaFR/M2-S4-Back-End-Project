@@ -13,7 +13,6 @@ abstract class AbstractCommentablePost(
     @ManyToOne
     var author: User,
     content: String,
-    comments: Set<Comment>,
 ) : AbstractIdEntity() {
 
     @NotBlank
@@ -25,7 +24,7 @@ abstract class AbstractCommentablePost(
 
     @OneToMany
     @JoinColumn(name = "parentId")
-    private var _comments: MutableSet<Comment> = comments.toMutableSet()
+    private var _comments: MutableSet<Comment> = mutableSetOf()
 
     var comments: Set<Comment>
         get() = _comments
