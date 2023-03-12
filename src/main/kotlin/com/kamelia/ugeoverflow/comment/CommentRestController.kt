@@ -14,7 +14,7 @@ class CommentRestController(
     private val commentService: CommentService,
 ) {
 
-    @PostMapping("/questions/{questionId}/comment")
+    @PostMapping("/questions/{questionId}/comments")
     fun postCommentOnQuestion(
         @PathVariable questionId: UUID,
         commentDTO: PostCommentDTO,
@@ -22,7 +22,7 @@ class CommentRestController(
         return ResponseEntity.ok(commentService.postCommentOnQuestion(questionId, commentDTO))
     }
 
-    @PostMapping("/answers/{answerId}/comment")
+    @PostMapping("/answers/{answerId}/comments")
     fun postCommentOnAnswer(
         @PathVariable answerId: UUID,
         commentDTO: PostCommentDTO,

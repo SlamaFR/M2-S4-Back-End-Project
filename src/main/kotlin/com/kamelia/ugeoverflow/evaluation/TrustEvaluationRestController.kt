@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/evaluations")
+@RequestMapping("/api/v1/")
 class TrustEvaluationRestController(
     private val trustEvaluationService: TrustEvaluationService,
 ) {
 
-    @PutMapping("/evaluate/{userId}")
+    @PutMapping("/users/{userId}/evaluations")
     fun evaluateUser(@RequestBody @Valid trust: Int, @PathVariable userId: UUID): ResponseEntity<Unit> =
         ResponseEntity.ok(trustEvaluationService.evaluateUser(userId, trust))
 
-    @DeleteMapping("/evaluate/{userId}")
+    @DeleteMapping("/users/{userId}/evaluations")
     fun removeEvaluation(@PathVariable userId: UUID): ResponseEntity<Unit> =
         ResponseEntity.ok(trustEvaluationService.removeEvaluation(userId))
 
