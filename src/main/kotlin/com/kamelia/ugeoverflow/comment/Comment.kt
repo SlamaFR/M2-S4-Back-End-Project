@@ -16,7 +16,6 @@ class Comment(
     @ManyToOne
     var author: User,
     content: String,
-    creationDate: Instant = Instant.now(),
 ) : AbstractIdEntity() {
 
     @NotBlank
@@ -28,7 +27,7 @@ class Comment(
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = creationDate
+    var creationDate: Instant = Instant.now()
         set(value) {
             require(!value.isAfter(Instant.now())) { "Answer creation date cannot be in the future" }
             field = value
