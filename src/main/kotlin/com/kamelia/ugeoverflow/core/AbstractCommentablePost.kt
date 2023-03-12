@@ -15,10 +15,14 @@ abstract class AbstractCommentablePost(
     content: String,
 ) : AbstractIdEntity() {
 
+    init {
+        require(content.isNotBlank()) { "Post content cannot be blank" }
+    }
+
     @NotBlank
     var content: String = content
         set(value) {
-            require(value.isNotBlank()) { "Answer content cannot be blank" }
+            require(value.isNotBlank()) { "Post content cannot be blank" }
             field = value
         }
 
