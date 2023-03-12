@@ -72,4 +72,12 @@ class Question(
             field = value
         }
 
+    fun addAnswer(answer: Answer) {
+        _answers.add(answer)
+    }
+
+    fun removeAnswer(answer: Answer) {
+        _answers.remove(answer)
+    }
+
 }

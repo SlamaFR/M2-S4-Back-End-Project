@@ -1,6 +1,5 @@
 package com.kamelia.ugeoverflow.answer
 
-import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.core.AbstractCommentablePost
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.votes.Vote
@@ -17,22 +16,19 @@ import java.time.Instant
 class Answer(
     author: User,
     content: String,
-    comments: Set<Comment>,
-    votes: Set<Vote>,
-    creationDate: Instant = Instant.now(),
-) : AbstractCommentablePost(author, content, comments) {
+) : AbstractCommentablePost(author, content) {
 
     init {
-        require(!creationDate.isAfter(Instant.now())) { "Answer creation date cannot be in the future" }
+        require(content.isNotBlank()) { "Answer content cannot be blank" }
     }
 
     @OneToMany
     @JoinColumn(name = "answerId")
-    private var _votes: MutableSet<Vote> = votes.toMutableSet()
+    private var _votes: MutableSet<Vote> = mutableSetOf()
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = creationDate
+    var creationDate: Instant = Instant.now()
         set(value) {
             require(!value.isAfter(Instant.now())) { "Answer creation date cannot be in the future" }
             field = value
