@@ -17,7 +17,7 @@ class AnswerService(
     fun postAnswer(questionId: UUID, answerDto: PostAnswerDTO): AnswerDTO {
         val author = currentUser()
         val question = questionRepository.findById(questionId).orElseThrow {
-            throw InvalidRequestException.notFound("Question not found")
+            InvalidRequestException.notFound("Question not found")
         }
 
         val answer = Answer(author, answerDto.content)
@@ -30,7 +30,7 @@ class AnswerService(
     fun deleteAnswer(answerId: UUID) {
         val currentUser = currentUser()
         val answer = answerRepository.findById(answerId).orElseThrow {
-            throw InvalidRequestException.notFound("Answer not found")
+            InvalidRequestException.notFound("Answer not found")
         }
         if (answer.author != currentUser) {
             throw InvalidRequestException.forbidden("You are not the author of this answer")

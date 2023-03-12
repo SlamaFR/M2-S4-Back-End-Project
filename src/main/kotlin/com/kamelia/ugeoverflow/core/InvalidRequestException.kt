@@ -23,4 +23,3 @@ class InvalidRequestException(val statusCode: Int, message: String) : RuntimeExc
     }
 
 }
-

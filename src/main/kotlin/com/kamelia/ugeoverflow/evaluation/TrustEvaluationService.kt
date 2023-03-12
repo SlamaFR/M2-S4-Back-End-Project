@@ -17,7 +17,7 @@ class TrustEvaluationService(
         // TODO: get current user from security context
         val currentUser: User = currentUser()
         val evaluatedUser = userRepository.findById(evaluatedUserId).orElseThrow {
-            throw InvalidRequestException.notFound("User not found.")
+            InvalidRequestException.notFound("User not found.")
         }
 
         if (evaluatedUser == currentUser) {

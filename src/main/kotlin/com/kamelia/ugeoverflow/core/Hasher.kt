@@ -2,8 +2,8 @@ package com.kamelia.ugeoverflow.core
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import at.favre.lib.crypto.bcrypt.LongPasswordStrategies
-import org.springframework.stereotype.Service
 import java.security.SecureRandom
+import org.springframework.stereotype.Service
 
 @Service
 class Hasher {
