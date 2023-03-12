@@ -18,6 +18,10 @@ class Comment(
     content: String,
 ) : AbstractIdEntity() {
 
+    init {
+        require(content.isNotBlank()) { "Answer content cannot be blank" }
+    }
+
     @NotBlank
     var content: String = content
         set(value) {
