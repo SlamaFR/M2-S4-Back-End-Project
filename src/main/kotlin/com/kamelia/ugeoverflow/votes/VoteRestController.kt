@@ -17,14 +17,12 @@ class VoteRestController(
 
     @Secured(Roles.USER)
     @PutMapping("/answers/{answerId}/upvote")
-    fun upvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
-        return ResponseEntity.ok(voteService.upvoteAnswer(answerId))
-    }
+    fun upvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> =
+        ResponseEntity.ok(voteService.upvoteAnswer(answerId))
 
     @Secured(Roles.USER)
     @PutMapping("/answers/{answerId}/downvote")
-    fun downvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
-        return ResponseEntity.ok(voteService.downvoteAnswer(answerId))
-    }
+    fun downvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> =
+        ResponseEntity.ok(voteService.downvoteAnswer(answerId))
 
 }

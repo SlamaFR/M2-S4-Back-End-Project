@@ -21,35 +21,31 @@ class CommentRestController(
     fun postCommentOnQuestion(
         @PathVariable questionId: UUID,
         commentDTO: PostCommentDTO,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(commentService.postCommentOnQuestion(questionId, commentDTO))
-    }
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(commentService.postCommentOnQuestion(questionId, commentDTO))
 
     @Secured(Roles.USER)
     @PostMapping("/answers/{answerId}/comments")
     fun postCommentOnAnswer(
         @PathVariable answerId: UUID,
         commentDTO: PostCommentDTO,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(commentService.postCommentOnAnswer(answerId, commentDTO))
-    }
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(commentService.postCommentOnAnswer(answerId, commentDTO))
 
     @Secured(Roles.USER)
     @DeleteMapping("/questions/{questionId}/comments/{commentId}")
     fun removeCommentFromQuestion(
         @PathVariable questionId: UUID,
         @PathVariable commentId: UUID,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(commentService.removeCommentFromQuestion(questionId, commentId))
-    }
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(commentService.removeCommentFromQuestion(questionId, commentId))
 
     @Secured(Roles.USER)
     @DeleteMapping("/answers/{answerId}/comments/{commentId}")
     fun removeCommentFromAnswer(
         @PathVariable answerId: UUID,
         @PathVariable commentId: UUID,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(commentService.removeCommentFromAnswer(answerId, commentId))
-    }
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(commentService.removeCommentFromAnswer(answerId, commentId))
 
 }
