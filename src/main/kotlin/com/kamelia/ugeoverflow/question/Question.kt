@@ -1,7 +1,6 @@
 package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.answer.Answer
-import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.core.AbstractCommentablePost
 import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.user.User
@@ -20,12 +19,8 @@ import java.time.Instant
 class Question(
     author: User,
     title: String,
-    comments: Set<Comment>,
     content: String,
-    answers: Set<Answer>,
-    tags: Set<Tag>,
-    creationDate: Instant = Instant.now(),
-) : AbstractCommentablePost(author, content, comments) {
+) : AbstractCommentablePost(author, content) {
 
     @JoinTable(
         name = "question_answer",
@@ -34,7 +29,7 @@ class Question(
     )
     @OneToMany
     @Column(name = "answers")
-    private var _answers: MutableSet<Answer> = answers.toMutableSet()
+    private var _answers: MutableSet<Answer> = mutableSetOf()
 
     @JoinTable(
         name = "question_tag",
@@ -43,12 +38,11 @@ class Question(
     )
     @OneToMany
     @Column(name = "tags")
-    private var _tags: MutableSet<Tag> = tags.toMutableSet()
+    private var _tags: MutableSet<Tag> = mutableSetOf()
 
     init {
         require(title.isNotBlank()) { "Question title cannot be blank" }
         require(content.isNotBlank()) { "Question content cannot be blank" }
-        require(!creationDate.isAfter(Instant.now())) { "Question creation date cannot be in the future" }
     }
 
     @NotBlank
@@ -72,7 +66,7 @@ class Question(
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = creationDate
+    var creationDate: Instant = Instant.now()
         set(value) {
             require(!value.isAfter(Instant.now())) { "Question creation date cannot be in the future" }
             field = value
