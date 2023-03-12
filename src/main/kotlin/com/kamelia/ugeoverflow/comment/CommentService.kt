@@ -16,7 +16,7 @@ class CommentService(
 ) {
 
     private fun postComment(commentable: AbstractCommentablePost, commentDTO: PostCommentDTO) {
-        val currentUser = currentUser ?: throw InvalidRequestException.unauthorized()
+        val currentUser = currentUser()
 
         val comment = Comment(currentUser, commentDTO.content)
         commentRepository.save(comment)
@@ -38,7 +38,7 @@ class CommentService(
     }
 
     private fun deleteComment(commentable: AbstractCommentablePost, commentId: UUID) {
-        val currentUser = currentUser ?: throw InvalidRequestException.unauthorized()
+        val currentUser = currentUser()
         val comment = commentRepository.findById(commentId).orElseThrow {
             InvalidRequestException.notFound("Comment not found")
         }

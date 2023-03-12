@@ -15,7 +15,7 @@ class TrustEvaluationService(
 
     fun evaluateUser(evaluatedUserId: UUID, trust: Int) {
         // TODO: get current user from security context
-        val currentUser: User = currentUser ?: throw InvalidRequestException.unauthorized()
+        val currentUser: User = currentUser()
         val evaluatedUser = userRepository.findById(evaluatedUserId).orElseThrow {
             throw InvalidRequestException.notFound("User not found.")
         }
@@ -39,7 +39,7 @@ class TrustEvaluationService(
 
     fun removeEvaluation(evaluatedUserId: UUID) {
         // TODO: get current user from security context
-        val currentUser: User = currentUser ?: throw InvalidRequestException.unauthorized()
+        val currentUser: User = currentUser()
 
         if (!trustEvaluationRepository.deleteByEvaluatorIdAndEvaluatedId(currentUser.id, evaluatedUserId)) {
             throw InvalidRequestException.notFound("You did not evaluate this user.")

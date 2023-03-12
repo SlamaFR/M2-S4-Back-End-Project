@@ -13,7 +13,7 @@ class VoteService(
 ) {
 
     private fun voteAnswer(answerId: UUID, isUpvote: Boolean) {
-        val user = currentUser ?: throw InvalidRequestException.unauthorized()
+        val user = currentUser()
         val answer = answerRepository.findById(answerId).orElseThrow {
             InvalidRequestException.notFound("Answer not found")
         }
