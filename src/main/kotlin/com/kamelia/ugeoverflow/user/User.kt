@@ -20,6 +20,11 @@ class User(
     trustEvaluations: Set<TrustEvaluation> = emptySet(),
 ) : AbstractIdEntity() {
 
+    init {
+        require(username.isNotBlank()) { "Username cannot be blank" }
+        require(password.isNotBlank()) { "Password cannot be blank" }
+    }
+
     @JoinTable(
         name = "user_following",
         joinColumns = [JoinColumn(name = "follower_id")],
@@ -34,6 +39,7 @@ class User(
     private var _trustEvaluations: MutableSet<TrustEvaluation> = trustEvaluations.toMutableSet()
 
     @NotBlank
+    @Column(unique = true)
     var username: String = username
         set(value) {
             require(value.isNotBlank()) { "Username cannot be blank" }
