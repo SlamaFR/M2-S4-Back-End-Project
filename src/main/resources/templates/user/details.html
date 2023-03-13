@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
+    <title th:text="${user.username}"></title>
+</head>
+<body>
+<header class="w-full p-1">
+    <nav class="flex flex-row center gap">
+        <a class="hover-grow" th:href="@{/}">Home</a>
+        <a class="hover-grow" th:href="@{/post/create}">Create Post</a>
+        <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
+    </nav>
+</header>
+<main class="flex flex-col center">
+    <h1 th:text="${user.username}"></h1>
+    <h2>Update password</h2>
+    <form th:action="@{/user/details/{id}/password(id=${user.id})}" th:method="POST" th:object="${updatePasswordForm}" class="flex flex-col gap">
+        <div class="flex flex-col">
+            <div>
+                <label for="oldPassword">Old Password</label>
+                <input type="password" id="oldPassword" name="oldPassword" th:field="*{oldPassword}" required/>
+            </div>
+            <span th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}"></span>
+        </div>
+        <div class="flex flex-col">
+            <div>
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" name="newPassword" th:field="*{newPassword}" required/>
+            </div>
+            <span th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></span>
+        </div>
+        <div class="flex flex-col">
+            <div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" th:field="*{confirmPassword}" required/>
+            </div>
+            <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+        </div>
+        <button type="submit">Update</button>
+    </form>
+
+    <span th:if="${updateSuccess != null && updateSuccess}">Updated password successfully</span>
+    <span th:if="${updateSuccess != null && !updateSuccess}">Failed to update password</span>
+
+    <hr class="w-full" />
+
+    <div class="flex flex-col center gap">
+        <h2>Following</h2>
+        <span th:each="following : ${user.following}" th:text="${following.username}"></span>
+    </div>
+</main>
+</body>
+</html>
