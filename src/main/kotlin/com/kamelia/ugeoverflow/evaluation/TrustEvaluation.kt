@@ -3,13 +3,19 @@ package com.kamelia.ugeoverflow.evaluation
 import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "trust_evaluation")
+@Table(
+    name = "trust_evaluation",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["evaluator_id", "evaluated_id"])]
+)
 class TrustEvaluation(
     @ManyToOne
+    @JoinColumn(name = "evaluated_id")
     var evaluated: User,
     trust: Int,
 ) : AbstractIdEntity() {
