@@ -1,5 +1,7 @@
 package com.kamelia.ugeoverflow.user
 
+import com.kamelia.ugeoverflow.session.SessionManager
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -10,8 +12,19 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/users")
 class UserRestController(
+    private val sessionManager: SessionManager,
     private val userService: UserService,
 ) {
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody @Valid userDTO: UserCredentialsDTO,
+        response: HttpServletResponse
+    ): ResponseEntity<Nothing> {
+        val token = sessionManager.login(userDTO.username, userDTO.password)
+        token.createCookies().forEach(response::addCookie)
+        return ResponseEntity.noContent().build()
+    }
 
     @PostMapping("/register")
     fun register(@RequestBody @Valid userDTO: UserCredentialsDTO): ResponseEntity<UserDTO> =
