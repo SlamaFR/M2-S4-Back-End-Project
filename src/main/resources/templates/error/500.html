@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
     <title>500 - Internal Server Error</title>
     <style>
         body {
@@ -13,7 +14,14 @@
     </style>
 </head>
 <body>
-    <h1>500 - Internal Server Error</h1>
-    <p>Something went wrong, but it's not your fault</p>
+<header class="w-full p-1">
+    <nav class="flex flex-row center gap">
+        <a class="hover-grow" th:href="@{/}">Home</a>
+        <a class="hover-grow" th:href="@{/post/create}">Create Post</a>
+        <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
+    </nav>
+</header>
+<h1>500 - Internal Server Error</h1>
+<p>Something went wrong, but it's not your fault</p>
 </body>
 </html>

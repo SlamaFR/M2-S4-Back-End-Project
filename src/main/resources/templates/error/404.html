@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
     <title>404 - Not Found</title>
     <style>
         body {
@@ -13,7 +14,15 @@
     </style>
 </head>
 <body>
+<header class="w-full p-1">
+    <nav class="flex flex-row center gap">
+        <a class="hover-grow" th:href="@{/}">Home</a>
+        <a class="hover-grow" th:href="@{/post/create}">Create Post</a>
+        <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
+    </nav>
+</header>
 <h1>404 - Not Found</h1>
 <p>Requested resource not found</p>
+<p th:if="${errorMessage != null}" th:text="${errorMessage}"></p>
 </body>
 </html>
