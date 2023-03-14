@@ -33,6 +33,13 @@
 
     <hr class="w-xl">
 
+    <form th:action="@{/post/comment/{id}(id=${post.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border w-xl">
+        <label for="content">Post a new comment</label>
+        <textarea name="content" id="content" cols="30" rows="10" th:field="*{content}" style="resize: none"></textarea>
+        <button type="submit">Send</button>
+        <span th:if="${commentErrorMessage}" th:text="${commentErrorMessage}"></span>
+    </form>
+
     <div th:each="comment : ${post.comments}" class="flex flex-col border w-xl">
         <div class="flex flex-row between">
             <h2 th:text="${comment.owner}"></h2>
@@ -41,9 +48,13 @@
         <div class="flex flex-row between gap-xl">
             <p th:text="${comment.content}"></p>
             <div class="flex flex-row center gap">
-                <a th:href="@{/post/vote/{id}/{commentId}?vote=false(id=${post.id},commentId=${comment.id})}" class="hover-grow pill">Downvote</a>
+                <form th:action="@{/post/vote/{id}/{commentId}?vote=false(id=${post.id},commentId=${comment.id})}" th:method="POST">
+                    <button class="hover-grow pill">Downvote</button>
+                </form>
                 <span>0</span>
-                <a th:href="@{/post/vote/{id}/{commentId}?vote=true(id=${post.id},commentId=${comment.id})}" class="hover-grow pill">Upvote</a>
+                <form th:action="@{/post/vote/{id}/{commentId}?vote=true(id=${post.id},commentId=${comment.id})}" th:method="POST">
+                    <button class="hover-grow pill">Upvote</button>
+                </form>
             </div>
         </div>
     </div>

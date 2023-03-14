@@ -5,12 +5,12 @@ import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.tag.toDTO
 import com.kamelia.ugeoverflow.user.User
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
 
@@ -59,6 +59,7 @@ class PostMVController {
     @GetMapping("/{id}")
     fun details(
         @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
     ): String {
 
@@ -75,7 +76,7 @@ class PostMVController {
         return "post/details"
     }
 
-    @GetMapping("/vote/{id}/{commentId}")
+    @PostMapping("/vote/{id}/{commentId}")
     fun voteComment(
         @PathVariable("id") id: UUID,
         @PathVariable("commentId") commentId: UUID,
@@ -86,7 +87,30 @@ class PostMVController {
 
         return "redirect:/post/$id"
     }
+
+    @PostMapping("/comment/{id}")
+    fun comment(
+        @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
+        model: Model,
+        bindingResult: BindingResult,
+    ): String {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("commentErrorMessage", "Invalid comment")
+            return "redirect:/post/$id"
+        }
+
+        // TODO add comment to database
+        println(commentForm.content)
+
+        return "redirect:/post/$id"
+    }
 }
+
+class CommentForm(
+    @NotBlank
+    val content: String = "",
+)
 
 class PostModel(
     val posts: List<PostLightModel>,
