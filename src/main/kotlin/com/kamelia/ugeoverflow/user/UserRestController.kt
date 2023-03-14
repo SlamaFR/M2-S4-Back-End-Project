@@ -5,6 +5,7 @@ import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.session.TokensDTO
 import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import com.kamelia.ugeoverflow.utils.currentAuth
 import com.kamelia.ugeoverflow.utils.refreshedTokens
 import com.kamelia.ugeoverflow.utils.tokens
@@ -19,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping(Routes.User.ROOT)
 class UserRestController(
     private val sessionManager: SessionManager,
     private val userService: UserService,
 ) {
 
-    @PostMapping("/register")
+    @PostMapping(Routes.User.REGISTER)
     fun register(@RequestBody @Valid userDTO: UserCredentialsDTO): ResponseEntity<UserDTO> =
         ResponseEntity.ok(userService.create(userDTO))
 
-    @PostMapping("/login")
+    @PostMapping(Routes.User.LOGIN)
     fun login(
         @RequestBody @Valid userDTO: UserCredentialsDTO,
         response: HttpServletResponse,
@@ -39,7 +40,7 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/logout")
+    @PostMapping(Routes.User.LOGOUT)
     fun logout(@RequestBody refreshToken: String): ResponseEntity<Nothing> {
         val tokens = currentAuth().tokens
         val refreshTokenUUID = refreshToken.toUUIDFromBase64OrNull()
@@ -49,7 +50,7 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/logout-all")
+    @PostMapping(Routes.User.LOGOUT_ALL)
     fun logoutAll(): ResponseEntity<Nothing> {
         val tokens = currentAuth().tokens
         sessionManager.logoutAll(tokens.userId)
@@ -57,7 +58,7 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/refresh")
+    @PostMapping(Routes.User.REFRESH)
     fun refresh(@RequestBody refreshToken: String): ResponseEntity<TokensDTO> {
         val tokens = currentAuth().refreshedTokens
         return ResponseEntity.ok(tokens)

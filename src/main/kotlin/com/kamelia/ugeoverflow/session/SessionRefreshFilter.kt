@@ -48,6 +48,6 @@ class SessionRefreshFilter(
     }
 
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath != Routes.REFRESH_ROUTE
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath != Routes.User.REFRESH
 
 }

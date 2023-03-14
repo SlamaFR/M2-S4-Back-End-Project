@@ -49,7 +49,7 @@ class BearerTokenFilter(
         filterChain.doFilter(request, response)
     }
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath == Routes.REFRESH_ROUTE
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath == Routes.User.REFRESH
 
     @OptIn(ExperimentalContracts::class)
     private fun checkAuthHeaders(userId: UUID?, base64Token: String?): Boolean {
