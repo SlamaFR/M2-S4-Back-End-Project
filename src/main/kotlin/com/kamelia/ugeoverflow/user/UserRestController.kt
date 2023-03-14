@@ -3,7 +3,7 @@ package com.kamelia.ugeoverflow.user
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.session.TokensDTO
-import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
+import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.Routes
 import com.kamelia.ugeoverflow.utils.currentAuth
@@ -16,11 +16,9 @@ import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(Routes.User.ROOT)
 class UserRestController(
     private val sessionManager: SessionManager,
     private val userService: UserService,
@@ -59,13 +57,13 @@ class UserRestController(
 
     @Secured(Roles.USER)
     @PostMapping(Routes.User.REFRESH)
-    fun refresh(@RequestBody refreshToken: String): ResponseEntity<TokensDTO> {
+    fun refresh(): ResponseEntity<TokensDTO> {
         val tokens = currentAuth().refreshedTokens
         return ResponseEntity.ok(tokens)
     }
 
     @Secured(Roles.USER)
-    @GetMapping("/me")
+    @GetMapping("${Routes.User.ROOT}/me")
     fun me(): ResponseEntity<String> = ResponseEntity.ok("you")
 
 }

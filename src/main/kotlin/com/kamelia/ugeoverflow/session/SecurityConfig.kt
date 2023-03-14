@@ -17,7 +17,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig {
 
     @Bean
-    fun filterChain(http: HttpSecurity, bearerTokenFilter: BearerTokenFilter): SecurityFilterChain {
+    fun filterChain(
+        http: HttpSecurity,
+        bearerTokenFilter: BearerTokenFilter,
+        refreshFilter: SessionRefreshFilter,
+    ): SecurityFilterChain {
         http {
             csrf {
                 disable()
@@ -29,6 +33,7 @@ class SecurityConfig {
                 authorize(anyRequest, permitAll)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(bearerTokenFilter)
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(refreshFilter)
             httpBasic {
                 disable()
             }

@@ -1,20 +1,18 @@
 package com.kamelia.ugeoverflow.session
 
 import com.kamelia.ugeoverflow.user.User
-import com.kamelia.ugeoverflow.util.toBase64
-import jakarta.servlet.http.Cookie
+import com.kamelia.ugeoverflow.core.toBase64
 import java.util.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class TokenFactory protected constructor(
-    //@Value("\${ugeoverflow.session.access-token-lifetime:3600000}")
-
+    @Value("\${ugeoverflow.session.access-token-lifetime:3600000}")
+    private val accessTokenLifetime: Long, // 1 hour
     @Value("\${ugeoverflow.session.refresh-token-lifetime:2592000000}")
     private val refreshTokenLifetime: Long, // 30 days
 ) {
-    private val accessTokenLifetime: Long = 20L * 1000L // 1 hour
 
     fun createUserTokens(user: User): TokenData {
         val now = System.currentTimeMillis()

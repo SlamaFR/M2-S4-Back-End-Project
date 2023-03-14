@@ -1,11 +1,15 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.follow.FollowedUser
+import com.kamelia.ugeoverflow.follow.FollowedUserRepository
+import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
+import org.springframework.security.core.userdetails.UserDetails
 
 @Service
 class UserService(
