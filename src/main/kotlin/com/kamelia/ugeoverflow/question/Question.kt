@@ -22,13 +22,13 @@ class Question(
     content: String,
 ) : AbstractCommentablePost(author, content) {
 
-    @JoinTable(
-        name = "question_answer",
-        joinColumns = [JoinColumn(name = "question_id")],
-        inverseJoinColumns = [JoinColumn(name = "answer_id")]
-    )
+    init {
+        require(title.isNotBlank()) { "Question title cannot be blank" }
+        require(content.isNotBlank()) { "Question content cannot be blank" }
+    }
+
     @OneToMany
-    @Column(name = "answers")
+    @JoinColumn(name = "question_id")
     private var _answers: MutableSet<Answer> = mutableSetOf()
 
     @JoinTable(
@@ -37,40 +37,27 @@ class Question(
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
     @OneToMany
-    @Column(name = "tags")
     private var _tags: MutableSet<Tag> = mutableSetOf()
 
-    init {
-        require(title.isNotBlank()) { "Question title cannot be blank" }
-        require(content.isNotBlank()) { "Question content cannot be blank" }
-    }
-
     @NotBlank
-    var title: String = title
-        set(value) {
-            require(value.isNotBlank()) { "Question title cannot be blank" }
-            field = value
-        }
-
-    var answers: Set<Answer>
-        get() = _answers
-        set(value) {
-            _answers = value.toMutableSet()
-        }
-
-    var tags: Set<Tag>
-        get() = _tags
-        set(value) {
-            _tags = value.toMutableSet()
-        }
+    @Column(name = "title")
+    private var _title: String = title
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = Instant.now()
-        set(value) {
-            require(!value.isAfter(Instant.now())) { "Question creation date cannot be in the future" }
-            field = value
-        }
+    private var _creationDate: Instant = Instant.now()
+
+    val answers: Set<Answer>
+        get() = _answers
+
+    val tags: Set<Tag>
+        get() = _tags
+
+    val title: String
+        get() = _title
+
+    val creationDate: Instant
+        get() = _creationDate
 
     fun addAnswer(answer: Answer) {
         _answers.add(answer)
@@ -78,6 +65,14 @@ class Question(
 
     fun removeAnswer(answer: Answer) {
         _answers.remove(answer)
+    }
+
+    fun addTag(tag: Tag) {
+        _tags.add(tag)
+    }
+
+    fun removeTag(tag: Tag) {
+        _tags.remove(tag)
     }
 
 }

@@ -23,7 +23,7 @@ class Answer(
     }
 
     @OneToMany
-    @JoinColumn(name = "answerId")
+    @JoinColumn(name = "answer_id")
     private var _votes: MutableSet<Vote> = mutableSetOf()
 
     @PastOrPresent
@@ -34,11 +34,8 @@ class Answer(
             field = value
         }
 
-    var votes: Set<Vote>
+    val votes: Set<Vote>
         get() = _votes
-        set(value) {
-            _votes = value.toMutableSet()
-        }
 
     fun addVote(vote: Vote) {
         _votes.add(vote)

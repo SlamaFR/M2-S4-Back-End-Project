@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -13,8 +14,7 @@ import java.time.Instant
 @Entity
 @Table(name = "comment")
 class Comment(
-    @ManyToOne
-    var author: User,
+    author: User,
     content: String,
 ) : AbstractIdEntity() {
 
@@ -22,19 +22,25 @@ class Comment(
         require(content.isNotBlank()) { "Answer content cannot be blank" }
     }
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private var _author: User = author
+
     @NotBlank
-    var content: String = content
-        set(value) {
-            require(value.isNotBlank()) { "Answer content cannot be blank" }
-            field = value
-        }
+    @Column(name = "content")
+    private var _content: String = content
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = Instant.now()
-        set(value) {
-            require(!value.isAfter(Instant.now())) { "Answer creation date cannot be in the future" }
-            field = value
-        }
+    private var _creationDate: Instant = Instant.now()
+
+    val author: User
+        get() = _author
+
+    val content: String
+        get() = _content
+
+    val creationDate: Instant
+        get() = _creationDate
 
 }
