@@ -44,16 +44,4 @@ data class TokensDTO(
     val userId: UUID,
     val accessToken: String,
     val refreshToken: String,
-) {
-
-    private fun createCookie(name: String, value: String): Cookie = Cookie(name, value).apply {
-        path = "/"
-        isHttpOnly = true
-    }
-
-    fun createCookies(): List<Cookie> = buildList {
-        add(createCookie("USER_ID", userId.toString()))
-        add(createCookie("ACCESS_TOKEN", accessToken))
-        add(createCookie("REFRESH_TOKEN", refreshToken))
-    }
-}
+)

@@ -3,6 +3,7 @@ package com.kamelia.ugeoverflow.session
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.util.toUUIDOrNull
+import com.kamelia.ugeoverflow.utils.Roles
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -56,13 +57,20 @@ class BearerTokenFilter(
         if (!checkAuthHeaders(userId, base64Token)) return null
 
         val token = base64Token.toUUIDFromBase64OrNull()
-            ?: throw InvalidRequestException.badRequest("Invalid token")
-        val user = sessionManager.verify(userId, token) ?: return null
+            ?: throw InvalidRequestException.badRequest("Invalid credentials")
 
-        val roles = if (user.username == adminName) listOf("ROLE_USER", "ROLE_ADMIN") else listOf("ROLE_USER")
+        val user = sessionManager.verify(userId, token)
+            ?: throw InvalidRequestException.unauthorized("Invalid credentials")
+
+        val tokens = UserTokensDTO(userId, token)
+        val roles = if (user.username == adminName) {
+            listOf(Roles.ADMIN, Roles.USER)
+        } else {
+            listOf(Roles.USER)
+        }
         return UsernamePasswordAuthenticationToken(
             user,
-            null,
+            tokens,
             roles.map(::SimpleGrantedAuthority)
         )
     }
