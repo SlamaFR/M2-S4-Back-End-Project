@@ -22,7 +22,7 @@ data class UserCredentialsDTO(
 fun User.toDTO(): UserDTO = UserDTO(
     id,
     username,
-    following.map(User::toDTOWithoutFollowing).toSet(),
+ emptySet()//    followed.map(User::toDTOWithoutFollowing).toSet(),
     //trustEvaluations = trustEvaluations.map { it.toDTO() }.toSet(),
 )
 

@@ -27,8 +27,7 @@ class AnswerRestController(
     fun postAnswer(
         @PathVariable questionId: UUID,
         @RequestBody answerDto: PostAnswerDTO,
-    ): ResponseEntity<AnswerDTO> =
-        ResponseEntity.ok(answerService.postAnswer(questionId, answerDto))
+    ): ResponseEntity<AnswerDTO> = ResponseEntity.ok(answerService.postAnswer(questionId, answerDto))
 
     @Secured(Roles.USER)
     @DeleteMapping("/answers/{answerId}")
