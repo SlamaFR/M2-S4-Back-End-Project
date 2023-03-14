@@ -17,6 +17,11 @@ a {
     align-items: center;
 }
 
+.end {
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .flex-col {
     flex-direction: column;
 }
@@ -31,6 +36,10 @@ a {
 
 .gap-xl {
     gap: 5rem;
+}
+
+.w-xl {
+    width: 80vw;
 }
 
 .w-full {

@@ -1,6 +1,10 @@
 package com.kamelia.ugeoverflow.post
 
+import com.kamelia.ugeoverflow.comment.Comment
+import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.tag.TagDTO
+import com.kamelia.ugeoverflow.tag.toDTO
+import com.kamelia.ugeoverflow.user.User
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,35 +14,31 @@ import org.springframework.web.bind.annotation.RequestParam
 import java.time.Instant
 import java.util.*
 
+val user = User(
+    "notKamui",
+    "aaa"
+)
+
 val posts = listOf(
-    PostLightDTO(
-        UUID.randomUUID(),
-        "How to make a web app with Kotlin and Spring Boot?",
+    Post(
+        user,
+        "How to make a Spring Boot app in Kotlin",
+        "?????????????? how pls",
         setOf(
-            TagDTO(UUID.randomUUID(), "kotlin"),
-            TagDTO(UUID.randomUUID(), "spring-boot"),
-            TagDTO(UUID.randomUUID(), "web-app"),
+            Comment(user, "I don't know either bro", setOf()),
+            Comment(user, "I know but I won't tell", setOf()),
         ),
-        Instant.now(),
+        setOf(Tag("kotlin"), Tag("spring"), Tag("spring-boot")),
     ),
-    PostLightDTO(
-        UUID.randomUUID(),
-        "Why Kotlin is better than Java?",
+    Post(
+        user,
+        "How to make a Spring Boot app in Java",
+        "?????????????? how pls",
         setOf(
-            TagDTO(UUID.randomUUID(), "kotlin"),
-            TagDTO(UUID.randomUUID(), "java"),
+            Comment(user, "I don't know either bro", setOf()),
+            Comment(user, "I know but I won't tell", setOf()),
         ),
-        Instant.now(),
-    ),
-    PostLightDTO(
-        UUID.randomUUID(),
-        "Why Spring MVC is a fubbing pain",
-        setOf(
-            TagDTO(UUID.randomUUID(), "spring-mvc"),
-            TagDTO(UUID.randomUUID(), "pain"),
-            TagDTO(UUID.randomUUID(), "ouch"),
-        ),
-        Instant.now(),
+        setOf(Tag("java"), Tag("spring"), Tag("spring-boot")),
     ),
 )
 
@@ -52,7 +52,7 @@ class PostMVController {
         model: Model,
     ): String {
         // TODO: Get posts from database with page (?)
-        model.addAttribute("postModel", PostModel(posts.map(PostLightDTO::toModel)))
+        model.addAttribute("postModel", PostModel(posts.map(Post::toModel)))
         return "post/list"
     }
 
@@ -63,26 +63,70 @@ class PostMVController {
     ): String {
 
         // TODO: Get post from database
-        val post = posts.firstOrNull { it.id == id }
+        val post = posts.firstOrNull()
 
         if (post == null) {
             model.addAttribute("errorMessage", "Post not found")
             return "error/404"
         }
 
-        model.addAttribute("post", post)
+        model.addAttribute("post", post.toModel())
 
         return "post/details"
+    }
+
+    @GetMapping("/vote/{id}/{commentId}")
+    fun voteComment(
+        @PathVariable("id") id: UUID,
+        @PathVariable("commentId") commentId: UUID,
+        @RequestParam("vote", required = true) vote: Boolean,
+        model: Model,
+    ): String {
+        // TODO: Update comment vote in database
+
+        return "redirect:/post/$id"
     }
 }
 
 class PostModel(
     val posts: List<PostLightModel>,
 )
+
 class PostLightModel(
-    val id: UUID,
+    val owner: String,
     val title: String,
-    val tags: Set<TagDTO>,
+    val content: String,
+    val tags: Set<TagModel>,
+    val comments: Set<CommentModel>,
     val creationDate: Date,
+    val id: UUID = UUID.randomUUID(), // TODO: Get id from database
 )
-fun PostLightDTO.toModel() = PostLightModel(id, title, tags, Date.from(creationDate))
+
+class CommentModel(
+    val owner: String,
+    val content: String,
+    val creationDate: Date,
+    val id: UUID = UUID.randomUUID(), // TODO: Get id from database
+)
+
+class TagModel(
+    val name: String,
+    val id: UUID = UUID.randomUUID(), // TODO: Get id from database
+)
+
+fun Post.toModel() = PostLightModel(
+    owner.username,
+    title,
+    content,
+    tags.map(Tag::toModel).toSet(),
+    comments.map(Comment::toModel).toSet(),
+    Date.from(creationDate),
+)
+
+fun Comment.toModel() = CommentModel(
+    owner.username,
+    content,
+    Date.from(creationDate)
+)
+
+fun Tag.toModel() = TagModel(name)

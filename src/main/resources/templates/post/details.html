@@ -16,10 +16,36 @@
         <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
     </nav>
 </header>
-<main class="flex flex-col center">
-    <div class="flex flex-col gap border">
-        <h1 th:text="${post.title}"></h1>
-        <p>TODO CONTENT Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+<main class="flex flex-col center gap w-full">
+    <div class="flex flex-col border w-xl">
+        <div class="flex flex-row between">
+            <h2 th:text="${post.owner}"></h2>
+            <span th:text="${post.creationDate}"></span>
+        </div>
+        <div class="flex flex-row between">
+            <h1 th:text="${post.title}"></h1>
+            <div class="flex flex-row gap">
+                <span th:each="tag : ${post.tags}" th:text="${tag.name}" class="flex center pill"></span>
+            </div>
+        </div>
+        <p th:text="${post.content}"></p>
+    </div>
+
+    <hr class="w-xl">
+
+    <div th:each="comment : ${post.comments}" class="flex flex-col border w-xl">
+        <div class="flex flex-row between">
+            <h2 th:text="${comment.owner}"></h2>
+            <span th:text="${comment.creationDate}"></span>
+        </div>
+        <div class="flex flex-row between gap-xl">
+            <p th:text="${comment.content}"></p>
+            <div class="flex flex-row center gap">
+                <a th:href="@{/post/vote/{id}/{commentId}?vote=false(id=${post.id},commentId=${comment.id})}" class="hover-grow pill">Downvote</a>
+                <span>0</span>
+                <a th:href="@{/post/vote/{id}/{commentId}?vote=true(id=${post.id},commentId=${comment.id})}" class="hover-grow pill">Upvote</a>
+            </div>
+        </div>
     </div>
 </main>
 </body>
