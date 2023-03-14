@@ -6,11 +6,10 @@ import com.kamelia.ugeoverflow.session.TokensDTO
 import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentAuth
+import com.kamelia.ugeoverflow.utils.refreshedTokens
 import com.kamelia.ugeoverflow.utils.tokens
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
-import java.util.UUID
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
@@ -42,7 +41,6 @@ class UserRestController(
     @Secured(Roles.USER)
     @PostMapping("/logout")
     fun logout(@RequestBody refreshToken: String): ResponseEntity<Nothing> {
-        
         val tokens = currentAuth().tokens
         val refreshTokenUUID = refreshToken.toUUIDFromBase64OrNull()
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
@@ -56,6 +54,13 @@ class UserRestController(
         val tokens = currentAuth().tokens
         sessionManager.logoutAll(tokens.userId)
         return ResponseEntity.noContent().build()
+    }
+
+    @Secured(Roles.USER)
+    @PostMapping("/refresh")
+    fun refresh(@RequestBody refreshToken: String): ResponseEntity<TokensDTO> {
+        val tokens = currentAuth().refreshedTokens
+        return ResponseEntity.ok(tokens)
     }
 
     @Secured(Roles.USER)

@@ -27,9 +27,18 @@ class SessionManager(
         return if (context.hasSessionToken(sessionId)) context.user else null
     }
 
-    fun verifyRefresh(userId: UUID, refreshToken: UUID): User? = synchronized(lock) {
+    fun verifyRefresh(userId: UUID, refreshToken: UUID): TokensDTO? = synchronized(lock) {
         val context = userIdToSessions[userId] ?: return null
-        return if (context.hasRefreshToken(refreshToken)) context.user else null
+        if (!context.hasRefreshToken(refreshToken)) return null
+
+        val tokens = tokenFactory.createUserTokens(context.user)
+        context.addTokens(
+            tokens.accessToken,
+            tokens.accessTokenExpiration,
+            tokens.refreshToken,
+            tokens.refreshTokenExpiration,
+        )
+        return tokens.toDTO(userId)
     }
 
     fun login(username: String, password: String): TokensDTO {
@@ -59,7 +68,8 @@ class SessionManager(
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
 
         val tokenData = tokenFactory.createUserTokens(user)
-        val context = userIdToSessions.computeIfAbsent(user.id) { UserSessionContext(user) }
+        val context = userIdToSessions[user.id]
+            ?: throw AssertionError("User session context should exist as refresh token was valid")
 
         context.addTokens(
             tokenData.accessToken,
@@ -143,9 +153,23 @@ private class UserSessionContext(val user: User) {
         }
     }
 
-    fun hasSessionToken(token: UUID) = token in sessionTokens
+    fun hasSessionToken(token: UUID): Boolean = sessionTokens.computeIfPresent(token) { _, expiration ->
+        if (expiration < System.currentTimeMillis()) {
+            null
+        } else {
+            expiration
+        }
+    } != null
 
-    fun hasRefreshToken(token: UUID) = token in refreshTokens
+    fun hasRefreshToken(token: UUID) = refreshTokens.computeIfPresent(token) { _, value ->
+        val (expiration, sessionToken) = value
+        if (expiration < System.currentTimeMillis()) {
+            sessionTokens.remove(sessionToken)
+            null
+        } else {
+            value
+        }
+    } != null
 
     fun isEmpty(): Boolean = sessionTokens.isEmpty() && refreshTokens.isEmpty()
 

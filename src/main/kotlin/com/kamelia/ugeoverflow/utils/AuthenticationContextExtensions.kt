@@ -1,5 +1,6 @@
 package com.kamelia.ugeoverflow.utils
 
+import com.kamelia.ugeoverflow.session.TokensDTO
 import com.kamelia.ugeoverflow.session.UserTokensDTO
 import com.kamelia.ugeoverflow.user.User
 import org.springframework.security.core.Authentication
@@ -22,3 +23,6 @@ val Authentication.user: User
 
 val Authentication.tokens: UserTokensDTO
     get() = credentials as UserTokensDTO
+
+val Authentication.refreshedTokens: TokensDTO
+    get() = credentials as TokensDTO

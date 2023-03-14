@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.util.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.util.toUUIDOrNull
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -25,6 +26,30 @@ class BearerTokenFilter(
 
     @Value("\${ugeoverflow.admin.username}")
     private lateinit var adminName: String
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        val auth = try {
+            getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
+        } catch (e: InvalidRequestException) {
+            response.status = e.statusCode
+            val writer = response.writer
+            writer.write(e.message ?: "Invalid request")
+            writer.flush()
+            return
+        }
+
+        auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+
+        SecurityContextHolder.getContext().authentication = auth
+
+        filterChain.doFilter(request, response)
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath == Routes.REFRESH_ROUTE
 
     @OptIn(ExperimentalContracts::class)
     private fun checkAuthHeaders(userId: UUID?, base64Token: String?): Boolean {
@@ -75,25 +100,4 @@ class BearerTokenFilter(
         )
     }
 
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain,
-    ) {
-        val auth = try {
-            getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
-        } catch (e: InvalidRequestException) {
-            response.status = e.statusCode
-            val writer = response.writer
-            writer.write(e.message ?: "Invalid request")
-            writer.flush()
-            return
-        }
-
-        auth.details = WebAuthenticationDetailsSource().buildDetails(request)
-
-        SecurityContextHolder.getContext().authentication = auth
-
-        filterChain.doFilter(request, response)
-    }
 }
