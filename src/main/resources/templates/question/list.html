@@ -12,19 +12,22 @@
 <header class="w-full p-1">
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>
-        <a class="hover-grow" th:href="@{/post/create}">Create Post</a>
+        <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
         <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
     </nav>
 </header>
 <main class="flex flex-col center">
     <h1>Posts</h1>
     <div class="flex flex-col center gap">
-        <a th:each="post : ${postModel.posts}" th:href="@{/post/{id}(id=${post.id})}" class="flex flex-row w-full between border hover-grow">
-            <h2 th:text="${post.title}"></h2>
-            <div class="flex flex-row gap">
-                <span th:each="tag : ${post.tags}" th:text="${tag.name}" class="flex center pill"></span>
+        <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}" class="flex flex-row w-full between border hover-grow">
+            <div>
+                <h2 th:text="${question.title}"></h2>
+                <span th:text="${question.authorUsername}"></span>
             </div>
-            <span th:text="${post.creationDate}"></span>
+            <div class="flex flex-row gap">
+                <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>
+            </div>
+            <span th:text="${question.creationDate}"></span>
         </a>
     </div>
 </main>

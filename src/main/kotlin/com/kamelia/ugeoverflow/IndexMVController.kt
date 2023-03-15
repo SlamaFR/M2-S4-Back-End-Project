@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestMapping
 class IndexMVController {
 
     @GetMapping
-    fun index(): String = "redirect:/post"
+    fun index(): String = "redirect:/question"
 }

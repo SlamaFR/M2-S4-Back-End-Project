@@ -6,53 +6,55 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
-    <title th:text="${post.title}"></title>
+    <title th:text="${question.title}"></title>
 </head>
 <body>
 <header class="w-full p-1">
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>
-        <a class="hover-grow" th:href="@{/post/create}">Create Post</a>
+        <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
         <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
     </nav>
 </header>
 <main class="flex flex-col center gap w-full">
     <div class="flex flex-col border w-xl">
         <div class="flex flex-row between">
-            <h2 th:text="${post.owner}"></h2>
-            <span th:text="${post.creationDate}"></span>
+            <h2 th:text="${question.authorUsername}"></h2>
+            <span th:text="${question.creationDate}"></span>
         </div>
         <div class="flex flex-row between">
-            <h1 th:text="${post.title}"></h1>
+            <h1 th:text="${question.title}"></h1>
             <div class="flex flex-row gap">
-                <span th:each="tag : ${post.tags}" th:text="${tag.name}" class="flex center pill"></span>
+                <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>
             </div>
         </div>
-        <p th:text="${post.content}"></p>
+        <p th:text="${question.content}"></p>
     </div>
 
     <hr class="w-xl">
 
-    <form th:action="@{/post/comment/{id}(id=${post.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border w-xl">
+    <form th:action="@{/question/comment/{id}(id=${question.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border w-xl gap-sm">
         <label for="content">Post a new comment</label>
         <textarea name="content" id="content" cols="30" rows="10" th:field="*{content}" style="resize: none"></textarea>
-        <button type="submit">Send</button>
+        <div class="flex flex-row center">
+            <button type="submit" class="hover-grow pill">Send</button>
+        </div>
         <span th:if="${commentErrorMessage}" th:text="${commentErrorMessage}"></span>
     </form>
 
-    <div th:each="comment : ${post.comments}" class="flex flex-col border w-xl">
+    <div th:each="comment : ${question.comments}" class="flex flex-col border w-xl">
         <div class="flex flex-row between">
-            <h2 th:text="${comment.owner}"></h2>
+            <h2 th:text="${comment.authorUsername}"></h2>
             <span th:text="${comment.creationDate}"></span>
         </div>
         <div class="flex flex-row between gap-xl">
             <p th:text="${comment.content}"></p>
             <div class="flex flex-row center gap">
-                <form th:action="@{/post/vote/{id}/{commentId}?vote=false(id=${post.id},commentId=${comment.id})}" th:method="POST">
+                <form th:action="@{/question/vote/{id}/{commentId}?vote=false(id=${question.id},commentId=${comment.id})}" th:method="POST">
                     <button class="hover-grow pill">Downvote</button>
                 </form>
                 <span>0</span>
-                <form th:action="@{/post/vote/{id}/{commentId}?vote=true(id=${post.id},commentId=${comment.id})}" th:method="POST">
+                <form th:action="@{/question/vote/{id}/{commentId}?vote=true(id=${question.id},commentId=${comment.id})}" th:method="POST">
                     <button class="hover-grow pill">Upvote</button>
                 </form>
             </div>
