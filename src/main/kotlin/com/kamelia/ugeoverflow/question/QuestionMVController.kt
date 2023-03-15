@@ -1,5 +1,6 @@
 package com.kamelia.ugeoverflow.question
 
+import com.kamelia.ugeoverflow.answer.AnswerDTO
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.user.User
@@ -24,18 +25,23 @@ val questions = listOf(
         "How to make a good questions?",
         "I want to know how to make a good questions",
         setOf(
-            CommentDTO(
+            AnswerDTO(
                 UUID.randomUUID(),
                 user.username,
                 "You should use a good title and a good description",
+                setOf(
+                    CommentDTO(
+                        UUID.randomUUID(),
+                        user.username,
+                        "I agree",
+                        Instant.now(),
+                    ),
+                ),
                 Instant.now(),
             ),
         ),
         setOf(
-            TagDTO(
-                UUID.randomUUID(),
-                "questions",
-            ),
+            TagDTO("questions"),
         ),
         Instant.now()
     ),
@@ -45,18 +51,16 @@ val questions = listOf(
         "How to make a good answer?",
         "I want to know how to make a good answer",
         setOf(
-            CommentDTO(
+            AnswerDTO(
                 UUID.randomUUID(),
                 user.username,
                 "Git gud",
+                setOf(),
                 Instant.now(),
             ),
         ),
         setOf(
-            TagDTO(
-                UUID.randomUUID(),
-                "answer",
-            ),
+            TagDTO("answer"),
         ),
         Instant.now()
     ),
@@ -125,11 +129,50 @@ class QuestionMVController {
 
         return "redirect:/question/$id"
     }
+
+    @GetMapping("/create")
+    fun createForm(
+        @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
+        model: Model,
+    ): String {
+        // TODO get tags from database
+        model.addAttribute("tags", listOf(TagDTO("questions"), TagDTO("answer")))
+
+        return "question/create"
+    }
+
+    @PostMapping("/create")
+    fun create(
+        @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
+        model: Model,
+        bindingResult: BindingResult,
+    ): String {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", "Invalid question")
+            return "redirect:/question/create"
+        }
+
+        // TODO add question to database
+        println(createQuestionForm.title)
+        println(createQuestionForm.content)
+        println(createQuestionForm.tags)
+
+        return "redirect:/question"
+    }
 }
 
 class CommentForm(
     @NotBlank
     val content: String = "",
+)
+
+class CreateQuestionForm(
+    @NotBlank
+    val title: String = "",
+    @NotBlank
+    val content: String = "",
+    @Valid
+    val tags: Set<@NotBlank String> = setOf(),
 )
 
 class QuestionsModel(

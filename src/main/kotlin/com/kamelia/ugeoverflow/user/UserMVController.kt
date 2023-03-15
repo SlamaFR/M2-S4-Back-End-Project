@@ -1,5 +1,6 @@
 package com.kamelia.ugeoverflow.user
 
+import com.kamelia.ugeoverflow.follow.FollowedUserDTO
 import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -19,7 +20,7 @@ class UserMVController {
         model: Model,
     ): String {
         // TODO: Get user from database
-        val user: UserDTO? = UserDTO(id, "notKamui", setOf(UserDTO(UUID.randomUUID(), "ZwenDo", null)))
+        val user: UserDTO? = UserDTO(id, "notKamui", setOf(FollowedUserDTO(UUID.randomUUID(), "ZwenDo", -50)))
 
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")

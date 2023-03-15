@@ -6,13 +6,13 @@ import com.kamelia.ugeoverflow.comment.toDTO
 import java.time.Instant
 import java.util.UUID
 
-data class AnswerDTO(
-    val id: UUID,
-    val authorUsername: String,
-    val content: String,
-    val comments: Set<CommentDTO>,
-    val creationDate: Instant,
-)
+class AnswerDTO(
+    id: UUID,
+    authorUsername: String,
+    content: String,
+    var comments: Set<CommentDTO>,
+    creationDate: Instant,
+) : CommentDTO(id, authorUsername, content, creationDate)
 
 data class PostAnswerDTO(
     val content: String,
