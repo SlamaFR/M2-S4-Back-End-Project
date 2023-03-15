@@ -20,6 +20,7 @@ class Question(
     author: User,
     title: String,
     content: String,
+    tags: Set<Tag>,
 ) : AbstractCommentablePost(author, content) {
 
     init {
@@ -37,7 +38,7 @@ class Question(
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
     @OneToMany
-    private var _tags: MutableSet<Tag> = mutableSetOf()
+    private var _tags: MutableSet<Tag> = tags.toMutableSet()
 
     @NotBlank
     @Column(name = "title")
@@ -65,14 +66,6 @@ class Question(
 
     fun removeAnswer(answer: Answer) {
         _answers.remove(answer)
-    }
-
-    fun addTag(tag: Tag) {
-        _tags.add(tag)
-    }
-
-    fun removeTag(tag: Tag) {
-        _tags.remove(tag)
     }
 
 }

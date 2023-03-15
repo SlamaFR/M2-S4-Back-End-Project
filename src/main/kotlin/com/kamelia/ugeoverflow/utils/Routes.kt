@@ -26,4 +26,10 @@ object Routes {
 
     }
 
+    object Tag {
+
+        const val ROOT = "$API_ROUTES_ROOT/tags"
+
+    }
+
 }

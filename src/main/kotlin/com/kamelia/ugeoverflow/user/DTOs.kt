@@ -13,6 +13,11 @@ data class UserDTO(
     val followed: Set<FollowedUserDTO>,
 )
 
+data class UserLightDTO(
+    val id: UUID,
+    val username: String,
+)
+
 @Validated
 data class UserCredentialsDTO(
     @NotBlank
@@ -27,8 +32,7 @@ fun User.toDTO(): UserDTO = UserDTO(
     followed.mapTo(mutableSetOf(), FollowedUser::toDTO),
 )
 
-fun User.toDTOWithoutFollowing(): UserDTO = UserDTO(
+fun User.toLightDTO(): UserLightDTO = UserLightDTO(
     id,
     username,
-    emptySet(),
 )
