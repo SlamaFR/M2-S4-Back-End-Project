@@ -1,14 +1,16 @@
 package com.kamelia.ugeoverflow.user
 
+import com.kamelia.ugeoverflow.follow.FollowedUser
+import com.kamelia.ugeoverflow.follow.FollowedUserDTO
+import com.kamelia.ugeoverflow.follow.toDTO
 import jakarta.validation.constraints.NotBlank
-import org.springframework.validation.annotation.Validated
 import java.util.*
+import org.springframework.validation.annotation.Validated
 
 data class UserDTO(
     val id: UUID,
     val username: String,
-    val following: Set<UserDTO>?,
-    //val trustEvaluations: Set<TrustEvaluationDTO>,
+    val followed: Set<FollowedUserDTO>,
 )
 
 @Validated
@@ -22,13 +24,11 @@ data class UserCredentialsDTO(
 fun User.toDTO(): UserDTO = UserDTO(
     id,
     username,
- emptySet()//    followed.map(User::toDTOWithoutFollowing).toSet(),
-    //trustEvaluations = trustEvaluations.map { it.toDTO() }.toSet(),
+    followed.mapTo(mutableSetOf(), FollowedUser::toDTO),
 )
 
 fun User.toDTOWithoutFollowing(): UserDTO = UserDTO(
     id,
     username,
-    following = null,
-    //trustEvaluations = trustEvaluations.map { it.toDTO() }.toSet(),
+    emptySet(),
 )
