@@ -19,4 +19,8 @@ abstract class AbstractIdEntity(id: UUID? = null) {
     val id: UUID
         get() = _id!!
 
+    final override fun equals(other: Any?): Boolean = other is AbstractIdEntity && _id == other._id
+
+    final override fun hashCode(): Int = Objects.hash(_id)
+
 }
