@@ -20,4 +20,10 @@ object Routes {
 
     }
 
+    object Following {
+
+        const val ROOT = "$API_ROUTES_ROOT/follows"
+
+    }
+
 }
