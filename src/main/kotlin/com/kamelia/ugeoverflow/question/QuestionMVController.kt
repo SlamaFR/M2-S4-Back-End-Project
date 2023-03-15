@@ -6,6 +6,7 @@ import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.user.User
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -83,6 +84,7 @@ class QuestionMVController {
     @GetMapping("/{id}")
     fun details(
         @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("answerForm") answerForm: CommentForm,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
     ): String {
@@ -112,15 +114,34 @@ class QuestionMVController {
         return "redirect:/question/$id"
     }
 
-    @PostMapping("/comment/{id}")
+    @PostMapping("/answer/{id}")
+    fun answer(
+        @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("answerForm") answerForm: CommentForm,
+        model: Model,
+        bindingResult: BindingResult,
+    ): String {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("answerErrorMessage", "Invalid answer")
+            return "redirect:/question/$id"
+        }
+
+        // TODO add comment to database
+        println(answerForm.content)
+
+        return "redirect:/question/$id"
+    }
+
+    @PostMapping("/answer/{id}/{commentId}")
     fun comment(
         @PathVariable("id") id: UUID,
+        @PathVariable("commentId") commentId: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
         bindingResult: BindingResult,
     ): String {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("commentErrorMessage", "Invalid comment")
+            model.addAttribute("commentErrorMessages", mapOf(commentId to "Invalid comment"))
             return "redirect:/question/$id"
         }
 
