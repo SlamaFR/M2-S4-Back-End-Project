@@ -10,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class TrustEvaluationService(
+class FollowingService(
     private val followedUserRepository: FollowedUserRepository,
     private val userRepository: UserRepository,
 ) {
