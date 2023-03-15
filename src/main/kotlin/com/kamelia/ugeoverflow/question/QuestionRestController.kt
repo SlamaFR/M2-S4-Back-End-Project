@@ -26,12 +26,16 @@ class QuestionRestController(
 
     @Secured(Roles.USER)
     @PostMapping
-    fun postQuestion(@RequestBody questionDto: PostQuestionDTO): ResponseEntity<QuestionDTO> =
-        ResponseEntity.ok(questionService.postQuestion(questionDto))
+    fun postQuestion(@RequestBody questionDto: PostQuestionDTO): ResponseEntity<QuestionDTO> {
+        val questionDTO = questionService.postQuestion(questionDto)
+        return ResponseEntity.ok(questionDTO)
+    }
 
     @Secured(Roles.USER)
     @DeleteMapping("/{questionId}")
-    fun deleteQuestion(@PathVariable questionId: UUID): ResponseEntity<Unit> =
-        ResponseEntity.ok(questionService.deleteQuestion(questionId))
+    fun deleteQuestion(@PathVariable questionId: UUID): ResponseEntity<Unit> {
+        questionService.deleteQuestion(questionId)
+        return ResponseEntity.ok().build()
+    }
 
 }

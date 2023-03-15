@@ -10,7 +10,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class TrustEvaluationService(
+class FollowingService(
     private val followedUserRepository: FollowedUserRepository,
     private val userRepository: UserRepository,
 ) {
@@ -38,22 +38,27 @@ class TrustEvaluationService(
     fun unfollow(followedId: UUID) {
         val currentUser: User = currentUser()
 
-        if (!followedUserRepository.deleteByFollowerIdAndFollowedId(currentUser.id, followedId)) {
-            throw InvalidRequestException.notFound("User not followed")
+        val deletedCount = followedUserRepository.deleteByFollowerIdAndFollowedId(currentUser.id, followedId)
+        if (deletedCount == 0) {
+            throw InvalidRequestException.notFound("User not found in your followed list")
         }
     }
 
     @Transactional
     fun evaluateFollowed(followedId: UUID, trust: Int) {
-        require(trust in -50..50) { "Trust must be between -50 and 50, was $trust" }
+        if (trust !in -50..50) {
+            throw InvalidRequestException.badRequest("Trust must be between -50 and 50, was $trust")
+        }
         val currentUser: User = currentUser()
 
         if (currentUser.id == followedId) {
             throw InvalidRequestException.forbidden("Cannot evaluate yourself")
         }
 
-        followedUserRepository.updateFollowedTrust(currentUser.id, followedId, trust)
-            ?: throw InvalidRequestException.notFound("User not followed")
+        val updatedCount = followedUserRepository.updateFollowedTrust(currentUser.id, followedId, trust)
+        if (updatedCount == 0) {
+            throw InvalidRequestException.notFound("User not followed")
+        }
     }
 
     @Transactional

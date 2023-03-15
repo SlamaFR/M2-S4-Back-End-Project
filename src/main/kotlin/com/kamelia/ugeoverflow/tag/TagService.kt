@@ -16,6 +16,9 @@ class TagService(
     }
 
     @Transactional
+    fun mapStringsToEntities(tags: Set<String>): Set<Tag> = tagRepository.findAllByNameIn(tags)
+
+    @Transactional
     fun allTags(): List<TagDTO> = tagRepository
         .findAllBy()
         .map(Tag::toDTO)

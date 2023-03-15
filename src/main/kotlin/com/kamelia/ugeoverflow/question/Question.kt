@@ -8,6 +8,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -20,6 +21,7 @@ class Question(
     author: User,
     title: String,
     content: String,
+    tags: Set<Tag>,
 ) : AbstractCommentablePost(author, content) {
 
     init {
@@ -36,8 +38,8 @@ class Question(
         joinColumns = [JoinColumn(name = "question_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
-    @OneToMany
-    private var _tags: MutableSet<Tag> = mutableSetOf()
+    @ManyToMany
+    private var _tags: MutableSet<Tag> = tags.toMutableSet()
 
     @NotBlank
     @Column(name = "title")
@@ -65,14 +67,6 @@ class Question(
 
     fun removeAnswer(answer: Answer) {
         _answers.remove(answer)
-    }
-
-    fun addTag(tag: Tag) {
-        _tags.add(tag)
-    }
-
-    fun removeTag(tag: Tag) {
-        _tags.remove(tag)
     }
 
 }

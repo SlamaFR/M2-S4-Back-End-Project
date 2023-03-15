@@ -21,7 +21,7 @@ interface FollowedUserRepository : JpaRepository<FollowedUser, FollowedUser.Id> 
         """,
         nativeQuery = true
     )
-    fun updateFollowedTrust(authorId: UUID, userId: UUID, trust: Int): FollowedUser?
+    fun updateFollowedTrust(authorId: UUID, userId: UUID, trust: Int): Int
 
     @Query(
         """
@@ -41,7 +41,7 @@ interface FollowedUserRepository : JpaRepository<FollowedUser, FollowedUser.Id> 
         """DELETE FROM "followed_user" u WHERE u."follower_id" = :followerId AND u."followed_id" = :followedId""",
         nativeQuery = true
     )
-    fun deleteByFollowerIdAndFollowedId(followerId: UUID, followedId: UUID): Boolean
+    fun deleteByFollowerIdAndFollowedId(followerId: UUID, followedId: UUID): Int
 
     @Query(
         """SELECT * FROM "followed_user" u WHERE u."follower_id" = :followerId""",

@@ -20,4 +20,16 @@ object Routes {
 
     }
 
+    object Following {
+
+        const val ROOT = "$API_ROUTES_ROOT/follows"
+
+    }
+
+    object Tag {
+
+        const val ROOT = "$API_ROUTES_ROOT/tags"
+
+    }
+
 }
