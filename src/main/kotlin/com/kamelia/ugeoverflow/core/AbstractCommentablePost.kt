@@ -3,6 +3,7 @@ package com.kamelia.ugeoverflow.core
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Column
+import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MappedSuperclass
@@ -11,7 +12,7 @@ import jakarta.validation.constraints.NotBlank
 
 @MappedSuperclass
 abstract class AbstractCommentablePost(
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     var author: User,
     content: String,
 ) : AbstractIdEntity() {

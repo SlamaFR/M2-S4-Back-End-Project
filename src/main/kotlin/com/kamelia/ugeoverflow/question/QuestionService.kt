@@ -1,12 +1,11 @@
 package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
-import com.kamelia.ugeoverflow.tag.Tag
-import com.kamelia.ugeoverflow.tag.TagRepository
 import com.kamelia.ugeoverflow.tag.TagService
 import com.kamelia.ugeoverflow.utils.currentUser
+import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import jakarta.transaction.Transactional
-import java.util.UUID
+import java.util.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -15,12 +14,13 @@ import org.springframework.stereotype.Service
 class QuestionService(
     private val questionRepository: QuestionRepository,
     private val tagService: TagService,
+    private val questionPageService: QuestionPageService,
 ) {
 
-    @Transactional
-    fun getPage(page: Pageable): Page<QuestionLightDTO> {
-        return questionRepository.findAll(page).map(Question::toLightDTO)
-    }
+    fun getPage(page: Pageable): Page<QuestionLightDTO> =
+        currentUserOrNull()?.let {
+            questionPageService.questionsAsUser(it, page)
+        } ?: questionPageService.questionsAsAnonymous(page)
 
     @Transactional
     fun postQuestion(questionDto: PostQuestionDTO): QuestionDTO {
@@ -52,4 +52,5 @@ class QuestionService(
         }
         questionRepository.delete(question)
     }
+
 }
