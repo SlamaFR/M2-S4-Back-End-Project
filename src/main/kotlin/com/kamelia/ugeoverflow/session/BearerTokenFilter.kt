@@ -57,7 +57,9 @@ class BearerTokenFilter(
 
         if (userId == null) {
             if (base64Token != null) {
-                throw InvalidRequestException.badRequest("User-Id header is required when Authorization header is present")
+                throw InvalidRequestException.badRequest(
+                    "User-Id header is required when Authorization header is present"
+                )
             } else {
                 return false
             }

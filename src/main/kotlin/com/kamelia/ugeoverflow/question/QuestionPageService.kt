@@ -2,10 +2,6 @@ package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.EntityManagerFactory
-import jakarta.persistence.TypedQuery
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -27,9 +23,11 @@ class QuestionPageService(
             select(from(Question::class.java))
         }
 
+        // TODO sort and filter
+
         val query = entityManager.createQuery(criteriaQuery).apply {
             firstResult = page.pageNumber * page.pageSize
-            maxResults = 1//page.pageSize
+            maxResults = page.pageSize
         }
 
         val result = query.resultList.map(Question::toLightDTO)

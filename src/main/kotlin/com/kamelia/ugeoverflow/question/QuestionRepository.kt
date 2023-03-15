@@ -18,4 +18,10 @@ interface QuestionRepository : JpaRepository<Question, UUID> {
     )
     fun findAllAsAnonymous(page: Pageable): Page<Question>
 
+    @Query(
+        value = """SELECT COUNT(*) FROM "question" q WHERE q."author_id" = :id""",
+        nativeQuery = true,
+    )
+    fun countAllByAuthorId(id: UUID): Long
+
 }
