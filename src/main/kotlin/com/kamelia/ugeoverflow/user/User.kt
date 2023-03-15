@@ -1,12 +1,10 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.AbstractIdEntity
-import com.kamelia.ugeoverflow.evaluation.TrustEvaluation
+import com.kamelia.ugeoverflow.follow.FollowedUser
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -16,30 +14,24 @@ import jakarta.validation.constraints.NotBlank
 class User(
     username: String,
     password: String,
-    following: Set<User> = emptySet(),
-    trustEvaluations: Set<TrustEvaluation> = emptySet(),
+    followedUsers: Set<FollowedUser> = emptySet(),
 ) : AbstractIdEntity() {
 
-    @JoinTable(
-        name = "user_following",
-        joinColumns = [JoinColumn(name = "follower_id")],
-        inverseJoinColumns = [JoinColumn(name = "followed_id")]
-    )
-    @ManyToMany
-    @Column(name = "following")
-    private var _following: MutableSet<User> = following.toMutableSet()
+    init {
+        require(username.isNotBlank()) { "Username cannot be blank" }
+        require(password.isNotBlank()) { "Password cannot be blank" }
+    }
 
     @OneToMany
-    @JoinColumn(name = "evaluator_id")
-    private var _trustEvaluations: MutableSet<TrustEvaluation> = trustEvaluations.toMutableSet()
+    @JoinColumn(name = "follower_id")
+    private var _following: MutableSet<FollowedUser> = followedUsers.toMutableSet()
 
     @NotBlank
-    @Column(unique = true)
-    var username: String = username
-        set(value) {
-            require(value.isNotBlank()) { "Username cannot be blank" }
-            field = value
-        }
+    @Column(name = "username", unique = true)
+    private var _username: String = username
+
+    val username: String
+        get() = _username
 
     @NotBlank
     var password: String = password
@@ -48,16 +40,7 @@ class User(
             field = value
         }
 
-    var following: Set<User>
+    val followed: Set<FollowedUser>
         get() = _following
-        set(value) {
-            _following = value.toMutableSet()
-        }
-
-    var trustEvaluations: Set<TrustEvaluation>
-        get() = _trustEvaluations
-        set(value) {
-            _trustEvaluations = value.toMutableSet()
-        }
 
 }

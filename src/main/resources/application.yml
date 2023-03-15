@@ -13,6 +13,16 @@ spring:
       hibernate:
         globally_quoted_identifiers: true
         globally_quoted_identifiers_skip_column_definitions: true
+    open-in-view: false
   h2:
     console:
       enabled: ${DB_CONSOLE_ENABLED:false}
+
+ugeoverflow:
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin}
+  session:
+    purge-rate: ${SESSION_PURGE_RATE:300000}
+    access-token-lifetime: ${ACCESS_TOKEN_LIFETIME:3600000}
+    refresh-token-lifetime: ${REFRESH_TOKEN_LIFETIME:2592000000}

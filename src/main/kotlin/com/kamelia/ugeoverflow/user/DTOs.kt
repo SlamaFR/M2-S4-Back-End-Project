@@ -1,8 +1,8 @@
 package com.kamelia.ugeoverflow.user
 
 import jakarta.validation.constraints.NotBlank
-import java.util.UUID
 import org.springframework.validation.annotation.Validated
+import java.util.*
 
 data class UserDTO(
     val id: UUID,
@@ -22,7 +22,7 @@ data class UserCredentialsDTO(
 fun User.toDTO(): UserDTO = UserDTO(
     id,
     username,
-    following.map(User::toDTOWithoutFollowing).toSet(),
+ emptySet()//    followed.map(User::toDTOWithoutFollowing).toSet(),
     //trustEvaluations = trustEvaluations.map { it.toDTO() }.toSet(),
 )
 

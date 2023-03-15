@@ -12,13 +12,16 @@ class InvalidRequestException(val statusCode: Int, message: String) : RuntimeExc
 
     companion object {
 
+        fun unauthorized(message: String) = InvalidRequestException(HttpStatus.UNAUTHORIZED, message)
+
         fun forbidden(message: String) = InvalidRequestException(HttpStatus.BAD_REQUEST, message)
 
         fun notFound(message: String) = InvalidRequestException(HttpStatus.NOT_FOUND, message)
 
         fun badRequest(message: String) = InvalidRequestException(HttpStatus.BAD_REQUEST, message)
 
+        fun unauthorized() = InvalidRequestException(HttpStatus.UNAUTHORIZED, "You must be logged in")
+
     }
 
 }
-

@@ -5,8 +5,6 @@ import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
@@ -16,45 +14,33 @@ import java.time.Instant
 @Entity
 @Table(name = "comment")
 class Comment(
-    @ManyToOne
-    var owner: User,
+    author: User,
     content: String,
-    votes: Set<User>,
-    creationDate: Instant = Instant.now(),
 ) : AbstractIdEntity() {
 
     init {
-        require(!creationDate.isAfter(Instant.now())) { "Comment creation date cannot be in the future" }
+        require(content.isNotBlank()) { "Answer content cannot be blank" }
     }
 
-    @JoinTable(
-        name = "comment_votes",
-        joinColumns = [JoinColumn(name = "comment_id")],
-        inverseJoinColumns = [JoinColumn(name = "voter_id")]
-    )
-    @ManyToMany
-    @Column(name = "votes")
-    private var _votes: MutableSet<User> = votes.toMutableSet()
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private var _author: User = author
 
     @NotBlank
-    var content: String = content
-        set(value) {
-            require(value.isNotBlank()) { "Comment content cannot be blank" }
-            field = value
-        }
+    @Column(name = "content")
+    private var _content: String = content
 
     @PastOrPresent
     @Column(name = "creation_date")
-    var creationDate: Instant = creationDate
-        set(value) {
-            require(!value.isAfter(Instant.now())) { "Comment creation date cannot be in the future" }
-            field = value
-        }
+    private var _creationDate: Instant = Instant.now()
 
-    var votes: Set<User>
-        get() = _votes
-        set(value) {
-            _votes = value.toMutableSet()
-        }
+    val author: User
+        get() = _author
+
+    val content: String
+        get() = _content
+
+    val creationDate: Instant
+        get() = _creationDate
 
 }
