@@ -16,7 +16,7 @@ import jakarta.validation.constraints.PastOrPresent
 import java.time.Instant
 
 @Entity
-@Table(name = "questions")
+@Table(name = "question")
 class Question(
     author: User,
     title: String,

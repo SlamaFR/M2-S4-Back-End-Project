@@ -48,7 +48,7 @@ class QuestionService(
             InvalidRequestException.notFound("Question not found")
         }
         if (question.author != currentUser) {
-            throw InvalidRequestException.forbidden("You are not the author of this questions")
+            throw InvalidRequestException.forbidden("You are not the author of this question")
         }
         questionRepository.delete(question)
     }
