@@ -27,7 +27,7 @@ class AuthMVController {
     ): String {
         if (binding.hasErrors()) return "session/auth"
 
-        TODO("Do login")
+        return "redirect:/"
     }
 
     @PostMapping("/register")
@@ -37,7 +37,14 @@ class AuthMVController {
     ): String {
         if (binding.hasErrors()) return "session/auth"
 
-        TODO("Do register")
+        return "redirect:/auth"
+    }
+
+    @GetMapping("/logout")
+    fun logout(): String {
+        // TODO: Do logout
+
+        return "redirect:/"
     }
 }
 
