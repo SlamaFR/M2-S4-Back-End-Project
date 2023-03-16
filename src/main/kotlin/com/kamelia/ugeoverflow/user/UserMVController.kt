@@ -104,6 +104,28 @@ class UserMVController {
         return "redirect:/user/details/$id?updateSuccess=true"
     }
 
+    @PostMapping("/unfollow/{id}")
+    fun unfollow(
+        @PathVariable("id") id: UUID,
+        model: Model,
+    ): String {
+        // TODO: Get user from database
+        val user: UserDTO? = dummy
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found")
+            return "error/404"
+        }
+
+        val followed = user.followed.firstOrNull { it.followed == id }
+        if (followed == null) {
+            model.addAttribute("errorMessage", "You do not follow this user")
+            return "error/404"
+        }
+
+        // TODO: Unfollow
+
+        return "redirect:/user/details/$id?updateSuccess=true"
+    }
 }
 
 class UpdatePasswordForm(
