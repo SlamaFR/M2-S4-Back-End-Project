@@ -18,7 +18,9 @@
         <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
     </nav>
 </header>
-<main class="flex flex-col center">
+<main class="flex flex-col center gap">
+    <span th:if="${updateSuccess != null && updateSuccess}">Updated user successfully</span>
+    <span th:if="${updateSuccess != null && !updateSuccess}">Failed to update user</span>
     <h1 th:text="${user.username}"></h1>
     <h2>Update password</h2>
     <form th:action="@{/user/details/{id}/password(id=${user.id})}" th:method="POST" th:object="${updatePasswordForm}" class="flex flex-col gap">
@@ -46,14 +48,16 @@
         <button type="submit">Update</button>
     </form>
 
-    <span th:if="${updateSuccess != null && updateSuccess}">Updated password successfully</span>
-    <span th:if="${updateSuccess != null && !updateSuccess}">Failed to update password</span>
-
     <hr class="w-full" />
 
     <div class="flex flex-col center gap">
         <h2>Following</h2>
-        <span th:each="following : ${user.following}" th:text="${following.username}"></span>
+        <div th:each="followed : ${user.followed}" class="flex flex-row center gap">
+            <span th:text="${followed.username}"></span>
+            <span>| Trust:</span>
+            <span th:text="${followed.trust}"></span>
+            <a th:href="@{/user/evaluate/{id}(id=${followed.followed})}" class="pill hover-grow">Update</a>
+        </div>
     </div>
 </main>
 </body>

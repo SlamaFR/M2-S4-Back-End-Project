@@ -1,12 +1,16 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.follow.FollowedUserDTO
+import com.kamelia.ugeoverflow.question.user
 import jakarta.validation.Valid
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.util.*
+
+val dummy = UserDTO(UUID.randomUUID(), "notKamui", setOf(FollowedUserDTO(UUID.randomUUID(), "ZwenDo", -50)))
 
 @Controller
 @RequestMapping("/user")
@@ -20,7 +24,7 @@ class UserMVController {
         model: Model,
     ): String {
         // TODO: Get user from database
-        val user: UserDTO? = UserDTO(id, "notKamui", setOf(FollowedUserDTO(UUID.randomUUID(), "ZwenDo", -50)))
+        val user: UserDTO? = dummy
 
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")
@@ -46,10 +50,68 @@ class UserMVController {
 
         return "redirect:/user/details/$id?updateSuccess=true"
     }
+
+    @GetMapping("/evaluate/{id}")
+    fun updateTrustForm(
+        @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("updateTrustForm") updateTrustForm: UpdateTrustForm,
+        model: Model,
+    ): String {
+        // TODO: Get user from database
+        val user: UserDTO? = dummy
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found")
+            return "error/404"
+        }
+
+        val followed = user.followed.firstOrNull { it.followed == id }
+        if (followed == null) {
+            model.addAttribute("errorMessage", "You do not follow this user")
+            return "error/404"
+        }
+
+        model.addAttribute("user", user)
+        model.addAttribute("evaluationModel", followed)
+        updateTrustForm.trust = followed.trust
+
+        return "user/evaluate"
+    }
+
+    @PostMapping("/evaluate/{id}")
+    fun updateTrust(
+        @PathVariable("id") id: UUID,
+        @Valid @ModelAttribute("updateTrustForm") updateTrustForm: UpdateTrustForm,
+        model: Model,
+        binding: BindingResult,
+    ): String {
+        if (binding.hasErrors()) return "redirect:/user/details/$id?updateSuccess=false"
+
+        // TODO: Get user from database
+        val user: UserDTO? = dummy
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found")
+            return "error/404"
+        }
+
+        val followed = user.followed.firstOrNull { it.followed == id }
+        if (followed == null) {
+            model.addAttribute("errorMessage", "You do not follow this user")
+            return "error/404"
+        }
+
+        // TODO: Update trust
+
+        return "redirect:/user/details/$id?updateSuccess=true"
+    }
+
 }
 
 class UpdatePasswordForm(
     var oldPassword: String = "",
     var newPassword: String = "",
     var confirmPassword: String = "",
+)
+
+class UpdateTrustForm(
+    var trust: Int? = null,
 )
