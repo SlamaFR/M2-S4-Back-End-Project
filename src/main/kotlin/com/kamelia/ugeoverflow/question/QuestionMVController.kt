@@ -5,6 +5,7 @@ import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.user.UserDTO
 import com.kamelia.ugeoverflow.user.dummy
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import org.springframework.stereotype.Controller
@@ -29,6 +30,20 @@ val questions = listOf(
                     CommentDTO(
                         UUID.randomUUID(),
                         "notKamui",
+                        "I agree",
+                        Instant.now(),
+                    ),
+                ),
+                Instant.now(),
+            ),
+            AnswerDTO(
+                UUID.randomUUID(),
+                "notKamui",
+                "You should use a good title and a good description",
+                setOf(
+                    CommentDTO(
+                        UUID.randomUUID(),
+                        "Slama",
                         "I agree",
                         Instant.now(),
                     ),
@@ -107,8 +122,12 @@ class QuestionMVController {
         user?.followed?.forEach { followButtonsToHide[it.username] = true }
         user?.let { followButtonsToHide[it.username] = true }
 
+        val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
+        question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user?.username }
+
         model.addAttribute("question", question)
         model.addAttribute("hideFollowForUser", HideFollowModel(followButtonsToHide))
+        model.addAttribute("showDeleteForUser", ShowDeleteModel(deleteButtonsToShow))
 
         return "question/details"
     }
@@ -141,6 +160,17 @@ class QuestionMVController {
         println(answerForm.content)
 
         return "redirect:/question/$id"
+    }
+
+    @PostMapping("/answer/delete/{id}")
+    fun deleteAnswer(
+        @PathVariable("id") id: UUID,
+        request: HttpServletRequest,
+    ): String {
+        // TODO verify user is owner of answer
+        // TODO delete answer from database
+        println("Delete answer $id")
+        return "redirect:${request.getHeader("referer")}"
     }
 
     @PostMapping("/answer/{id}/{commentId}")
@@ -213,4 +243,8 @@ class QuestionsModel(
 
 class HideFollowModel(
     val map: Map<String, Boolean>
+)
+
+class ShowDeleteModel(
+    val map: Map<UUID, Boolean>
 )

@@ -56,6 +56,9 @@
                 <form th:if="${hideFollowForUser.map[answer.authorUsername] == null || !hideFollowForUser.map[answer.authorUsername]}" th:action="@{/user/follow/{user}(user=${answer.authorUsername})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
+                <form th:if="${showDeleteForUser.map[answer.id]}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Delete</button>
+                </form>
             </div>
             <span th:text="${answer.creationDate}"></span>
         </div>

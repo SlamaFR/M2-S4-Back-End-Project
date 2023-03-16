@@ -17,6 +17,10 @@ spring:
   h2:
     console:
       enabled: ${DB_CONSOLE_ENABLED:false}
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
 ugeoverflow:
   admin:
