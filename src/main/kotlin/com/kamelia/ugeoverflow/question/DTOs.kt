@@ -6,13 +6,12 @@ import com.kamelia.ugeoverflow.comment.toDTO
 import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.tag.toDTO
-import com.kamelia.ugeoverflow.user.UserDTO
 import com.kamelia.ugeoverflow.user.UserLightDTO
 import com.kamelia.ugeoverflow.user.toLightDTO
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 import org.springframework.validation.annotation.Validated
 
 data class QuestionLightDTO(
@@ -42,6 +41,12 @@ data class PostQuestionDTO(
     val content: String,
     @Valid
     val tags: Set<@NotBlank String>,
+)
+
+@Validated
+data class QuestionSearchFilterDTO(
+    val title: String? = null,
+    val tags: Set<@NotBlank String>? = null,
 )
 
 fun Question.toLightDTO() = QuestionLightDTO(

@@ -1,7 +1,8 @@
 package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.utils.Roles
-import java.util.UUID
+import jakarta.validation.Valid
+import java.util.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
@@ -17,12 +18,17 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/questions")
 class QuestionRestController(
-    private val questionService: QuestionService
+    private val questionService: QuestionService,
 ) {
 
     @GetMapping
-    fun getPage(page: Pageable): ResponseEntity<Page<QuestionLightDTO>> =
-        ResponseEntity.ok(questionService.getPage(page))
+    fun getPage(
+        page: Pageable,
+        @Valid
+        @RequestBody(required = false)
+        filterDTO: QuestionSearchFilterDTO?,
+    ): ResponseEntity<Page<QuestionLightDTO>> =
+        ResponseEntity.ok(questionService.getPage(page, filterDTO))
 
     @Secured(Roles.USER)
     @PostMapping
@@ -37,5 +43,9 @@ class QuestionRestController(
         questionService.deleteQuestion(questionId)
         return ResponseEntity.ok().build()
     }
+
+    @Secured(Roles.USER)
+    @GetMapping("/dummy")
+    fun dummy() = ResponseEntity.ok(questionService.dummy())
 
 }

@@ -30,9 +30,6 @@ class User(
     @Column(name = "username", unique = true)
     private var _username: String = username
 
-    @Column(name = "posted_question_count")
-    private var _postedQuestionCount: Int = 0
-
     val username: String
         get() = _username
 
@@ -45,16 +42,5 @@ class User(
 
     val followed: Set<FollowedUser>
         get() = _following
-
-    val postedQuestionCount: Int
-        get() = _postedQuestionCount
-
-    fun addQuestionPost() {
-        _postedQuestionCount++
-    }
-
-    fun removeQuestionPost() {
-        _postedQuestionCount--
-    }
 
 }

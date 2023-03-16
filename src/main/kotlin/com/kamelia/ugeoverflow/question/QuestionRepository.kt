@@ -1,7 +1,6 @@
 package com.kamelia.ugeoverflow.question
 
-import java.util.UUID
-import java.util.stream.Stream
+import java.util.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -23,5 +22,18 @@ interface QuestionRepository : JpaRepository<Question, UUID> {
         nativeQuery = true,
     )
     fun countAllByAuthorId(id: UUID): Long
+
+//    @Query(
+//        value = """
+//            SELECT *
+//            FROM "question" q
+//            WHERE q."author_id" = :id
+//            ORDER BY q."creation_date" DESC
+//            OFFSET :offset
+//            LIMIT :size
+//            """,
+//        nativeQuery = true,
+//    )
+//    fun findSliceByAuthorId(id: UUID, size: Int, offset: Int): Stream<Question>
 
 }

@@ -43,20 +43,4 @@ class UserService(
     @Transactional
     fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
 
-    @Transactional
-    fun incrementUserPostCount(userId: UUID) {
-        val user = userRepository.findById(userId).orElseThrow {
-            throw InvalidRequestException.notFound("User not found")
-        }
-        user.addQuestionPost()
-    }
-
-    @Transactional
-    fun decrementUserPostCount(userId: UUID) {
-        val user = userRepository.findById(userId).orElseThrow {
-            throw InvalidRequestException.notFound("User not found")
-        }
-        user.removeQuestionPost()
-    }
-
 }

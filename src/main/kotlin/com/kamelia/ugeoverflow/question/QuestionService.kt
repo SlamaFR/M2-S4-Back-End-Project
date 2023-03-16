@@ -2,7 +2,6 @@ package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.tag.TagService
-import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.currentUser
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import jakarta.transaction.Transactional
@@ -15,14 +14,13 @@ import org.springframework.stereotype.Service
 class QuestionService(
     private val questionRepository: QuestionRepository,
     private val tagService: TagService,
-    private val userService: UserService,
     private val questionPageService: QuestionPageService,
 ) {
 
-    fun getPage(page: Pageable): Page<QuestionLightDTO> =
+    fun getPage(page: Pageable, filterDTO: QuestionSearchFilterDTO?): Page<QuestionLightDTO> =
         currentUserOrNull()?.let {
-            questionPageService.questionsAsUser(it, page)
-        } ?: questionPageService.questionsAsAnonymous(page)
+            questionPageService.questionsAsUser(it, page, filterDTO)
+        } ?: questionPageService.questionsAsAnonymous(page) // TODO filter here too
 
     @Transactional
     fun postQuestion(questionDto: PostQuestionDTO): QuestionDTO {
@@ -40,10 +38,7 @@ class QuestionService(
             tags,
         )
 
-        val result = questionRepository.save(question)
-
-        userService.incrementUserPostCount(author.id)
-        return result.toDTO()
+        return questionRepository.save(question).toDTO()
     }
 
     @Transactional
@@ -57,7 +52,8 @@ class QuestionService(
         }
 
         questionRepository.delete(question)
-        userService.decrementUserPostCount(currentUser.id)
     }
+
+    fun dummy() = questionPageService.dummy()
 
 }

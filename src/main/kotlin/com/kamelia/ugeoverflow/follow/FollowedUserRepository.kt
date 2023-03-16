@@ -1,6 +1,5 @@
 package com.kamelia.ugeoverflow.follow
 
-import com.kamelia.ugeoverflow.user.User
 import java.util.*
 import java.util.stream.Stream
 import org.springframework.data.jpa.repository.JpaRepository
