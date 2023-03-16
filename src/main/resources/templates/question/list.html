@@ -20,6 +20,26 @@
 </header>
 <main class="flex flex-col center">
     <h1>Questions</h1>
+    <form th:action="@{/question}" th:method="GET" class="flex flex-col center gap border">
+        <h2>Search</h2>
+        <div class="flex flex-row center gap">
+            <label for="searchName">Name</label>
+            <input type="text" name="searchName" id="searchName" placeholder="How to search ?">
+        </div>
+        <div class="flex flex-row center gap">
+            <label for="searchTags">Tags</label>
+            <div class="flex flex-row gap">
+                <div th:each="tag : ${tags}" class="flex flex-row center">
+                    <input type="checkbox" id="searchTags" name="searchTags" th:value="${tag.name}"/>
+                    <label th:text="${tag.name}"></label>
+                </div>
+            </div>
+        </div>
+        <button type="submit">Search</button>
+    </form>
+
+    <hr class="w-xl" />
+
     <div class="flex flex-col center gap">
         <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}" class="flex flex-row w-full between border hover-grow">
             <div>

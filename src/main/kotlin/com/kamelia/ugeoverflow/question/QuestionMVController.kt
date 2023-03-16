@@ -3,7 +3,6 @@ package com.kamelia.ugeoverflow.question
 import com.kamelia.ugeoverflow.answer.AnswerDTO
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.tag.TagDTO
-import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserDTO
 import com.kamelia.ugeoverflow.user.dummy
 import jakarta.validation.Valid
@@ -63,6 +62,8 @@ val questions = listOf(
     ),
 )
 
+val tags = listOf(TagDTO("questions"), TagDTO("answer"))
+
 @Controller
 @RequestMapping("/question")
 class QuestionMVController {
@@ -70,10 +71,17 @@ class QuestionMVController {
     @GetMapping
     fun list(
         @RequestParam("page", required = false) page: Int?,
+        @RequestParam("searchName", required = false) searchName: String?,
+        @RequestParam("searchTags", required = false) searchTags: List<String>?,
         model: Model,
     ): String {
-        // TODO: Get posts from database with page (?)
+        println(searchName)
+        println(searchTags)
+        // TODO get tags from database
+        model.addAttribute("tags", tags)
+        // TODO: Get posts from database with page (?) and search filters
         model.addAttribute("questionsModel", QuestionsModel(questions))
+
         return "question/list"
     }
 
@@ -160,7 +168,7 @@ class QuestionMVController {
         model: Model,
     ): String {
         // TODO get tags from database
-        model.addAttribute("tags", listOf(TagDTO("questions"), TagDTO("answer")))
+        model.addAttribute("tags", tags)
 
         return "question/create"
     }
