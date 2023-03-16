@@ -21,7 +21,12 @@
 <main class="flex flex-col center gap w-full">
     <div class="flex flex-col border w-xl">
         <div class="flex flex-row between">
-            <h2 th:text="${question.authorUsername}"></h2>
+            <div class="flex flex-row gap-sm center">
+                <h2 th:text="${question.authorUsername}"></h2>
+                <form th:if="${hideFollowForUser.map[question.authorUsername] == null || !hideFollowForUser.map[question.authorUsername]}" th:action="@{/user/follow/{user}(user=${question.authorUsername})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Follow</button>
+                </form>
+            </div>
             <span th:text="${question.creationDate}"></span>
         </div>
         <div class="flex flex-row between">
@@ -46,7 +51,12 @@
 
     <div th:each="answer : ${question.comments}" class="flex flex-col border w-xl">
         <div class="flex flex-row between">
-            <h2 th:text="${answer.authorUsername}"></h2>
+            <div class="flex flex-row gap-sm center">
+                <h2 th:text="${answer.authorUsername}"></h2>
+                <form th:if="${hideFollowForUser.map[answer.authorUsername] == null || !hideFollowForUser.map[answer.authorUsername]}" th:action="@{/user/follow/{user}(user=${answer.authorUsername})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Follow</button>
+                </form>
+            </div>
             <span th:text="${answer.creationDate}"></span>
         </div>
         <div class="flex flex-row between gap-xl">

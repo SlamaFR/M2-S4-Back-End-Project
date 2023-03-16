@@ -54,10 +54,12 @@
         <h2>Following</h2>
         <div th:each="followed : ${user.followed}" class="flex flex-row center gap">
             <span th:text="${followed.username}"></span>
-            <span>| Trust:</span>
+            <span>|</span>
+            <span>Trust:</span>
             <span th:text="${followed.trust}"></span>
             <a th:href="@{/user/evaluate/{id}(id=${followed.followed})}" class="pill hover-grow">Update</a>
-            <form th:action="@{/user/unfollow/{id}(id=${followed.followed})}" th:method="POST">
+            <span>|</span>
+            <form th:action="@{/user/unfollow/{user}(id=${followed.username})}" th:method="POST">
                 <button type="submit" class="pill hover-grow">Unfollow</button>
             </form>
         </div>

@@ -4,9 +4,10 @@ import com.kamelia.ugeoverflow.answer.AnswerDTO
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.user.User
+import com.kamelia.ugeoverflow.user.UserDTO
+import com.kamelia.ugeoverflow.user.dummy
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -14,26 +15,21 @@ import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
 
-val user = User(
-    "notKamui",
-    "aaa"
-)
-
 val questions = listOf(
     QuestionDTO(
         UUID.randomUUID(),
-        user.username,
+        "ZwenDo",
         "How to make a good questions?",
         "I want to know how to make a good questions",
         setOf(
             AnswerDTO(
                 UUID.randomUUID(),
-                user.username,
+                "Slama",
                 "You should use a good title and a good description",
                 setOf(
                     CommentDTO(
                         UUID.randomUUID(),
-                        user.username,
+                        "notKamui",
                         "I agree",
                         Instant.now(),
                     ),
@@ -48,13 +44,13 @@ val questions = listOf(
     ),
     QuestionDTO(
         UUID.randomUUID(),
-        user.username,
+        "notKamui",
         "How to make a good answer?",
         "I want to know how to make a good answer",
         setOf(
             AnswerDTO(
                 UUID.randomUUID(),
-                user.username,
+                "Slama",
                 "Git gud",
                 setOf(),
                 Instant.now(),
@@ -88,6 +84,8 @@ class QuestionMVController {
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
     ): String {
+        // TODO get user from database
+        val user: UserDTO? = dummy
 
         // TODO: Get question from database
         val question = questions.firstOrNull { it.id == id }
@@ -97,7 +95,12 @@ class QuestionMVController {
             return "error/404"
         }
 
+        val followButtonsToHide = mutableMapOf<String, Boolean>()
+        user?.followed?.forEach { followButtonsToHide[it.username] = true }
+        user?.let { followButtonsToHide[it.username] = true }
+
         model.addAttribute("question", question)
+        model.addAttribute("hideFollowForUser", HideFollowModel(followButtonsToHide))
 
         return "question/details"
     }
@@ -198,4 +201,8 @@ class CreateQuestionForm(
 
 class QuestionsModel(
     val questions: List<QuestionDTO>
+)
+
+class HideFollowModel(
+    val map: Map<String, Boolean>
 )

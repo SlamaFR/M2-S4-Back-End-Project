@@ -1,7 +1,7 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.follow.FollowedUserDTO
-import com.kamelia.ugeoverflow.question.user
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.stereotype.Controller
@@ -104,9 +104,20 @@ class UserMVController {
         return "redirect:/user/details/$id?updateSuccess=true"
     }
 
-    @PostMapping("/unfollow/{id}")
+    @PostMapping("/follow/{username}")
+    fun follow(
+        @PathVariable("username") username: String,
+        request: HttpServletRequest,
+        model: Model,
+    ): String {
+        // TODO: Do follow
+
+        return "redirect:${request.getHeader("referer")}"
+    }
+
+    @PostMapping("/unfollow/{username}")
     fun unfollow(
-        @PathVariable("id") id: UUID,
+        @PathVariable("username") username: String,
         model: Model,
     ): String {
         // TODO: Get user from database
@@ -116,7 +127,7 @@ class UserMVController {
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.followed == id }
+        val followed = user.followed.firstOrNull { it.username == username }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"
