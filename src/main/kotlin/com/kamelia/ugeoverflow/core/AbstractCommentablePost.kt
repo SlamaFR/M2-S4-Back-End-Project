@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank
 @MappedSuperclass
 abstract class AbstractCommentablePost(
     @ManyToOne(fetch = FetchType.EAGER)
-    var author: User,
+    val author: User,
     @NotBlank
     @Column(name = "content")
     val content: String,

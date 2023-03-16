@@ -1,5 +1,6 @@
 package com.kamelia.ugeoverflow.question
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.comment.toDTO
@@ -45,7 +46,9 @@ data class PostQuestionDTO(
 
 @Validated
 data class QuestionSearchFilterDTO(
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     val title: String? = null,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     val tags: Set<@NotBlank String>? = null,
 )
 

@@ -44,8 +44,4 @@ class QuestionRestController(
         return ResponseEntity.ok().build()
     }
 
-    @Secured(Roles.USER)
-    @GetMapping("/dummy")
-    fun dummy() = ResponseEntity.ok(questionService.dummy())
-
 }

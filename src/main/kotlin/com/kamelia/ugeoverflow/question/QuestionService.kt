@@ -20,7 +20,7 @@ class QuestionService(
     fun getPage(page: Pageable, filterDTO: QuestionSearchFilterDTO?): Page<QuestionLightDTO> =
         currentUserOrNull()?.let {
             questionPageService.questionsAsUser(it, page, filterDTO)
-        } ?: questionPageService.questionsAsAnonymous(page) // TODO filter here too
+        } ?: questionPageService.questionsAsAnonymous(page, filterDTO)
 
     @Transactional
     fun postQuestion(questionDto: PostQuestionDTO): QuestionDTO {
@@ -53,7 +53,5 @@ class QuestionService(
 
         questionRepository.delete(question)
     }
-
-    fun dummy() = questionPageService.dummy()
 
 }
