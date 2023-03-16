@@ -11,6 +11,7 @@ data class UserDTO(
     val id: UUID,
     val username: String,
     val followed: Set<FollowedUserDTO>,
+    val postedQuestionCount: Int,
 )
 
 data class UserLightDTO(
@@ -30,6 +31,7 @@ fun User.toDTO(): UserDTO = UserDTO(
     id,
     username,
     followed.mapTo(mutableSetOf(), FollowedUser::toDTO),
+    postedQuestionCount,
 )
 
 fun User.toLightDTO(): UserLightDTO = UserLightDTO(

@@ -14,6 +14,9 @@ fun currentAuthOrNull(): Authentication? = SecurityContextHolder.getContext().au
 fun currentAuth(): Authentication = SecurityContextHolder.getContext().authentication
     ?: throw AssertionError("Authentication should not be null")
 
+/**
+ * The user is transient so any changes to it will not be persisted.
+ */
 fun currentUser(): User = currentUser ?: throw AssertionError("User should not be null")
 
 fun currentUserOrNull(): User? = currentUser

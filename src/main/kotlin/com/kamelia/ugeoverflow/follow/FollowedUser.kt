@@ -1,18 +1,14 @@
 package com.kamelia.ugeoverflow.follow
 
-import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
 import jakarta.persistence.Embeddable
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.IdClass
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import java.io.Serializable
-import java.util.*
 
 @Entity
 @Table(
@@ -47,24 +43,12 @@ class FollowedUser(
 
     @Embeddable
     class Id(
-        follower: User,
-        followed: User,
-    ) : Serializable {
-
         @ManyToOne
         @JoinColumn(name = "follower_id")
-        private var _follower: User = follower
-
+        val follower: User,
         @ManyToOne
         @JoinColumn(name = "followed_id")
-        private var _followed: User = followed
-
-        val follower: User
-            get() = _follower
-
-        val followed: User
-            get() = _followed
-
-    }
+        val followed: User,
+    ) : Serializable
 
 }

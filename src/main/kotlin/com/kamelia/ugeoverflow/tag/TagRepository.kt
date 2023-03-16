@@ -11,7 +11,10 @@ interface TagRepository : JpaRepository<Tag, String> {
 
     fun findAllBy(): Stream<Tag>
 
-    @Query("SELECT t FROM Tag t WHERE t._name IN :names", )
+    @Query(
+        value = """SELECT * FROM "tag" t WHERE t."name" IN :names""",
+        nativeQuery = true,
+    )
     fun findAllByNameIn(names: Set<String>): Set<Tag>
 
 }

@@ -6,7 +6,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Index
 import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
-import java.util.UUID
 
 @Entity
 @Table(
@@ -16,18 +15,13 @@ import java.util.UUID
     ],
 )
 class Tag(
-    name: String,
+    @NotBlank
+    @Column(name = "name", unique = true)
+    val name: String,
 ) : AbstractIdEntity() {
 
     init {
         require(name.isNotBlank()) { "Tag name cannot be blank" }
     }
-
-    @NotBlank
-    @Column(name = "name", unique = true)
-    private var _name: String = name
-
-    val name: String
-        get() = _name
 
 }

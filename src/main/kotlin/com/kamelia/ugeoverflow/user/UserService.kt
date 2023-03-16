@@ -1,15 +1,12 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
-import com.kamelia.ugeoverflow.follow.FollowedUser
-import com.kamelia.ugeoverflow.follow.FollowedUserRepository
 import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.transaction.Transactional
+import java.util.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
-import org.springframework.security.core.userdetails.UserDetails
 
 @Service
 class UserService(
@@ -32,10 +29,34 @@ class UserService(
     }
 
     @Transactional
+    fun currentUserInformation(): UserDTO {
+        val user = userRepository.findById(currentUser().id).orElseThrow {
+            throw AssertionError("User is logged in but not found in database")
+        }
+        return user.toDTO()
+    }
+
+    @Transactional
     fun findByUsernameOrNull(username: String): User? = userRepository
         .findByUsernameIgnoreCase(username)
 
     @Transactional
     fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
+
+    @Transactional
+    fun incrementUserPostCount(userId: UUID) {
+        val user = userRepository.findById(userId).orElseThrow {
+            throw InvalidRequestException.notFound("User not found")
+        }
+        user.addQuestionPost()
+    }
+
+    @Transactional
+    fun decrementUserPostCount(userId: UUID) {
+        val user = userRepository.findById(userId).orElseThrow {
+            throw InvalidRequestException.notFound("User not found")
+        }
+        user.removeQuestionPost()
+    }
 
 }

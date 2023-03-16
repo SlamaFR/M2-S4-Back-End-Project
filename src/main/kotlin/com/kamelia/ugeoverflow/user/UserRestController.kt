@@ -1,9 +1,9 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.session.TokensDTO
-import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.Routes
 import com.kamelia.ugeoverflow.utils.currentAuth
@@ -64,6 +64,6 @@ class UserRestController(
 
     @Secured(Roles.USER)
     @GetMapping("${Routes.User.ROOT}/me")
-    fun me(): ResponseEntity<String> = ResponseEntity.ok("you")
+    fun me(): ResponseEntity<UserDTO> = ResponseEntity.ok(userService.currentUserInformation())
 
 }

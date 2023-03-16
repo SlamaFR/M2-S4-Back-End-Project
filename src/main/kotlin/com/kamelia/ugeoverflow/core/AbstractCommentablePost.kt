@@ -14,23 +14,19 @@ import jakarta.validation.constraints.NotBlank
 abstract class AbstractCommentablePost(
     @ManyToOne(fetch = FetchType.EAGER)
     var author: User,
-    content: String,
+    @NotBlank
+    @Column(name = "content")
+    val content: String,
 ) : AbstractIdEntity() {
 
     init {
         require(content.isNotBlank()) { "Post content cannot be blank" }
     }
 
-    @NotBlank
-    @Column(name = "content")
-    private var _content: String = content
-
     @OneToMany
     @JoinColumn(name = "parentId")
     private var _comments: MutableSet<Comment> = mutableSetOf()
 
-    val content: String
-        get() = _content
 
     val comments: Set<Comment>
         get() = _comments

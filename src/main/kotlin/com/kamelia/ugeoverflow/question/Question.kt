@@ -19,14 +19,15 @@ import java.time.Instant
 @Table(name = "question")
 class Question(
     author: User,
-    title: String,
+    @NotBlank
+    @Column(name = "title")
+    val title: String,
     content: String,
     tags: Set<Tag>,
 ) : AbstractCommentablePost(author, content) {
 
     init {
         require(title.isNotBlank()) { "Question title cannot be blank" }
-        require(content.isNotBlank()) { "Question content cannot be blank" }
     }
 
     @OneToMany
@@ -41,25 +42,15 @@ class Question(
     @ManyToMany
     private var _tags: MutableSet<Tag> = tags.toMutableSet()
 
-    @NotBlank
-    @Column(name = "title")
-    private var _title: String = title
-
     @PastOrPresent
     @Column(name = "creation_date")
-    private var _creationDate: Instant = Instant.now()
+    val creationDate: Instant = Instant.now()
 
     val answers: Set<Answer>
         get() = _answers
 
     val tags: Set<Tag>
         get() = _tags
-
-    val title: String
-        get() = _title
-
-    val creationDate: Instant
-        get() = _creationDate
 
     fun addAnswer(answer: Answer) {
         _answers.add(answer)
