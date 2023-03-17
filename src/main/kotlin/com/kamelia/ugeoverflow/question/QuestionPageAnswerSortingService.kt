@@ -59,7 +59,7 @@ class QuestionPageAnswerSortingService(
 
     private fun createUserCoefficientMap(user: User): Map<UUID, UserInformation> {
         val finalMap = mutableMapOf(
-            user.id to UserInformation(0, 20.0 to 1.0)
+            user.id to UserInformation(0, 20.0 to 20.0)
         )
 
         var currentCircle = setOf(user) // sets containing all the users of a circle
@@ -119,9 +119,9 @@ private class UserInformation(
         updatedTrustScore(firstTrustScore.first, firstTrustScore.second)
     }
 
-    fun updatedTrustScore(trust: Double, userTrust: Double) = apply {
+    fun updatedTrustScore(givenTrust: Double, userTrust: Double) = apply {
         require(trustList != null) { "Trust list is already calculated" }
-        trustList!!.add(trust to userTrust)
+        trustList!!.add(givenTrust to userTrust)
     }
 
     override fun toString(): String = "UserInformation(depth=$depth, trust=$trust)"
@@ -132,16 +132,18 @@ private class UserInformation(
     private class TrustPairAccumulator {
 
         private var sum: Double = .0 // sum of all trust * their coefficient
-        private var coefficientSum: Double = 0.0 // sum of all coefficient
+        private var coefficientList = ArrayList<Double>() // sum of all coefficient
 
         fun update(scoreToCoefficient: Pair<Double, Double>) = apply {
             val (trust, coefficient) = scoreToCoefficient
             sum += trust * coefficient
-            coefficientSum += coefficient
+            coefficientList += coefficient
         }
 
         fun result(): Double = if (sum > 0) {
-            sum / coefficientSum
+            val coefficientSum = coefficientList.sum()
+            val weighting = coefficientList.average() / 20.0
+            (sum / coefficientSum) * weighting
         } else {
             0.0
         }
