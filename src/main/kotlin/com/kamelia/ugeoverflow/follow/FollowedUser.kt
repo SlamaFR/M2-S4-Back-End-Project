@@ -29,7 +29,7 @@ class FollowedUser(
     val followed: User
         get() = id.followed
 
-    var trust: Int = 0
+    var trust: Int = 1
         set(value) {
             checkTrust(value)
             field = value

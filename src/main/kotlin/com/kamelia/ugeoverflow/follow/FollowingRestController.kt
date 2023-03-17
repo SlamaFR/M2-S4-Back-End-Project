@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(Routes.Following.ROOT)
-class FollowingController(
+class FollowingRestController(
     private val followingService: FollowingService,
 ) {
 

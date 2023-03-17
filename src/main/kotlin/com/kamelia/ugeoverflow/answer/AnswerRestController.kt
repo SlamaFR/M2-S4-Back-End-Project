@@ -17,11 +17,6 @@ class AnswerRestController(
     private val answerService: AnswerService
 ) {
 
-    //TODO: Implement paging?
-    //@GetMapping("/questions/{questionId}/answers")
-    //fun getPage(page: Pageable): ResponseEntity<Page<AnswerDTO>> =
-    //    ResponseEntity.ok(answerService.getPage(page))
-
     @Secured(Roles.USER)
     @PostMapping("/questions/{questionId}/answers")
     fun postAnswer(

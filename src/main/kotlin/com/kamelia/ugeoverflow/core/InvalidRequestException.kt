@@ -14,7 +14,7 @@ class InvalidRequestException(val statusCode: Int, message: String) : RuntimeExc
 
         fun unauthorized(message: String) = InvalidRequestException(HttpStatus.UNAUTHORIZED, message)
 
-        fun forbidden(message: String) = InvalidRequestException(HttpStatus.BAD_REQUEST, message)
+        fun forbidden(message: String) = InvalidRequestException(HttpStatus.FORBIDDEN, message)
 
         fun notFound(message: String) = InvalidRequestException(HttpStatus.NOT_FOUND, message)
 

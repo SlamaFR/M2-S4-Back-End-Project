@@ -3,7 +3,7 @@ package com.kamelia.ugeoverflow.follow
 import java.util.*
 
 data class FollowedUserDTO(
-    val followed: UUID,
+    val id: UUID,
     val username: String,
     val trust: Int,
 ) {

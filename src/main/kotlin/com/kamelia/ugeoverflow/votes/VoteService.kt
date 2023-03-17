@@ -3,7 +3,8 @@ package com.kamelia.ugeoverflow.votes
 import com.kamelia.ugeoverflow.answer.AnswerRepository
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.utils.currentUser
-import java.util.UUID
+import jakarta.transaction.Transactional
+import java.util.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,8 +24,10 @@ class VoteService(
         answer.addVote(vote)
     }
 
+    @Transactional
     fun upvoteAnswer(answerId: UUID) = voteAnswer(answerId, true)
 
+    @Transactional
     fun downvoteAnswer(answerId: UUID) = voteAnswer(answerId, false)
 
 }

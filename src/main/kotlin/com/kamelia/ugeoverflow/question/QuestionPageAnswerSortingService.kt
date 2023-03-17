@@ -132,7 +132,7 @@ private class UserInformation(
     private class TrustPairAccumulator {
 
         private var sum: Double = .0 // sum of all trust * their coefficient
-        private var coefficientSum: Double = 1.0 // sum of all coefficient
+        private var coefficientSum: Double = 0.0 // sum of all coefficient
 
         fun update(scoreToCoefficient: Pair<Double, Double>) = apply {
             val (trust, coefficient) = scoreToCoefficient
@@ -140,7 +140,11 @@ private class UserInformation(
             coefficientSum += coefficient
         }
 
-        fun result() = sum / coefficientSum
+        fun result(): Double = if (sum > 0) {
+            sum / coefficientSum
+        } else {
+            0.0
+        }
 
     }
 

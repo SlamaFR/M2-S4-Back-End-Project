@@ -20,7 +20,7 @@ class FollowingService(
         val currentUser: User = currentUser()
 
         if (currentUser.id == followedId) {
-            throw InvalidRequestException.forbidden("Cannot evaluate yourself")
+            throw InvalidRequestException.forbidden("Cannot follow yourself")
         }
 
         val user = userRepository.findByIdOrNull(followedId)
