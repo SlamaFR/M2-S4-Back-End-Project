@@ -15,68 +15,68 @@ import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
 
-val questions = listOf(
-    QuestionDTO(
-        UUID.randomUUID(),
-        "ZwenDo",
-        "How to make a good questions?",
-        "I want to know how to make a good questions",
-        setOf(
-            AnswerDTO(
-                UUID.randomUUID(),
-                "Slama",
-                "You should use a good title and a good description",
-                setOf(
-                    CommentDTO(
-                        UUID.randomUUID(),
-                        "notKamui",
-                        "I agree",
-                        Instant.now(),
-                    ),
-                ),
-                Instant.now(),
-            ),
-            AnswerDTO(
-                UUID.randomUUID(),
-                "notKamui",
-                "You should use a good title and a good description",
-                setOf(
-                    CommentDTO(
-                        UUID.randomUUID(),
-                        "Slama",
-                        "I agree",
-                        Instant.now(),
-                    ),
-                ),
-                Instant.now(),
-            ),
-        ),
-        setOf(
-            TagDTO("questions"),
-        ),
-        Instant.now()
-    ),
-    QuestionDTO(
-        UUID.randomUUID(),
-        "notKamui",
-        "How to make a good answer?",
-        "I want to know how to make a good answer",
-        setOf(
-            AnswerDTO(
-                UUID.randomUUID(),
-                "Slama",
-                "Git gud",
-                setOf(),
-                Instant.now(),
-            ),
-        ),
-        setOf(
-            TagDTO("answer"),
-        ),
-        Instant.now()
-    ),
-)
-
+//val questions = listOf(
+//    QuestionDTO(
+//        UUID.randomUUID(),
+//        "ZwenDo",
+//        "How to make a good questions?",
+//        "I want to know how to make a good questions",
+//        setOf(
+//            AnswerDTO(
+//                UUID.randomUUID(),
+//                "Slama",
+//                "You should use a good title and a good description",
+//                setOf(
+//                    CommentDTO(
+//                        UUID.randomUUID(),
+//                        "notKamui",
+//                        "I agree",
+//                        Instant.now(),
+//                    ),
+//                ),
+//                Instant.now(),
+//            ),
+//            AnswerDTO(
+//                UUID.randomUUID(),
+//                "notKamui",
+//                "You should use a good title and a good description",
+//                setOf(
+//                    CommentDTO(
+//                        UUID.randomUUID(),
+//                        "Slama",
+//                        "I agree",
+//                        Instant.now(),
+//                    ),
+//                ),
+//                Instant.now(),
+//            ),
+//        ),
+//        setOf(
+//            TagDTO("questions"),
+//        ),
+//        Instant.now()
+//    ),
+//    QuestionDTO(
+//        UUID.randomUUID(),
+//        "notKamui",
+//        "How to make a good answer?",
+//        "I want to know how to make a good answer",
+//        setOf(
+//            AnswerDTO(
+//                UUID.randomUUID(),
+//                "Slama",
+//                "Git gud",
+//                setOf(),
+//                Instant.now(),
+//            ),
+//        ),
+//        setOf(
+//            TagDTO("answer"),
+//        ),
+//        Instant.now()
+//    ),
+//)
+val questions = listOf<QuestionDTO>()
 val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 
 @Controller

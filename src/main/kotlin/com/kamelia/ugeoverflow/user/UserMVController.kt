@@ -64,7 +64,7 @@ class UserMVController {
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.followed == id }
+        val followed = user.followed.firstOrNull { it.id == id }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"
@@ -93,7 +93,7 @@ class UserMVController {
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.followed == id }
+        val followed = user.followed.firstOrNull { it.id == id }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"
