@@ -51,4 +51,10 @@ interface UserRepository : JpaRepository<User, UUID> {
     )
     fun findAllUsersFollowedByUserId(followerId: UUID): List<User>
 
+    @Query(
+        """SELECT * FROM "user" u WHERE u."username" = :username""",
+        nativeQuery = true,
+    )
+    fun findByUsername(username: String): User?
+
 }
