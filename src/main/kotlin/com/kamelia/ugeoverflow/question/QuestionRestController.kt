@@ -37,6 +37,12 @@ class QuestionRestController(
         return ResponseEntity.ok(questionDTO)
     }
 
+    @GetMapping("/{questionId}")
+    fun getQuestion(@PathVariable questionId: UUID): ResponseEntity<QuestionDTO> {
+        val questionDTO = questionService.getQuestion(questionId)
+        return ResponseEntity.ok(questionDTO)
+    }
+
     @Secured(Roles.USER)
     @DeleteMapping("/{questionId}")
     fun deleteQuestion(@PathVariable questionId: UUID): ResponseEntity<Unit> {

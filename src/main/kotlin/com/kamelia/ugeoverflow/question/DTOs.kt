@@ -1,6 +1,9 @@
 package com.kamelia.ugeoverflow.question
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.kamelia.ugeoverflow.answer.Answer
+import com.kamelia.ugeoverflow.answer.AnswerDTO
+import com.kamelia.ugeoverflow.answer.toDTO
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.comment.toDTO
@@ -29,7 +32,8 @@ data class QuestionDTO(
     val authorUsername: String,
     val title: String,
     val content: String,
-    val comments: Set<CommentDTO>,
+    val answers: List<AnswerDTO>,
+    val comments: List<CommentDTO>,
     val tags: Set<TagDTO>,
     val creationDate: Instant,
 )
@@ -60,12 +64,15 @@ fun Question.toLightDTO() = QuestionLightDTO(
     creationDate,
 )
 
-fun Question.toDTO() = QuestionDTO(
+inline fun Question.toDTO(
+    answerSorter: (Set<Answer>) -> List<AnswerDTO> = { it.map(Answer::toDTO) },
+) = QuestionDTO(
     id,
     author.username,
     title,
     content,
-    comments.mapTo(mutableSetOf(), Comment::toDTO),
+    answers.let(answerSorter),
+    comments.map(Comment::toDTO),
     tags.mapTo(mutableSetOf(), Tag::toDTO),
     creationDate,
 )

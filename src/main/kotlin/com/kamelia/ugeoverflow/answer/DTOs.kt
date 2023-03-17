@@ -3,25 +3,31 @@ package com.kamelia.ugeoverflow.answer
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.comment.toDTO
+import com.kamelia.ugeoverflow.user.UserLightDTO
+import com.kamelia.ugeoverflow.user.toLightDTO
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class AnswerDTO(
     val id: UUID,
-    val authorUsername: String,
+    val author: UserLightDTO,
     val content: String,
-    val comments: Set<CommentDTO>,
+    val comments: List<CommentDTO>,
     val creationDate: Instant,
+    val note: Int,
 )
 
 data class PostAnswerDTO(
     val content: String,
 )
 
-fun Answer.toDTO() = AnswerDTO(
+fun Answer.toDTO(
+    computedNote: Int = votes.sumOf { (if (it.isUpvote) 1 else 0).toInt() },
+) = AnswerDTO(
     id,
-    author.username,
+    author.toLightDTO(),
     content,
-    comments.mapTo(mutableSetOf(), Comment::toDTO),
+    comments.map(Comment::toDTO),
     creationDate,
+    computedNote
 )

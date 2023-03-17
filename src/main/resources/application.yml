@@ -26,3 +26,5 @@ ugeoverflow:
     purge-rate: ${SESSION_PURGE_RATE:300000}
     access-token-lifetime: ${ACCESS_TOKEN_LIFETIME:3600000}
     refresh-token-lifetime: ${REFRESH_TOKEN_LIFETIME:2592000000}
+  answer-algorithm:
+    circle-max-depth: ${CIRCLE_MAX_DEPTH:3} # Max depth of the following circles used for final note calculation

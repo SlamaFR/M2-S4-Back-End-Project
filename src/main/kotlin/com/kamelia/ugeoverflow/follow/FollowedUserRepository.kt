@@ -46,6 +46,17 @@ interface FollowedUserRepository : JpaRepository<FollowedUser, FollowedUser.Id> 
         """SELECT * FROM "followed_user" u WHERE u."follower_id" = :followerId""",
         nativeQuery = true
     )
-    fun getFollowedIds(followerId: UUID): Stream<FollowedUser>
+    fun findFollowedByUserId(followerId: UUID): Stream<FollowedUser>
+
+    @Query(
+        """
+            SELECT *
+            FROM "followed_user" u
+            WHERE u."follower_id" = :followerId
+            AND u."followed_id" NOT IN (:ignoredIds)
+        """,
+        nativeQuery = true,
+    )
+    fun findFollowedByUserId(followerId: UUID, ignoredIds: Set<UUID>): Stream<FollowedUser>
 
 }

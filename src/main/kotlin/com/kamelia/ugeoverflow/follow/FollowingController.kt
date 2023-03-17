@@ -2,8 +2,8 @@ package com.kamelia.ugeoverflow.follow
 
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.Routes
-import jakarta.validation.Valid
-import java.util.UUID
+import java.util.*
+import org.hibernate.validator.constraints.Range
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -37,7 +37,10 @@ class FollowingController(
 
     @Secured(Roles.USER)
     @PutMapping("/{userId}")
-    fun evaluateFollowedUser(@PathVariable userId: UUID, @RequestBody trust: Int): ResponseEntity<Unit> {
+    fun evaluateFollowedUser(
+        @PathVariable userId: UUID,
+        @RequestBody @Range(min = 1, max = 20) trust: Int,
+    ): ResponseEntity<Unit> {
         followingService.evaluateFollowed(userId, trust)
         return ResponseEntity.ok().build()
     }

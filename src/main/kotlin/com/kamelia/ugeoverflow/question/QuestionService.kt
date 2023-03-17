@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service
 class QuestionService(
     private val questionRepository: QuestionRepository,
     private val tagService: TagService,
-    private val questionPageService: QuestionPageService,
+    private val questionPageService: QuestionPageListService,
+    private val questionPageAnswerSortingService: QuestionPageAnswerSortingService,
 ) {
 
     fun getPage(page: Pageable, filterDTO: QuestionSearchFilterDTO?): Page<QuestionLightDTO> =
@@ -53,5 +54,9 @@ class QuestionService(
 
         questionRepository.delete(question)
     }
+
+    fun getQuestion(questionId: UUID): QuestionDTO = currentUserOrNull()?.let {
+        questionPageAnswerSortingService.getQuestion(it, questionId)
+    } ?: questionPageAnswerSortingService.getQuestionAsAnonymous(questionId)
 
 }

@@ -1,7 +1,7 @@
 package com.kamelia.ugeoverflow.answer
 
 import com.kamelia.ugeoverflow.utils.Roles
-import java.util.UUID
+import java.util.*
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -31,7 +31,9 @@ class AnswerRestController(
 
     @Secured(Roles.USER)
     @DeleteMapping("/answers/{answerId}")
-    fun deleteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> =
-        ResponseEntity.ok(answerService.deleteAnswer(answerId))
+    fun deleteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
+        answerService.deleteAnswer(answerId)
+        return ResponseEntity.ok().build()
+    }
 
 }

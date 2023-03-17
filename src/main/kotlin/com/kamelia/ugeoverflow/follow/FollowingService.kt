@@ -5,7 +5,7 @@ import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserRepository
 import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.transaction.Transactional
-import java.util.UUID
+import java.util.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -46,7 +46,7 @@ class FollowingService(
 
     @Transactional
     fun evaluateFollowed(followedId: UUID, trust: Int) {
-        if (trust !in -50..50) {
+        if (trust !in 1..20) {
             throw InvalidRequestException.badRequest("Trust must be between -50 and 50, was $trust")
         }
         val currentUser: User = currentUser()
@@ -63,7 +63,7 @@ class FollowingService(
 
     @Transactional
     fun getFollowedUsers(): List<FollowedUserDTO> = followedUserRepository
-        .getFollowedIds(currentUser().id)
+        .findFollowedByUserId(currentUser().id)
         .map(FollowedUser::toDTO)
         .toList()
 
