@@ -26,10 +26,9 @@ data class QuestionLightDTO(
     val creationDate: Instant,
 )
 
-
 data class QuestionDTO(
     val id: UUID,
-    val authorUsername: String,
+    val author: UserLightDTO,
     val title: String,
     val content: String,
     val answers: List<AnswerDTO>,
@@ -68,7 +67,7 @@ inline fun Question.toDTO(
     answerSorter: (Set<Answer>) -> List<AnswerDTO> = { it.map(Answer::toDTO) },
 ) = QuestionDTO(
     id,
-    author.username,
+    author.toLightDTO(),
     title,
     content,
     answers.let(answerSorter),

@@ -46,7 +46,7 @@
         <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}" class="flex flex-row w-full between border hover-grow">
             <div>
                 <h2 th:text="${question.title}"></h2>
-                <span th:text="${question.authorUsername}"></span>
+                <span th:text="${question.author.username}"></span>
             </div>
             <div class="flex flex-row gap">
                 <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>

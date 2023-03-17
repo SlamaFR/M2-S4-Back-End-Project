@@ -12,12 +12,12 @@ import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 import jakarta.transaction.Transactional
 import java.time.Instant
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import kotlin.collections.ArrayDeque
 
 
 @Service
@@ -29,11 +29,13 @@ class QuestionPageListService(
     @Transactional
     fun questionsAsUser(user: User, page: Pageable, filters: QuestionSearchFilterDTO?): Page<QuestionLightDTO> {
         val (toDisplay, usersToIgnore) = retrieveFollowedUsersQuestions(user, page, filters)
-
+        println(toDisplay)
         // the graph of the users we follow is not big enough, we need to add questions from other users
         if (toDisplay.size < page.pageSize) {
+            println(usersToIgnore)
             toDisplay += getQuestionsFromUsersNotInSet(page.pageSize - toDisplay.size, filters, usersToIgnore)
         }
+        println(toDisplay)
 
         return PageImpl(toDisplay, page, toDisplay.size.toLong())
     }

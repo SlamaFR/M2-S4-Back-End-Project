@@ -24,8 +24,8 @@
     <div class="flex flex-col border w-xl">
         <div class="flex flex-row between">
             <div class="flex flex-row gap-sm center">
-                <h2 th:text="${question.authorUsername}"></h2>
-                <form th:if="${hideFollowForUser.map[question.authorUsername] == null || !hideFollowForUser.map[question.authorUsername]}" th:action="@{/user/follow/{user}(user=${question.authorUsername})}" th:method="POST">
+                <h2 th:text="${question.author.username}"></h2>
+                <form th:if="${hideFollowForUser.map[question.author.username] == null || !hideFollowForUser.map[question.author.username]}" th:action="@{/user/follow/{user}(user=${question.author.username})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
             </div>

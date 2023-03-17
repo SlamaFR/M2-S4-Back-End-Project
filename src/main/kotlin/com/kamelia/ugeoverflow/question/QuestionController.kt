@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.answer.AnswerService
 import com.kamelia.ugeoverflow.answer.PostAnswerDTO
 import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.tag.TagDTO
+import com.kamelia.ugeoverflow.tag.TagService
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.util.*
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -87,21 +89,24 @@ class QuestionController(
     private val questionService: QuestionService,
     private val userService: UserService,
     private val answerService: AnswerService,
+    private val tagService: TagService,
 ) {
 
     @GetMapping
     fun list(
         @RequestParam("page", required = false) page: Int?,
         @RequestParam("searchName", required = false) searchName: String?,
-        @RequestParam("searchTags", required = false) searchTags: List<String>?,
+        @RequestParam("searchTags", required = false) searchTags: Set<String>?,
         model: Model,
     ): String {
-        println(searchName)
-        println(searchTags)
-        // TODO get tags from database
-        model.addAttribute("tags", tags)
-        // TODO: Get posts from database with page (?) and search filters
-        model.addAttribute("questionsModel", QuestionsModel(questions))
+        model.addAttribute("tags", tagService.allTags())
+
+        val questions = questionService.getPage(
+            Pageable.ofSize(25).withPage(page ?: 0),
+            QuestionSearchFilterDTO(searchName, searchTags)
+        )
+
+        model.addAttribute("questionsModel", QuestionsModel(questions.toList()))
 
         return "question/list"
     }
@@ -218,11 +223,13 @@ class QuestionController(
             return "redirect:/question/create"
         }
 
-        val question = questionService.postQuestion(PostQuestionDTO(
-            createQuestionForm.title,
-            createQuestionForm.content,
-            createQuestionForm.tags,
-        ))
+        val question = questionService.postQuestion(
+            PostQuestionDTO(
+                createQuestionForm.title,
+                createQuestionForm.content,
+                createQuestionForm.tags,
+            )
+        )
 
         return "redirect:/question/${question.id}"
     }
@@ -243,13 +250,13 @@ class CreateQuestionForm(
 )
 
 class QuestionsModel(
-    val questions: List<QuestionDTO>
+    val questions: List<QuestionLightDTO>,
 )
 
 class HideFollowModel(
-    val map: Map<String, Boolean>
+    val map: Map<String, Boolean>,
 )
 
 class ShowDeleteModel(
-    val map: Map<UUID, Boolean>
+    val map: Map<UUID, Boolean>,
 )
