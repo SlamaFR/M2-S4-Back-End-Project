@@ -49,11 +49,11 @@
         <span th:if="${answerErrorMessage}" th:text="${answerErrorMessage}"></span>
     </form>
 
-    <div th:each="answer : ${question.comments}" class="flex flex-col border w-xl">
+    <div th:each="answer : ${question.answers}" class="flex flex-col border w-xl">
         <div class="flex flex-row between">
             <div class="flex flex-row gap-sm center">
-                <h2 th:text="${answer.authorUsername}"></h2>
-                <form th:if="${hideFollowForUser.map[answer.authorUsername] == null || !hideFollowForUser.map[answer.authorUsername]}" th:action="@{/user/follow/{user}(user=${answer.authorUsername})}" th:method="POST">
+                <h2 th:text="${answer.author.username}"></h2>
+                <form th:if="${hideFollowForUser.map[answer.author.username] == null || !hideFollowForUser.map[answer.author.username]}" th:action="@{/user/follow/{user}(user=${answer.author.username})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
                 <form th:if="${showDeleteForUser.map[answer.id]}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
@@ -88,7 +88,7 @@
             </form>
             <div th:each="comment : ${answer.comments}" class="flex flex-col border">
                 <div class="flex flex-row between">
-                    <h2 th:text="${comment.authorUsername}"></h2>
+                    <h2 th:text="${comment.author.username}"></h2>
                     <span th:text="${comment.creationDate}"></span>
                 </div>
                 <p th:text="${comment.content}"></p>
