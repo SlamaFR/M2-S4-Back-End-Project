@@ -80,7 +80,7 @@ val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 @MvcController
 @Controller
 @RequestMapping("/question")
-class QuestionMVController {
+class QuestionController {
 
     @GetMapping
     fun list(
