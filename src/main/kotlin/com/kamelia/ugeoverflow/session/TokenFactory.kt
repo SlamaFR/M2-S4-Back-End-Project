@@ -2,6 +2,8 @@ package com.kamelia.ugeoverflow.session
 
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.core.toBase64
+import com.kamelia.ugeoverflow.utils.Cookies
+import jakarta.servlet.http.Cookie
 import java.util.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -43,4 +45,20 @@ data class TokensDTO(
     val userId: UUID,
     val accessToken: String,
     val refreshToken: String,
-)
+) {
+
+    fun toCookies(): List<Cookie> = buildList {
+        add(Cookie(Cookies.USER_ID, userId.toString()).apply {
+            path = "/"
+            maxAge = 60 * 60 * 24 * 30 // 30 days
+        })
+        add(Cookie(Cookies.ACCESS_TOKEN, accessToken).apply {
+            path = "/"
+            maxAge = 60 * 60 // 1 hour
+        })
+        add(Cookie(Cookies.REFRESH_TOKEN, refreshToken).apply {
+            path = "/"
+            maxAge = 60 * 60 * 24 * 30 // 30 days
+        })
+    }
+}

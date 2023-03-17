@@ -1,8 +1,18 @@
 package com.kamelia.ugeoverflow.session
 
+import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
+import com.kamelia.ugeoverflow.user.UserCredentialsDTO
+import com.kamelia.ugeoverflow.user.UserRepository
+import com.kamelia.ugeoverflow.user.UserService
+import com.kamelia.ugeoverflow.utils.*
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("/auth")
-class AuthMVController {
+class AuthMVController(
+    val userService: UserService,
+    val sessionManager: SessionManager,
+) {
 
     @GetMapping
     fun auth(
@@ -24,8 +37,14 @@ class AuthMVController {
     fun login(
         @Valid @ModelAttribute("loginForm") loginForm: LoginForm,
         binding: BindingResult,
+        response: HttpServletResponse
     ): String {
         if (binding.hasErrors()) return "session/auth"
+
+        sessionManager
+            .login(loginForm.username, loginForm.password)
+            .toCookies()
+            .forEach(response::addCookie)
 
         return "redirect:/"
     }
@@ -34,15 +53,39 @@ class AuthMVController {
     fun register(
         @Valid @ModelAttribute("registerForm") registerForm: RegisterForm,
         binding: BindingResult,
+        response: HttpServletResponse
     ): String {
-        if (binding.hasErrors()) return "session/auth"
+        if (binding.hasErrors() || registerForm.password != registerForm.passwordConfirm) {
+            return "session/auth"
+        }
 
-        return "redirect:/auth"
+        userService.create(UserCredentialsDTO(registerForm.username, registerForm.password))
+        sessionManager
+            .login(registerForm.username, registerForm.password)
+            .toCookies()
+            .forEach(response::addCookie)
+
+        return "redirect:/"
     }
 
+    @Secured(Roles.USER)
     @GetMapping("/logout")
-    fun logout(): String {
-        // TODO: Do logout
+    fun logout(
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ): String {
+        val tokens = currentAuth().tokens
+        val refreshTokenUUID = request.cookies
+            .firstOrNull { it.name == Cookies.REFRESH_TOKEN }
+            ?.value
+            ?.toUUIDFromBase64OrNull()
+            ?: throw InvalidRequestException.unauthorized("Invalid credentials")
+
+        sessionManager.logout(tokens.userId, tokens.accessToken, refreshTokenUUID)
+
+        response.removeCookie(Cookies.USER_ID)
+        response.removeCookie(Cookies.ACCESS_TOKEN)
+        response.removeCookie(Cookies.REFRESH_TOKEN)
 
         return "redirect:/"
     }
