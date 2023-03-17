@@ -39,7 +39,7 @@ class AuthMVController(
         binding: BindingResult,
         response: HttpServletResponse
     ): String {
-        if (binding.hasErrors()) return "session/auth"
+        if (binding.hasErrors()) return "redirect:/auth"
 
         sessionManager
             .login(loginForm.username, loginForm.password)
@@ -56,7 +56,7 @@ class AuthMVController(
         response: HttpServletResponse
     ): String {
         if (binding.hasErrors() || registerForm.password != registerForm.passwordConfirm) {
-            return "session/auth"
+            return "redirect:/auth"
         }
 
         userService.create(UserCredentialsDTO(registerForm.username, registerForm.password))
