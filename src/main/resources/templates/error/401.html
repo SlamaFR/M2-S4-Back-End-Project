@@ -17,10 +17,12 @@
 <header class="w-full p-1">
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>
-        <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
-        <a class="hover-grow" href="#">Profile</a>
-        <a class="hover-grow" th:href="@{/auth}">Login</a>
-        <a class="hover-grow" th:href="@{/auth/logout}">Logout</a>
+
+        <a th:if="${user == null}" class="hover-grow" th:href="@{/auth}">Login</a>
+
+        <a th:if="${user != null}" class="hover-grow" th:href="@{/question/create}">Create Question</a>
+        <a th:if="${user != null}" class="hover-grow" href="#">Profile</a>
+        <a th:if="${user != null}" class="hover-grow" th:href="@{/auth/logout}">Logout</a>
     </nav>
 </header>
 <h1>401 - Unauthorized</h1>
