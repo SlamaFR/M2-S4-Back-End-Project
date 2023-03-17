@@ -36,7 +36,6 @@ class QuestionPageAnswerSortingService(
         .orElseThrow { InvalidRequestException.notFound("Question not found") }
         .toDTO { set ->
             val userCoefficientMap = createUserCoefficientMap(user)
-            println(userCoefficientMap)
             set.asSequence()
                 .map {
                     val finalScore = it.votes.fold(.0) { acc, v ->
