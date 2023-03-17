@@ -1,20 +1,22 @@
 package com.kamelia.ugeoverflow.user
 
+import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.follow.FollowedUserDTO
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
+import java.util.*
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 val dummy = UserDTO(UUID.randomUUID(), "notKamui", setOf(FollowedUserDTO(UUID.randomUUID(), "ZwenDo", -50)))
 
+@MvcController
 @Controller
 @RequestMapping("/user")
-class UserMVController {
+class UserController {
 
     @GetMapping("/details/{id}") // TODO secure route to ROLE_USER and ROLE_ADMIN
     fun profile(

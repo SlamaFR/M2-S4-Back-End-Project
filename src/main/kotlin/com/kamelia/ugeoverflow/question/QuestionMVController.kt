@@ -1,19 +1,17 @@
 package com.kamelia.ugeoverflow.question
 
-import com.kamelia.ugeoverflow.answer.AnswerDTO
-import com.kamelia.ugeoverflow.comment.CommentDTO
+import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.user.UserDTO
 import com.kamelia.ugeoverflow.user.dummy
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import java.util.*
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import java.time.Instant
-import java.util.*
 
 //val questions = listOf(
 //    QuestionDTO(
@@ -79,6 +77,7 @@ import java.util.*
 val questions = listOf<QuestionDTO>()
 val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 
+@MvcController
 @Controller
 @RequestMapping("/question")
 class QuestionMVController {

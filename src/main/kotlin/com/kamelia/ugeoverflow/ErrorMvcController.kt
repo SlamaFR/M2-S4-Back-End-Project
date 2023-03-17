@@ -1,13 +1,15 @@
 package com.kamelia.ugeoverflow
 
+import com.kamelia.ugeoverflow.core.MvcController
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 
+@MvcController
 @Controller
-class ErrorMVController : ErrorController {
+class ErrorMvcController : ErrorController {
 
     @RequestMapping("/error")
     fun handleError(
