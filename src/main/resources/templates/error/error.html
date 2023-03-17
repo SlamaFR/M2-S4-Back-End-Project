@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
@@ -20,9 +20,9 @@
         <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
         <a class="hover-grow" href="#">Profile</a>
         <a class="hover-grow" th:href="@{/auth}">Login</a>
-        <a class="hover-grow" th:href="@{/user/logout}">Logout</a>
+        <a class="hover-grow" th:href="@{/auth/logout}">Logout</a>
     </nav>
 </header>
-<h1 th:text="${errorMsg}"></h1>
+<h1>Oops, an error happening, and we don't know what it is</h1>
 </body>
 </html>

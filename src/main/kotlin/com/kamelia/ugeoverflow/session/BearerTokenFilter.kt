@@ -3,8 +3,7 @@ package com.kamelia.ugeoverflow.session
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.core.toUUIDOrNull
-import com.kamelia.ugeoverflow.utils.Roles
-import com.kamelia.ugeoverflow.utils.Routes
+import com.kamelia.ugeoverflow.utils.*
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -35,6 +34,8 @@ class BearerTokenFilter(
         val auth = try {
             getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
         } catch (e: InvalidRequestException) {
+            response.removeCookie(Cookies.USER_ID)
+            response.removeCookie(Cookies.ACCESS_TOKEN)
             response.status = e.statusCode
             val writer = response.writer
             writer.write(e.message ?: "Invalid request")
@@ -52,13 +53,13 @@ class BearerTokenFilter(
     override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath == Routes.User.REFRESH
 
     @OptIn(ExperimentalContracts::class)
-    private fun checkAuthHeaders(userId: UUID?, base64Token: String?): Boolean {
+    private fun checkCredendtials(userId: UUID?, base64Token: String?): Boolean {
         contract { returns(true) implies (userId != null && base64Token != null) }
 
         if (userId == null) {
             if (base64Token != null) {
                 throw InvalidRequestException.badRequest(
-                    "User-Id header is required when Authorization header is present"
+                    "User-Id header or user-id cookie is required when Authorization header or access-token cookie is present"
                 )
             } else {
                 return false
@@ -66,22 +67,23 @@ class BearerTokenFilter(
         }
 
         if (base64Token == null) {
-            throw InvalidRequestException.badRequest("Authorization header is required when User-Id header is present")
+            throw InvalidRequestException.badRequest("Authorization header or access-token cookie is required when User-Id header or user-id cookie is present")
         }
 
         return true
     }
 
     private fun getAuth(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
-        val userId = request.getHeader("User-Id")
+        val userId = (request.getHeader("User-Id") ?: request.getCookieOrNull(Cookies.USER_ID)?.value)
             ?.let {
                 it.toUUIDOrNull() ?: throw InvalidRequestException.badRequest("Invalid credentials")
             }
 
         val base64Token = request.getHeader("Authorization")
             ?.removePrefix("Bearer ")
+            ?: request.getCookieOrNull(Cookies.ACCESS_TOKEN)?.value
 
-        if (!checkAuthHeaders(userId, base64Token)) return null
+        if (!checkCredendtials(userId, base64Token)) return null
 
         val token = base64Token.toUUIDFromBase64OrNull()
             ?: throw InvalidRequestException.badRequest("Invalid credentials")

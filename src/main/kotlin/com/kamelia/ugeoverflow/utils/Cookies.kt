@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow.utils
 
 import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.aspectj.weaver.tools.cache.SimpleCacheFactory.path
 
@@ -14,3 +15,5 @@ fun HttpServletResponse.removeCookie(name: String) = addCookie(Cookie(name, "").
     path = "/"
     maxAge = 0
 })
+
+fun HttpServletRequest.getCookieOrNull(name: String): Cookie? = cookies?.firstOrNull { it.name == name }
