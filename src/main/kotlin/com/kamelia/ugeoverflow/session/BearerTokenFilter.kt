@@ -53,12 +53,16 @@ class BearerTokenFilter(
         val auth = try {
             getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
         } catch (e: InvalidRequestException) {
-            response.removeCookie(Cookies.USER_ID)
-            response.removeCookie(Cookies.ACCESS_TOKEN)
-            response.status = e.statusCode
-            val writer = response.writer
-            writer.write(e.message ?: "Invalid request")
-            writer.flush()
+            if (request.servletPath.startsWith("/api")) {
+                response.status = e.statusCode
+                val writer = response.writer
+                writer.write(e.message ?: "Invalid request")
+                writer.flush()
+            } else {
+                response.removeCookie(Cookies.USER_ID)
+                response.removeCookie(Cookies.ACCESS_TOKEN)
+                response.sendRedirect("/auth?error=Please+log+in")
+            }
             return
         }
 

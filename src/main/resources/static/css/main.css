@@ -78,3 +78,10 @@ a {
 .hover-grow:hover {
     transform: scale(1.02);
 }
+
+.error {
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+    background-color: red;
+}

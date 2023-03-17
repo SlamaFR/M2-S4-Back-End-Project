@@ -20,6 +20,7 @@
 </header>
 <main class="flex flex-col center">
     <h1>Authentication</h1>
+    <div class="error" th:if="${param.get('error')} != null" th:text="${param.get('error')}"></div>
     <div class="flex flex-row gap-xl center">
         <div class="flex flex-col center">
             <h2>Login</h2>

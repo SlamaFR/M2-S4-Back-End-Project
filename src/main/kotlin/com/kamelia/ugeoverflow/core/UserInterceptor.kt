@@ -1,6 +1,6 @@
 package com.kamelia.ugeoverflow.core
 
-import com.kamelia.ugeoverflow.user.toDTO
+import com.kamelia.ugeoverflow.user.toLightDTO
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -15,6 +15,6 @@ class UserInterceptor : HandlerInterceptor {
         handler: Any,
         modelAndView: ModelAndView?
     ) {
-        currentUserOrNull()?.let { modelAndView?.addObject("user", it.toDTO()) }
+        currentUserOrNull()?.let { modelAndView?.addObject("user", it.toLightDTO()) }
     }
 }
