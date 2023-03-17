@@ -1,19 +1,20 @@
 package com.kamelia.ugeoverflow.question
 
-import com.kamelia.ugeoverflow.answer.AnswerDTO
-import com.kamelia.ugeoverflow.comment.CommentDTO
+import com.kamelia.ugeoverflow.answer.AnswerService
+import com.kamelia.ugeoverflow.answer.PostAnswerDTO
+import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.tag.TagDTO
-import com.kamelia.ugeoverflow.user.UserDTO
-import com.kamelia.ugeoverflow.user.dummy
+import com.kamelia.ugeoverflow.user.User
+import com.kamelia.ugeoverflow.user.UserService
+import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import java.util.*
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import java.time.Instant
-import java.util.*
 
 //val questions = listOf(
 //    QuestionDTO(
@@ -79,9 +80,14 @@ import java.util.*
 val questions = listOf<QuestionDTO>()
 val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 
+@MvcController
 @Controller
 @RequestMapping("/question")
-class QuestionMVController {
+class QuestionController(
+    private val questionService: QuestionService,
+    private val userService: UserService,
+    private val answerService: AnswerService,
+) {
 
     @GetMapping
     fun list(
@@ -107,23 +113,22 @@ class QuestionMVController {
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
     ): String {
-        // TODO get user from database
-        val user: UserDTO? = dummy
+        val user: User? = currentUserOrNull()?.let { userService.findByIdOrNull(it.id) }
 
-        // TODO: Get question from database
-        val question = questions.firstOrNull { it.id == id }
+        val question = questionService.getQuestion(id)
 
-        if (question == null) {
-            model.addAttribute("errorMessage", "Question not found")
-            return "error/404"
-        }
+        println(question)
 
         val followButtonsToHide = mutableMapOf<String, Boolean>()
-        user?.followed?.forEach { followButtonsToHide[it.username] = true }
-        user?.let { followButtonsToHide[it.username] = true }
-
         val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
-        question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user?.username }
+        if (user != null) {
+            //user.followed.forEach { followButtonsToHide[it.followed.username] = true }
+            //user.let { followButtonsToHide[it.username] = true }
+            //
+            //question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user.username }
+        } else {
+            // TODO: hide shit jim said
+        }
 
         model.addAttribute("question", question)
         model.addAttribute("hideFollowForUser", HideFollowModel(followButtonsToHide))
@@ -156,8 +161,7 @@ class QuestionMVController {
             return "redirect:/question/$id"
         }
 
-        // TODO add comment to database
-        println(answerForm.content)
+        answerService.postAnswer(id, PostAnswerDTO(answerForm.content))
 
         return "redirect:/question/$id"
     }
@@ -214,12 +218,13 @@ class QuestionMVController {
             return "redirect:/question/create"
         }
 
-        // TODO add question to database
-        println(createQuestionForm.title)
-        println(createQuestionForm.content)
-        println(createQuestionForm.tags)
+        val question = questionService.postQuestion(PostQuestionDTO(
+            createQuestionForm.title,
+            createQuestionForm.content,
+            createQuestionForm.tags,
+        ))
 
-        return "redirect:/question"
+        return "redirect:/question/${question.id}"
     }
 }
 

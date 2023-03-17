@@ -1,12 +1,11 @@
 package com.kamelia.ugeoverflow.session
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.user.UserCredentialsDTO
-import com.kamelia.ugeoverflow.user.UserRepository
 import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.*
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
@@ -20,9 +19,10 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
+@MvcController
 @Controller
 @RequestMapping("/auth")
-class AuthMVController(
+class AuthController(
     val userService: UserService,
     val sessionManager: SessionManager,
 ) {

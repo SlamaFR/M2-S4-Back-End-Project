@@ -25,6 +25,7 @@
         <a th:if="${user != null}" class="hover-grow" th:href="@{/auth/logout}">Logout</a>
     </nav>
 </header>
-<h1>Oops, an error happening, and we don't know what it is</h1>
+<p th:if="${param.get('error')} == null" style="font-size: 10em;">🤨</p>
+<h1>[[${param.get('error') ?: 'huh? '}]]</h1>
 </body>
 </html>
