@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
+    <title>Authentication</title>
+</head>
+<body>
+<header class="w-full p-1">
+    <nav class="flex flex-row center gap">
+        <a class="hover-grow" th:href="@{/}">Home</a>
+        <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
+        <a class="hover-grow" href="#">Profile</a>
+        <a class="hover-grow" th:href="@{/auth}">Login</a>
+        <a class="hover-grow" th:href="@{/auth/logout}">Logout</a>
+    </nav>
+</header>
+<main class="flex flex-col center">
+    <h1>Authentication</h1>
+    <div class="flex flex-row gap-xl center">
+        <div class="flex flex-col center">
+            <h2>Login</h2>
+            <form th:action="@{/auth/login}"  th:method="POST" th:object="${loginForm}" class="flex flex-col gap">
+                <div class="flex flex-col">
+                    <div>
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" name="username" th:field="*{username}" required pattern="[a-zA-Z0-9_]+"/>
+                    </div>
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                </div>
+                <div class="flex flex-col">
+                    <div>
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" th:field="*{password}" required/>
+                    </div>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div class="flex flex-col center">
+            <h2>Register</h2>
+            <form th:action="@{/auth/register}" th:method="POST" th:object="${registerForm}" class="flex flex-col gap">
+                <div class="flex flex-col">
+                    <div>
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" name="username" th:field="*{username}" required pattern="[a-zA-Z0-9_]+"/>
+                    </div>
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                </div>
+                <div class="flex flex-col">
+                    <div>
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" name="password" th:field="*{password}" required/>
+                    </div>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+                <div class="flex flex-col">
+                    <div>
+                        <label for="registerPasswordConfirm">Confirm password</label>
+                        <input type="password" id="registerPasswordConfirm" name="passwordConfirm" th:field="*{passwordConfirm}" required/>
+                    </div>
+                    <span th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

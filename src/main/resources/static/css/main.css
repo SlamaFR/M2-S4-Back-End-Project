@@ -1,0 +1,80 @@
+body, html, main, header {
+    overflow-x: hidden;
+}
+
+a {
+    color: #383131;
+    text-decoration: none;
+}
+
+.flex {
+    display: flex;
+}
+
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.between {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.end {
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.gap {
+    gap: 1rem;
+}
+
+.gap-xl {
+    gap: 5rem;
+}
+
+.gap-sm {
+    gap: .5rem;
+}
+
+.w-xl {
+    width: 80vw;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.border {
+    padding-inline: 2rem;
+    padding-block: 1rem;
+    border: 2px solid #383131;
+    border-radius: 20px;
+}
+
+.pill {
+    padding-inline: 1rem;
+    padding-block: .5rem;
+    border: 2px solid #383131;
+    border-radius: 999px;
+}
+
+.p-1 {
+    padding: 1rem;
+}
+
+.hover-grow {
+    transition: all .2s ease-in-out;
+}
+.hover-grow:hover {
+    transform: scale(1.02);
+}

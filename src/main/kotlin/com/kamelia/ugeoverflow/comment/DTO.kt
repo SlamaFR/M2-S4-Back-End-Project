@@ -7,7 +7,7 @@ data class PostCommentDTO(
     val content: String,
 )
 
-data class CommentDTO(
+open class CommentDTO(
     val id: UUID,
     val authorUsername: String,
     val content: String,

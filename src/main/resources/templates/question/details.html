@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/static/css/main.css}" href="/static/css/main.css">
+    <title th:text="${question.title}"></title>
+</head>
+<body>
+<header class="w-full p-1">
+    <nav class="flex flex-row center gap">
+        <a class="hover-grow" th:href="@{/}">Home</a>
+        <a class="hover-grow" th:href="@{/question/create}">Create Question</a>
+        <a class="hover-grow" href="#">Profile</a>
+        <a class="hover-grow" th:href="@{/auth}">Login</a>
+        <a class="hover-grow" th:href="@{/auth/logout}">Logout</a>
+    </nav>
+</header>
+<main class="flex flex-col center gap w-full">
+    <div class="flex flex-col border w-xl">
+        <div class="flex flex-row between">
+            <div class="flex flex-row gap-sm center">
+                <h2 th:text="${question.authorUsername}"></h2>
+                <form th:if="${hideFollowForUser.map[question.authorUsername] == null || !hideFollowForUser.map[question.authorUsername]}" th:action="@{/user/follow/{user}(user=${question.authorUsername})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Follow</button>
+                </form>
+            </div>
+            <span th:text="${question.creationDate}"></span>
+        </div>
+        <div class="flex flex-row between">
+            <h1 th:text="${question.title}"></h1>
+            <div class="flex flex-row gap">
+                <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>
+            </div>
+        </div>
+        <p th:text="${question.content}"></p>
+    </div>
+
+    <hr class="w-xl">
+
+    <form th:action="@{/question/answer/{id}(id=${question.id})}" th:method="POST" th:object="${answerForm}" class="flex flex-col border w-xl gap-sm">
+        <label for="answerContent">Post a new answer</label>
+        <textarea name="answerContent" id="answerContent" th:field="*{content}" style="resize: none"></textarea>
+        <div class="flex flex-row center">
+            <button type="submit" class="hover-grow pill">Send</button>
+        </div>
+        <span th:if="${answerErrorMessage}" th:text="${answerErrorMessage}"></span>
+    </form>
+
+    <div th:each="answer : ${question.comments}" class="flex flex-col border w-xl">
+        <div class="flex flex-row between">
+            <div class="flex flex-row gap-sm center">
+                <h2 th:text="${answer.authorUsername}"></h2>
+                <form th:if="${hideFollowForUser.map[answer.authorUsername] == null || !hideFollowForUser.map[answer.authorUsername]}" th:action="@{/user/follow/{user}(user=${answer.authorUsername})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Follow</button>
+                </form>
+                <form th:if="${showDeleteForUser.map[answer.id]}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Delete</button>
+                </form>
+            </div>
+            <span th:text="${answer.creationDate}"></span>
+        </div>
+        <div class="flex flex-row between gap-xl">
+            <p th:text="${answer.content}"></p>
+            <div class="flex flex-row center gap">
+                <form th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
+                    <button class="hover-grow pill">Downvote</button>
+                </form>
+                <span>0</span>
+                <form th:action="@{/question/vote/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id})}" th:method="POST">
+                    <button class="hover-grow pill">Upvote</button>
+                </form>
+            </div>
+        </div>
+        <details>
+            <summary>Comments</summary>
+            <form th:action="@{/question/answer/{id}/{answerId}(id=${question.id},answerId=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
+                <label for="commentContent">Post a new comment</label>
+                <textarea name="commentContent" id="commentContent" th:field="*{content}" style="resize: none"></textarea>
+                <div class="flex flex-row center">
+                    <button type="submit" class="hover-grow pill">Send</button>
+                </div>
+                <th:block th:if="${commentErrorMessages}">
+                    <span th:if="${commentErrorMessages[${comment.id}]}" th:text="${commentErrorMessages[${comment.id}]}"></span>
+                </th:block>
+            </form>
+            <div th:each="comment : ${answer.comments}" class="flex flex-col border">
+                <div class="flex flex-row between">
+                    <h2 th:text="${comment.authorUsername}"></h2>
+                    <span th:text="${comment.creationDate}"></span>
+                </div>
+                <p th:text="${comment.content}"></p>
+            </div>
+        </details>
+    </div>
+</main>
+</body>
+</html>
