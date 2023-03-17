@@ -1,24 +1,16 @@
 package com.kamelia.ugeoverflow
 
 import com.kamelia.ugeoverflow.core.MvcController
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.GetMapping
 
 @MvcController
 @Controller
 class ErrorMvcController : ErrorController {
 
-    @RequestMapping("/error")
-    fun handleError(
-        @RequestParam(value = "code", required = false) code: Int?,
-        response: HttpServletResponse
-    ): String = when (code ?: response.status) {
-        401 -> "error/401"
-        404 -> "error/404"
-        500 -> "error/500"
-        else -> "error/error"
+    @GetMapping("/error")
+    fun handleError(): String  {
+        return "error/error"
     }
 }
