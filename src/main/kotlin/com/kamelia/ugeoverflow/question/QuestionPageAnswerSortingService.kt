@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.answer.toDTO
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.follow.FollowedUserRepository
 import com.kamelia.ugeoverflow.user.User
+import com.kamelia.ugeoverflow.votes.VoteDTO
 import jakarta.transaction.Transactional
 import java.util.*
 import org.springframework.beans.factory.annotation.Value
@@ -38,10 +39,14 @@ class QuestionPageAnswerSortingService(
             val userCoefficientMap = createUserCoefficientMap(user)
             set.asSequence()
                 .map {
+                    var isVotedByUser = false
                     val finalScore = it.votes.fold(.0) { acc, v ->
                         val voterInfo = userCoefficientMap[v.user.id]
                             ?: return@fold acc + v.isUpvote.voteToInt() // the voter is not in the map, so we use the default trust score
 
+                        if (v.user.id == user.id) {
+                            isVotedByUser = true
+                        }
                         // score calculation according to the algorithm
                         acc + v.isUpvote.voteToInt() * max(
                             1.0,
@@ -49,10 +54,10 @@ class QuestionPageAnswerSortingService(
                         )
                     }
 
-                    it to finalScore
+                    Triple(it, isVotedByUser, finalScore)
                 }
-                .sortedByDescending { it.second } // sort by the final score before converting the score to an int to avoid rounding errors
-                .map { it.first.toDTO(it.second.toInt()) }
+                .sortedByDescending { (_, _, score) -> score } // sort by the final score before converting the score to an int to avoid rounding errors
+                .map { (answer, votedByUser, score) -> answer.toDTO(score.toInt(), VoteDTO(votedByUser)) }
                 .toList()
         }
 
