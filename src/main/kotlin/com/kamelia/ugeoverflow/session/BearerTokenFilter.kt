@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -34,22 +33,6 @@ class BearerTokenFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        if (currentAuthOrNull()?.isAuthenticated == true) {
-            // TODO no.
-            val springUser = currentAuth().principal as User
-            val user = userRepository.findByUsername(springUser.username)
-                ?: throw AssertionError("User not found")
-            val newAuth = UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                springUser.authorities
-            )
-            newAuth.details = WebAuthenticationDetailsSource().buildDetails(request)
-            SecurityContextHolder.getContext().authentication = newAuth
-            filterChain.doFilter(request, response)
-            return
-        }
-
         val auth = try {
             getAuth(request) ?: UsernamePasswordAuthenticationToken(null, null)
         } catch (e: InvalidRequestException) {
