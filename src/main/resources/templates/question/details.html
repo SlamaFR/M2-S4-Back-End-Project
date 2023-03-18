@@ -70,7 +70,7 @@
                 <form th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Downvote</button>
                 </form>
-                <span>0</span>
+                <span th:text="${answer.note}"></span>
                 <form th:action="@{/question/vote/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Upvote</button>
                 </form>

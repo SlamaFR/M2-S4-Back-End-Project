@@ -7,6 +7,7 @@ import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -16,16 +17,9 @@ class VoteRestController(
 ) {
 
     @Secured(Roles.USER)
-    @PutMapping("/{answerId}/upvote")
-    fun upvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
-        voteService.upvoteAnswer(answerId)
-        return ResponseEntity.ok().build()
-    }
-
-    @Secured(Roles.USER)
-    @PutMapping("/{answerId}/downvote")
-    fun downvoteAnswer(@PathVariable answerId: UUID): ResponseEntity<Unit> {
-        voteService.downvoteAnswer(answerId)
+    @PutMapping("/{answerId}/vote")
+    fun voteAnswer(@PathVariable answerId: UUID, @RequestParam("vote") vote: Boolean): ResponseEntity<Unit> {
+        voteService.voteAnswer(answerId, vote)
         return ResponseEntity.ok().build()
     }
 

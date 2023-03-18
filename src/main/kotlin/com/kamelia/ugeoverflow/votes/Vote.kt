@@ -12,8 +12,8 @@ import jakarta.persistence.Table
 @Table(name = "vote")
 class Vote(
     @ManyToOne
-    @JoinColumn(name = "voter")
-    val voter: User,
+    @JoinColumn(name = "user_id")
+    val user: User,
     @Column(name = "is_upvote")
     var isUpvote: Boolean,
 ) : AbstractIdEntity()

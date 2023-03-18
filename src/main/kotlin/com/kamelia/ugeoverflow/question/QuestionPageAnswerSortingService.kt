@@ -39,7 +39,7 @@ class QuestionPageAnswerSortingService(
             set.asSequence()
                 .map {
                     val finalScore = it.votes.fold(.0) { acc, v ->
-                        val voterInfo = userCoefficientMap[v.voter.id]
+                        val voterInfo = userCoefficientMap[v.user.id]
                             ?: return@fold acc + v.isUpvote.voteToInt() // the voter is not in the map, so we use the default trust score
 
                         // score calculation according to the algorithm
