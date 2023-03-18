@@ -1,72 +1,84 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.MvcController
-import com.kamelia.ugeoverflow.follow.FollowedUserDTO
+import com.kamelia.ugeoverflow.follow.FollowedUserRepository
+import com.kamelia.ugeoverflow.follow.FollowingService
+import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import java.util.*
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
-val dummy = UserDTO(UUID.randomUUID(), "notKamui", setOf(FollowedUserDTO(UUID.randomUUID(), "ZwenDo", -50)))
-
 @MvcController
 @Controller
 @RequestMapping("/user")
-class UserController {
+class UserController(
+    private val userService: UserService,
+    private val followingService: FollowingService,
+) {
 
-    @GetMapping("/details/{id}") // TODO secure route to ROLE_USER and ROLE_ADMIN
+    @Secured("ROLE_USER")
+    @GetMapping("/details")
     fun profile(
-        @PathVariable("id") id: UUID,
         @RequestParam("updateSuccess", required = false) updateSuccess: Boolean?,
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
         model: Model,
     ): String {
-        // TODO: Get user from database
-        val user: UserDTO? = dummy
+        val user = currentUser().let { userService.findByIdOrNull(it.id) }
 
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")
             return "error/404"
         }
 
-        model.addAttribute("user", user)
+        val followedUsers = followingService.getFollowedUsers()
         model.addAttribute("updateSuccess", updateSuccess)
+        model.addAttribute("followedUsers", followedUsers)
 
         return "user/details"
     }
 
-    @PostMapping("/details/{id}/password") // TODO secure route to ROLE_USER and ROLE_ADMIN
+    @Secured("ROLE_USER")
+    @PostMapping("/details/password")
     fun updatePassword(
-        @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
         model: Model,
         binding: BindingResult,
     ): String {
-        if (binding.hasErrors()) return "redirect:/user/details/$id?updateSuccess=false"
+        if (binding.hasErrors() || updatePasswordForm.newPassword != updatePasswordForm.confirmPassword) {
+            return "redirect:/user/details?updateSuccess=false"
+        }
 
-        // TODO update password
+        val user = currentUser().let { userService.findByIdOrNull(it.id) }
+        if (user == null) {
+            model.addAttribute("errorMessage", "User not found")
+            return "error/404"
+        }
 
-        return "redirect:/user/details/$id?updateSuccess=true"
+        userService.updatePassword(user, updatePasswordForm.newPassword)
+
+        return "redirect:/user/details?updateSuccess=true"
     }
 
+    @Secured("ROLE_USER")
     @GetMapping("/evaluate/{id}")
     fun updateTrustForm(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("updateTrustForm") updateTrustForm: UpdateTrustForm,
         model: Model,
     ): String {
-        // TODO: Get user from database
-        val user: UserDTO? = dummy
+        val user = currentUser().let { userService.findByIdOrNull(it.id) }
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.id == id }
+        val followed = user.followed.firstOrNull { it.followed.id == id }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"
@@ -79,6 +91,7 @@ class UserController {
         return "user/evaluate"
     }
 
+    @Secured("ROLE_USER")
     @PostMapping("/evaluate/{id}")
     fun updateTrust(
         @PathVariable("id") id: UUID,
@@ -88,14 +101,13 @@ class UserController {
     ): String {
         if (binding.hasErrors()) return "redirect:/user/details/$id?updateSuccess=false"
 
-        // TODO: Get user from database
-        val user: UserDTO? = dummy
+        val user = currentUser().let { userService.findByIdOrNull(it.id) }
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.id == id }
+        val followed = user.followed.firstOrNull { it.followed.id == id }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"
@@ -106,6 +118,7 @@ class UserController {
         return "redirect:/user/details/$id?updateSuccess=true"
     }
 
+    @Secured("ROLE_USER")
     @PostMapping("/follow/{username}")
     fun follow(
         @PathVariable("username") username: String,
@@ -117,19 +130,20 @@ class UserController {
         return "redirect:${request.getHeader("referer")}"
     }
 
+    @Secured("ROLE_USER")
     @PostMapping("/unfollow/{username}")
     fun unfollow(
         @PathVariable("username") username: String,
         model: Model,
     ): String {
-        // TODO: Get user from database
-        val user: UserDTO? = dummy
+        val user = currentUser().let { userService.findByIdOrNull(it.id) }
+
         if (user == null) {
             model.addAttribute("errorMessage", "User not found")
             return "error/404"
         }
 
-        val followed = user.followed.firstOrNull { it.username == username }
+        val followed = user.followed.firstOrNull { it.followed.username == username }
         if (followed == null) {
             model.addAttribute("errorMessage", "You do not follow this user")
             return "error/404"

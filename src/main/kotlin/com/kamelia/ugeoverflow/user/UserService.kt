@@ -56,4 +56,7 @@ class UserService(
         sessionManager.logoutAll(user.id)
     }
 
+    @Transactional
+    fun updatePassword(user: User, newPassword: String) = userRepository.updatePassword(user.id, hasher.encode(newPassword))
+
 }

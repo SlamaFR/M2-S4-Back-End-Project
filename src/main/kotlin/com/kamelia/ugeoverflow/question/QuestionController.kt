@@ -13,6 +13,7 @@ import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import com.kamelia.ugeoverflow.votes.VoteService
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.util.*
@@ -23,68 +24,6 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
-//val questions = listOf(
-//    QuestionDTO(
-//        UUID.randomUUID(),
-//        "ZwenDo",
-//        "How to make a good questions?",
-//        "I want to know how to make a good questions",
-//        setOf(
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "Slama",
-//                "You should use a good title and a good description",
-//                setOf(
-//                    CommentDTO(
-//                        UUID.randomUUID(),
-//                        "notKamui",
-//                        "I agree",
-//                        Instant.now(),
-//                    ),
-//                ),
-//                Instant.now(),
-//            ),
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "notKamui",
-//                "You should use a good title and a good description",
-//                setOf(
-//                    CommentDTO(
-//                        UUID.randomUUID(),
-//                        "Slama",
-//                        "I agree",
-//                        Instant.now(),
-//                    ),
-//                ),
-//                Instant.now(),
-//            ),
-//        ),
-//        setOf(
-//            TagDTO("questions"),
-//        ),
-//        Instant.now()
-//    ),
-//    QuestionDTO(
-//        UUID.randomUUID(),
-//        "notKamui",
-//        "How to make a good answer?",
-//        "I want to know how to make a good answer",
-//        setOf(
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "Slama",
-//                "Git gud",
-//                setOf(),
-//                Instant.now(),
-//            ),
-//        ),
-//        setOf(
-//            TagDTO("answer"),
-//        ),
-//        Instant.now()
-//    ),
-//)
-val questions = listOf<QuestionDTO>()
 val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 
 @MvcController
@@ -105,15 +44,19 @@ class QuestionController(
         @RequestParam("searchName", required = false) searchName: String?,
         @RequestParam("searchTags", required = false) searchTags: Set<String>?,
         model: Model,
+        response: HttpServletResponse,
     ): String {
         model.addAttribute("tags", tagService.allTags())
 
+        val actualPage = page ?: 0
+
         val questions = questionService.getPage(
-            Pageable.ofSize(25).withPage(page ?: 0),
+            Pageable.ofSize(25).withPage(actualPage),
             QuestionSearchFilterDTO(searchName, searchTags)
         )
 
         model.addAttribute("questionsModel", QuestionsModel(questions.toList()))
+        model.addAttribute("initialPage", actualPage)
 
         return "question/list"
     }
@@ -188,20 +131,38 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/answer/{id}/{commentId}")
-    fun comment(
+    @PostMapping("/comment/{id}")
+    fun commentQuestion(
         @PathVariable("id") id: UUID,
-        @PathVariable("commentId") commentId: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
         bindingResult: BindingResult,
     ): String {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("commentErrorMessages", mapOf(commentId to "Invalid comment"))
+            model.addAttribute("commentErrorMessage", mapOf(id to "Invalid comment"))
             return "redirect:/question/$id"
         }
 
-        commentService.postCommentOnAnswer(commentId, PostCommentDTO(commentForm.content))
+        // TODO add comment to database
+        println(commentForm.content)
+
+        return "redirect:/question/$id"
+    }
+
+    @PostMapping("/answer/{id}/{answerId}")
+    fun commentAnswer(
+        @PathVariable("id") id: UUID,
+        @PathVariable("answerId") answerId: UUID,
+        @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
+        model: Model,
+        bindingResult: BindingResult,
+    ): String {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("commentErrorMessages", mapOf(answerId to "Invalid comment"))
+            return "redirect:/question/$id"
+        }
+
+        commentService.postCommentOnAnswer(answerId, PostCommentDTO(commentForm.content))
         return "redirect:/question/$id"
     }
 

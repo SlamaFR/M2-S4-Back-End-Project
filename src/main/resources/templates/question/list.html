@@ -9,18 +9,19 @@
     <title>Questions</title>
 </head>
 <body>
-<header class="w-full p-1">
+<header class="w-full flex flex-col center">
+    <h2 th:if="${user != null}">Hello [[${user.username}]]</h2>
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>
 
         <a th:if="${user == null}" class="hover-grow" th:href="@{/auth}">Login</a>
 
         <a th:if="${user != null}" class="hover-grow" th:href="@{/question/create}">Create Question</a>
-        <a th:if="${user != null}" class="hover-grow" href="#">Profile</a>
+        <a th:if="${user != null}" class="hover-grow" th:href="@{/user/details}">Profile</a>
         <a th:if="${user != null}" class="hover-grow" th:href="@{/auth/logout}">Logout</a>
     </nav>
 </header>
-<main class="flex flex-col center">
+<main class="flex flex-col center gap-sm">
     <h1>Questions</h1>
     <form th:action="@{/question}" th:method="GET" class="flex flex-col center gap border">
         <h2>Search</h2>
@@ -41,6 +42,11 @@
     </form>
 
     <hr class="w-xl" />
+
+    <form th:action="@{/question}" th:method="GET" class="flex flex-row">
+        <input type="number" name="page" id="page" th:value="${initialPage}">
+        <button type="submit">Go to page</button>
+    </form>
 
     <div class="flex flex-col center gap">
         <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}" class="flex flex-row w-full between border hover-grow">

@@ -58,11 +58,11 @@ interface UserRepository : JpaRepository<User, UUID> {
     )
     fun findByUsername(username: String): User?
 
+
+    @Modifying
     @Query(
-        """UPDATE "user" SET "password" = :password WHERE "id" = :id""",
+        value = """UPDATE "user" SET "password" = :password WHERE "id" = :userId""",
         nativeQuery = true,
     )
-    @Modifying
-    fun updatePassword(id: UUID, password: String)
-
+    fun updatePassword(userId: UUID, password: String)
 }
