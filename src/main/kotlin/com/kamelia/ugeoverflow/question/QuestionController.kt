@@ -77,17 +77,13 @@ class QuestionController(
         val question = questionService.getQuestion(id)
 
         val followButtonsToHide = mutableMapOf<UUID, Boolean>()
-        val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
         if (user != null) {
             followingService.getFollowedUsers().forEach { followButtonsToHide[it.id] = true }
             followButtonsToHide[user.id] = true
-
-//            question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user.username }
         }
 
         model.addAttribute("question", question)
         model.addAttribute("hideFollowForUser", HideFollowModel(followButtonsToHide))
-        model.addAttribute("showDeleteForUser", ShowDeleteModel(deleteButtonsToShow))
         model.addAttribute("converter", mdToHtmlService)
 
         return "question/details"
@@ -124,13 +120,22 @@ class QuestionController(
     }
 
     @Secured(Roles.ADMIN)
+    @PostMapping("/delete/{id}")
+    fun deleteQuestion(
+        @PathVariable("id") id: UUID,
+    ): String {
+        questionService.deleteQuestion(id)
+        return "redirect:/question"
+    }
+
+    @Secured(Roles.USER)
     @PostMapping("/answer/delete/{id}")
     fun deleteAnswer(
         @PathVariable("id") id: UUID,
         request: HttpServletRequest,
     ): String {
-        questionService.deleteQuestion(id)
-        return "redirect:/question"
+        answerService.deleteAnswer(id)
+        return "redirect:${request.getHeader("referer")}"
     }
 
     @Secured(Roles.USER)
@@ -223,9 +228,5 @@ class QuestionsModel(
 )
 
 class HideFollowModel(
-    val map: Map<UUID, Boolean>,
-)
-
-class ShowDeleteModel(
     val map: Map<UUID, Boolean>,
 )

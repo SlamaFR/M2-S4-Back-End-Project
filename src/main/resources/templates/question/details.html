@@ -29,6 +29,9 @@
                 <form th:if="${user != null && (hideFollowForUser.map[question.author.id] == null || !hideFollowForUser.map[question.author.id])}" th:action="@{/user/follow/{id}(id=${question.author.id})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
+                <form th:if="${user != null && user.isAdmin()}" th:action="@{/question/delete/{id}(id=${question.id})}" th:method="POST">
+                    <button type="submit" class="hover-grow pill">Delete</button>
+                </form>
             </div>
             <span th:text="${#temporals.format(question.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
@@ -82,7 +85,7 @@
                 <form th:if="${user != null && (hideFollowForUser.map[answer.author.id] == null || !hideFollowForUser.map[answer.author.id])}" th:action="@{/user/follow/{id}(id=${answer.author.id})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
-                <form th:if="${user != null && (showDeleteForUser.map[answer.id] != null && showDeleteForUser.map[answer.id])}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
+                <form th:if="${user != null && (user.isAdmin || answer.author.id == user.id)}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Delete</button>
                 </form>
             </div>

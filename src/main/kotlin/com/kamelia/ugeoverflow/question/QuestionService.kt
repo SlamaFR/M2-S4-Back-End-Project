@@ -50,6 +50,7 @@ class QuestionService(
         questionRepository.delete(question)
     }
 
+    @Transactional
     fun getQuestion(questionId: UUID): QuestionDTO = currentUserOrNull()?.let {
         questionPageAnswerSortingService.getQuestion(it, questionId)
     } ?: questionPageAnswerSortingService.getQuestionAsAnonymous(questionId)

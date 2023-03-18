@@ -1,5 +1,6 @@
 package com.kamelia.ugeoverflow.user
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.kamelia.ugeoverflow.follow.FollowedUser
 import com.kamelia.ugeoverflow.follow.FollowedUserDTO
 import com.kamelia.ugeoverflow.follow.toDTO
@@ -16,7 +17,12 @@ data class UserDTO(
 data class UserLightDTO(
     val id: UUID,
     val username: String,
-)
+) {
+
+    @get:JsonIgnore
+    val isAdmin: Boolean
+        get() = username == "admin"
+}
 
 @Validated
 data class UserCredentialsDTO(
