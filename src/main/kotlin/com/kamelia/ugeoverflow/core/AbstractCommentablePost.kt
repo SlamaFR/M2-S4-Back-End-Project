@@ -25,7 +25,7 @@ abstract class AbstractCommentablePost(
     }
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "parentId")
+    @JoinColumn(name = "parent_id")
     private var _comments: MutableSet<Comment> = mutableSetOf()
 
 
