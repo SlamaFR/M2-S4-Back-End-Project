@@ -2,9 +2,10 @@ package com.kamelia.ugeoverflow.session
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.user.User
-import com.kamelia.ugeoverflow.user.UserService
+import com.kamelia.ugeoverflow.user.UserRepository
 import java.util.*
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 @EnableAsync
 class SessionManager(
-    private val userService: UserService,
+    private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val tokenFactory: TokenFactory,
 ) {
@@ -42,7 +43,7 @@ class SessionManager(
     }
 
     fun login(username: String, password: String): TokensDTO {
-        val user = userService.findByUsernameOrNull(username)
+        val user = userRepository.findByUsername(username)
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
 
         if (!passwordEncoder.matches(password, user.password)) {
@@ -64,7 +65,7 @@ class SessionManager(
     }
 
     fun refresh(userId: UUID, refreshToken: UUID): TokensDTO = synchronized(lock) {
-        val user = userService.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId)
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
 
         val tokenData = tokenFactory.createUserTokens(user)

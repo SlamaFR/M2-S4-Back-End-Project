@@ -18,6 +18,8 @@ object Routes {
 
         const val LOGOUT_ALL = "$ROOT/logout-all"
 
+        const val UPDATE_PASSWORD = "$ROOT/update-password"
+
     }
 
     object Following {

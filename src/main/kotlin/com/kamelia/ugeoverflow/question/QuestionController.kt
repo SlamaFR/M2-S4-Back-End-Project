@@ -2,85 +2,28 @@ package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.answer.AnswerService
 import com.kamelia.ugeoverflow.answer.PostAnswerDTO
+import com.kamelia.ugeoverflow.comment.CommentService
+import com.kamelia.ugeoverflow.comment.PostCommentDTO
 import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.tag.TagService
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
+import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
+import com.kamelia.ugeoverflow.votes.VoteService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.util.*
 import org.springframework.data.domain.Pageable
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
-//val questions = listOf(
-//    QuestionDTO(
-//        UUID.randomUUID(),
-//        "ZwenDo",
-//        "How to make a good questions?",
-//        "I want to know how to make a good questions",
-//        setOf(
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "Slama",
-//                "You should use a good title and a good description",
-//                setOf(
-//                    CommentDTO(
-//                        UUID.randomUUID(),
-//                        "notKamui",
-//                        "I agree",
-//                        Instant.now(),
-//                    ),
-//                ),
-//                Instant.now(),
-//            ),
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "notKamui",
-//                "You should use a good title and a good description",
-//                setOf(
-//                    CommentDTO(
-//                        UUID.randomUUID(),
-//                        "Slama",
-//                        "I agree",
-//                        Instant.now(),
-//                    ),
-//                ),
-//                Instant.now(),
-//            ),
-//        ),
-//        setOf(
-//            TagDTO("questions"),
-//        ),
-//        Instant.now()
-//    ),
-//    QuestionDTO(
-//        UUID.randomUUID(),
-//        "notKamui",
-//        "How to make a good answer?",
-//        "I want to know how to make a good answer",
-//        setOf(
-//            AnswerDTO(
-//                UUID.randomUUID(),
-//                "Slama",
-//                "Git gud",
-//                setOf(),
-//                Instant.now(),
-//            ),
-//        ),
-//        setOf(
-//            TagDTO("answer"),
-//        ),
-//        Instant.now()
-//    ),
-//)
-val questions = listOf<QuestionDTO>()
 val tags = listOf(TagDTO("questions"), TagDTO("answer"))
 
 @MvcController
@@ -91,6 +34,8 @@ class QuestionController(
     private val userService: UserService,
     private val answerService: AnswerService,
     private val tagService: TagService,
+    private val voteService: VoteService,
+    private val commentService: CommentService,
 ) {
 
     @GetMapping
@@ -127,8 +72,6 @@ class QuestionController(
 
         val question = questionService.getQuestion(id)
 
-        println(question)
-
         val followButtonsToHide = mutableMapOf<String, Boolean>()
         val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
         if (user != null) {
@@ -147,18 +90,19 @@ class QuestionController(
         return "question/details"
     }
 
-    @PostMapping("/vote/{id}/{commentId}")
+    @Secured(Roles.USER)
+    @PostMapping("/vote/{questionId}/{answerId}")
     fun voteComment(
-        @PathVariable("id") id: UUID,
-        @PathVariable("commentId") commentId: UUID,
+        @PathVariable("questionId") questionId: UUID,
+        @PathVariable("answerId") answerId: UUID,
         @RequestParam("vote", required = true) vote: Boolean,
         model: Model,
     ): String {
-        // TODO: Update comment vote in database
-
-        return "redirect:/question/$id"
+        voteService.voteAnswer(answerId, vote)
+        return "redirect:/question/$questionId"
     }
 
+    @Secured(Roles.USER)
     @PostMapping("/answer/{id}")
     fun answer(
         @PathVariable("id") id: UUID,
@@ -176,17 +120,17 @@ class QuestionController(
         return "redirect:/question/$id"
     }
 
+    @Secured(Roles.ADMIN)
     @PostMapping("/answer/delete/{id}")
     fun deleteAnswer(
         @PathVariable("id") id: UUID,
         request: HttpServletRequest,
     ): String {
-        // TODO verify user is owner of answer
-        // TODO delete answer from database
-        println("Delete answer $id")
-        return "redirect:${request.getHeader("referer")}"
+        questionService.deleteQuestion(id)
+        return "redirect:/question"
     }
 
+    @Secured(Roles.USER)
     @PostMapping("/comment/{id}")
     fun commentQuestion(
         @PathVariable("id") id: UUID,
@@ -218,9 +162,7 @@ class QuestionController(
             return "redirect:/question/$id"
         }
 
-        // TODO add comment to database
-        println(commentForm.content)
-
+        commentService.postCommentOnAnswer(answerId, PostCommentDTO(commentForm.content))
         return "redirect:/question/$id"
     }
 
@@ -229,9 +171,7 @@ class QuestionController(
         @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
         model: Model,
     ): String {
-        // TODO get tags from database
-        model.addAttribute("tags", tags)
-
+        model.addAttribute("tags", tagService.allTags())
         return "question/create"
     }
 

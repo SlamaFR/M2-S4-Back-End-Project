@@ -43,7 +43,7 @@ class QuestionRestController(
         return ResponseEntity.ok(questionDTO)
     }
 
-    @Secured(Roles.USER)
+    @Secured(Roles.ADMIN)
     @DeleteMapping("/{questionId}")
     fun deleteQuestion(@PathVariable questionId: UUID): ResponseEntity<Unit> {
         questionService.deleteQuestion(questionId)

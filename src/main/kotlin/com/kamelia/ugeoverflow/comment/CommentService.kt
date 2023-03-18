@@ -5,6 +5,7 @@ import com.kamelia.ugeoverflow.core.AbstractCommentablePost
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.question.QuestionRepository
 import com.kamelia.ugeoverflow.utils.currentUser
+import jakarta.transaction.Transactional
 import java.util.UUID
 import org.springframework.stereotype.Service
 
@@ -15,6 +16,7 @@ class CommentService(
     private val answerRepository: AnswerRepository
 ) {
 
+    @Transactional
     private fun postComment(commentable: AbstractCommentablePost, commentDTO: PostCommentDTO) {
         val currentUser = currentUser()
 
@@ -23,6 +25,7 @@ class CommentService(
         commentable.addComment(comment)
     }
 
+    @Transactional
     fun postCommentOnQuestion(questionId: UUID, commentDTO: PostCommentDTO) {
         val question = questionRepository.findById(questionId).orElseThrow {
             InvalidRequestException.notFound("Question not found")
@@ -30,6 +33,7 @@ class CommentService(
         postComment(question, commentDTO)
     }
 
+    @Transactional
     fun postCommentOnAnswer(answerId: UUID, commentDTO: PostCommentDTO) {
         val answer = answerRepository.findById(answerId).orElseThrow {
             InvalidRequestException.notFound("Answer not found")
@@ -37,6 +41,7 @@ class CommentService(
         postComment(answer, commentDTO)
     }
 
+    @Transactional
     private fun deleteComment(commentable: AbstractCommentablePost, commentId: UUID) {
         val currentUser = currentUser()
         val comment = commentRepository.findById(commentId).orElseThrow {
@@ -49,6 +54,7 @@ class CommentService(
         commentRepository.delete(comment)
     }
 
+    @Transactional
     fun removeCommentFromQuestion(questionId: UUID, commentId: UUID) {
         val question = questionRepository.findById(questionId).orElseThrow {
             InvalidRequestException.notFound("Question not found")
@@ -56,6 +62,7 @@ class CommentService(
         deleteComment(question, commentId)
     }
 
+    @Transactional
     fun removeCommentFromAnswer(answerId: UUID, commentId: UUID) {
         val answer = answerRepository.findById(answerId).orElseThrow {
             InvalidRequestException.notFound("Answer not found")
