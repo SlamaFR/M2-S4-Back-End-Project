@@ -7,6 +7,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.OneToMany
@@ -26,19 +27,21 @@ abstract class AbstractCommentablePost(
     }
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "parent_id")
-    private var _comments: MutableSet<Comment> = mutableSetOf()
+    @JoinTable(
+        joinColumns = [JoinColumn(name = "post_id")],
+        inverseJoinColumns = [JoinColumn(name = "comment_id")]
+    )
+    private var comments: MutableSet<Comment> = mutableSetOf()
 
-
-    val comments: Set<Comment>
-        get() = _comments
+    val postComments: Set<Comment>
+        get() = comments
 
     fun addComment(comment: Comment) {
-        _comments.add(comment)
+        comments.add(comment)
     }
 
     fun removeComment(comment: Comment) {
-        _comments.remove(comment)
+        comments.remove(comment)
     }
 
 }

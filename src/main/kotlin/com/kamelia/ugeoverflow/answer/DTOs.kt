@@ -27,7 +27,7 @@ fun Answer.toDTO(
     id,
     author.toLightDTO(),
     content,
-    comments.map(Comment::toDTO),
+    postComments.map(Comment::toDTO),
     creationDate,
     computedNote
 )
