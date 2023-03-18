@@ -9,6 +9,7 @@ import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import java.util.*
@@ -98,15 +99,19 @@ class QuestionController(
         @RequestParam("searchName", required = false) searchName: String?,
         @RequestParam("searchTags", required = false) searchTags: Set<String>?,
         model: Model,
+        response: HttpServletResponse,
     ): String {
         model.addAttribute("tags", tagService.allTags())
 
+        val actualPage = page ?: 0
+
         val questions = questionService.getPage(
-            Pageable.ofSize(25).withPage(page ?: 0),
+            Pageable.ofSize(25).withPage(actualPage),
             QuestionSearchFilterDTO(searchName, searchTags)
         )
 
         model.addAttribute("questionsModel", QuestionsModel(questions.toList()))
+        model.addAttribute("initialPage", actualPage)
 
         return "question/list"
     }
