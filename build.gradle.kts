@@ -31,6 +31,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
 
+	implementation("org.commonmark:commonmark:0.21.0")
 
     runtimeOnly("com.h2database:h2")
 

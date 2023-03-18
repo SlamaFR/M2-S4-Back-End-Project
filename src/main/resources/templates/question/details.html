@@ -38,12 +38,13 @@
                 <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>
             </div>
         </div>
-        <p th:text="${question.content}"></p>
+        <hr class="w-full">
+        <p th:utext="${converter.convert(question.content)}"></p>
         <details>
             <summary>Comments</summary>
             <form th:action="@{/question/comment/{id}(id=${question.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
                 <label for="questionCommentContent">Post a new comment</label>
-                <textarea name="questionCommentContent" id="questionCommentContent" th:field="*{content}" style="resize: none"></textarea>
+                <textarea name="questionCommentContent" id="questionCommentContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
                 <div class="flex flex-row center">
                     <button type="submit" class="hover-grow pill">Send</button>
                 </div>
@@ -56,7 +57,9 @@
                     <h2 th:text="${comment.authorUsername}"></h2>
                     <span th:text="${comment.creationDate}"></span>
                 </div>
-                <p th:text="${comment.content}"></p>
+                <div>
+                    <th:block th:utext="${converter.convert(comment.content)}"></th:block>
+                </div>
             </div>
         </details>
     </div>
@@ -65,7 +68,7 @@
 
     <form th:action="@{/question/answer/{id}(id=${question.id})}" th:method="POST" th:object="${answerForm}" class="flex flex-col border w-xl gap-sm">
         <label for="answerContent">Post a new answer</label>
-        <textarea name="answerContent" id="answerContent" th:field="*{content}" style="resize: none"></textarea>
+        <textarea name="answerContent" id="answerContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
         <div class="flex flex-row center">
             <button type="submit" class="hover-grow pill">Send</button>
         </div>
@@ -85,8 +88,13 @@
             </div>
             <span th:text="${#temporals.format(answer.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
+
+        <hr class="w-full">
+
         <div class="flex flex-row between gap-xl">
-            <p th:text="${answer.content}"></p>
+            <div>
+                <th:block th:utext="${converter.convert(answer.content)}"></th:block>
+            </div>
             <div class="flex flex-row center gap">
                 <form th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Downvote</button>
@@ -101,7 +109,7 @@
             <summary>Comments</summary>
             <form th:action="@{/question/answer/{id}/{answerId}(id=${question.id},answerId=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
                 <label for="commentContent">Post a new comment</label>
-                <textarea name="commentContent" id="commentContent" th:field="*{content}" style="resize: none"></textarea>
+                <textarea name="commentContent" id="commentContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
                 <div class="flex flex-row center">
                     <button type="submit" class="hover-grow pill">Send</button>
                 </div>
@@ -114,7 +122,9 @@
                     <h2 th:text="${comment.authorUsername}"></h2>
                     <span th:text="${#temporals.format(comment.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
                 </div>
-                <p th:text="${comment.content}"></p>
+                <div>
+                    <th:block th:utext="${converter.convert(comment.content)}"></th:block>
+                </div>
             </div>
         </details>
     </div>

@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.answer.AnswerService
 import com.kamelia.ugeoverflow.answer.PostAnswerDTO
 import com.kamelia.ugeoverflow.comment.CommentService
 import com.kamelia.ugeoverflow.comment.PostCommentDTO
+import com.kamelia.ugeoverflow.core.MdToHtmlService
 import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.tag.TagService
@@ -36,6 +37,7 @@ class QuestionController(
     private val tagService: TagService,
     private val voteService: VoteService,
     private val commentService: CommentService,
+    private val mdToHtmlService: MdToHtmlService,
 ) {
 
     @GetMapping
@@ -86,6 +88,7 @@ class QuestionController(
         model.addAttribute("question", question)
         model.addAttribute("hideFollowForUser", HideFollowModel(followButtonsToHide))
         model.addAttribute("showDeleteForUser", ShowDeleteModel(deleteButtonsToShow))
+        model.addAttribute("converter", mdToHtmlService)
 
         return "question/details"
     }
