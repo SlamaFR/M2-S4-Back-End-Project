@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.comment
 
 import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User
+import com.kamelia.ugeoverflow.utils.Constants
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
@@ -27,7 +28,7 @@ class Comment(
     private var _author: User = author
 
     @NotBlank
-    @Column(name = "content")
+    @Column(name = "content", length = Constants.MAX_POST_CONTENT_LENGTH)
     private var _content: String = content
 
     @PastOrPresent

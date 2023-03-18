@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.core
 
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.user.User
+import com.kamelia.ugeoverflow.utils.Constants
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.FetchType
@@ -16,7 +17,7 @@ abstract class AbstractCommentablePost(
     @ManyToOne(fetch = FetchType.EAGER)
     val author: User,
     @NotBlank
-    @Column(name = "content")
+    @Column(name = "content", length = Constants.MAX_POST_CONTENT_LENGTH)
     val content: String,
 ) : AbstractIdEntity() {
 

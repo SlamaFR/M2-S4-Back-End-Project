@@ -22,7 +22,7 @@ class MVCResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [InvalidRequestException::class])
     fun handleInvalidRequest(ex: InvalidRequestException): String = when (ex.statusCode) {
-        401 -> "redirect:/auth?error=Please+log+in"
+        401 -> "redirect:/auth?error=Session+expired:+Please+log+in"
         403 -> "error/403"
         404 -> "error/404"
         500 -> "error/500"

@@ -26,6 +26,11 @@ a {
     align-items: center;
 }
 
+.start {
+    justify-content: flex-start;
+    align-items: center;
+}
+
 .flex-col {
     flex-direction: column;
 }

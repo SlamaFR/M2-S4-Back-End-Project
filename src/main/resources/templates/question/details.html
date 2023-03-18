@@ -95,7 +95,7 @@
             <div>
                 <th:block th:utext="${converter.convert(answer.content)}"></th:block>
             </div>
-            <div class="flex flex-row center gap">
+            <div class="flex flex-row start gap">
                 <form th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Downvote</button>
                 </form>
