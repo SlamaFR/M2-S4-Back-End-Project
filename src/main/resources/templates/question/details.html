@@ -29,7 +29,7 @@
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
             </div>
-            <span th:text="${question.creationDate}"></span>
+            <span th:text="${#temporals.format(question.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
         <div class="flex flex-row between">
             <h1 th:text="${question.title}"></h1>
@@ -62,7 +62,7 @@
                     <button type="submit" class="hover-grow pill">Delete</button>
                 </form>
             </div>
-            <span th:text="${answer.creationDate}"></span>
+            <span th:text="${#temporals.format(answer.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
         <div class="flex flex-row between gap-xl">
             <p th:text="${answer.content}"></p>
@@ -91,7 +91,7 @@
             <div th:each="comment : ${answer.comments}" class="flex flex-col border">
                 <div class="flex flex-row between">
                     <h2 th:text="${comment.author.username}"></h2>
-                    <span th:text="${comment.creationDate}"></span>
+                    <span th:text="${#temporals.format(comment.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
                 </div>
                 <p th:text="${comment.content}"></p>
             </div>

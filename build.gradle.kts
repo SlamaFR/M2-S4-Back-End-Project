@@ -29,6 +29,7 @@ dependencies {
     implementation("at.favre.lib:bcrypt:0.10.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	implementation("org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE")
 
 
     runtimeOnly("com.h2database:h2")

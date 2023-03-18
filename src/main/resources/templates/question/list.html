@@ -51,7 +51,7 @@
             <div class="flex flex-row gap">
                 <span th:each="tag : ${question.tags}" th:text="${tag.name}" class="flex center pill"></span>
             </div>
-            <span th:text="${question.creationDate}"></span>
+            <span th:text="${#temporals.format(question.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
         </a>
     </div>
 </main>
