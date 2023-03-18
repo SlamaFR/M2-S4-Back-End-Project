@@ -152,6 +152,7 @@ class QuestionController(
         return "redirect:/question/$id"
     }
 
+    @Secured(Roles.USER)
     @PostMapping("/answer/{id}/{answerId}")
     fun commentAnswer(
         @PathVariable("id") id: UUID,
@@ -169,6 +170,7 @@ class QuestionController(
         return "redirect:/question/$id"
     }
 
+    @Secured(Roles.USER)
     @GetMapping("/create")
     fun createForm(
         @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
@@ -178,6 +180,7 @@ class QuestionController(
         return "question/create"
     }
 
+    @Secured(Roles.USER)
     @PostMapping("/create")
     fun create(
         @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
