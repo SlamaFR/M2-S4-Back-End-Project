@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.user
 
 import java.util.*
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
@@ -57,4 +58,11 @@ interface UserRepository : JpaRepository<User, UUID> {
     )
     fun findByUsername(username: String): User?
 
+
+    @Modifying
+    @Query(
+        value = """UPDATE "user" SET "password" = :password WHERE "id" = :userId""",
+        nativeQuery = true,
+    )
+    fun updatePassword(userId: UUID, password: String)
 }

@@ -43,4 +43,7 @@ class UserService(
     @Transactional
     fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
 
+    @Transactional
+    fun updatePassword(user: User, newPassword: String) = userRepository.updatePassword(user.id, hasher.encode(newPassword))
+
 }
