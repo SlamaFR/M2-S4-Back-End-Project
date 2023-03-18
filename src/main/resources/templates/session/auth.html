@@ -9,7 +9,7 @@
     <title>Authentication</title>
 </head>
 <body>
-<header class="w-full flex flex-col center">
+<header class="w-full flex flex-col center py">
     <h2 th:if="${user != null}">Hello [[${user.username}]]</h2>
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>

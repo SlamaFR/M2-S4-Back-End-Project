@@ -9,7 +9,7 @@
     <title th:text="${user.username}"></title>
 </head>
 <body>
-<header class="w-full flex flex-col center">
+<header class="w-full flex flex-col center py">
     <h2 th:if="${user != null}">Hello [[${user.username}]]</h2>
     <nav class="flex flex-row center gap">
         <a class="hover-grow" th:href="@{/}">Home</a>
@@ -22,11 +22,12 @@
     </nav>
 </header>
 <main class="flex flex-col center gap">
-    <span th:if="${updateSuccess != null && updateSuccess}">Updated user successfully</span>
-    <span th:if="${updateSuccess != null && !updateSuccess}">Failed to update user</span>
+    <span th:if="${updateSuccess != null && updateSuccess}" class="success">Updated user successfully</span>
+    <span th:if="${updateSuccess != null && !updateSuccess}" class="error">Failed to update user</span>
     <h1 th:text="${user.username}"></h1>
     <h2>Update password</h2>
-    <form th:action="@{/user/details/{id}/password(id=${user.id})}" th:method="POST" th:object="${updatePasswordForm}" class="flex flex-col gap">
+    <form th:action="@{/user/details/{id}/password(id=${user.id})}" th:method="POST" th:object="${updatePasswordForm}"
+          class="flex flex-col gap">
         <div class="flex flex-col">
             <div>
                 <label for="oldPassword">Old Password</label>
@@ -44,25 +45,28 @@
         <div class="flex flex-col">
             <div>
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" th:field="*{confirmPassword}" required/>
+                <input type="password" id="confirmPassword" name="confirmPassword" th:field="*{confirmPassword}"
+                       required/>
             </div>
             <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
         </div>
         <button type="submit">Update</button>
     </form>
 
-    <hr class="w-full" />
+    <hr class="w-full"/>
 
     <div class="flex flex-col center gap">
         <h2>Following</h2>
         <div th:each="fuser : ${followedUsers}" class="flex flex-row center gap">
-            <span th:text="${fuser.followed.username}">
-                [[${followed.username}]] | Trust: [[${followed.trust}]]
-                <a th:href="@{/user/evaluate/{id}(id=${fuser.followed.id})}">Update</a>
+            <span>[[${fuser.username}]]</span>
+            |
+            <span>
+                Trust: [[${fuser.trust}]]
+                <a th:href="@{/user/evaluate/{id}(id=${fuser.id})}" class="pill hover-grow">Update</a>
             </span>
             |
-            <form th:action="@{/user/unfollow/{user}(id=${fuser.followed.username})}" th:method="POST">
-                <button type="submit">Unfollow</button>
+            <form th:action="@{/user/unfollow/{id}(id=${fuser.id})}" th:method="POST">
+                <button type="submit" class="pill hover-grow">Unfollow</button>
             </form>
         </div>
     </div>

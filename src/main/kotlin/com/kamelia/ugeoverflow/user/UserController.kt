@@ -1,18 +1,18 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.MvcController
-import com.kamelia.ugeoverflow.follow.FollowedUserRepository
 import com.kamelia.ugeoverflow.follow.FollowingService
+import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
-import java.util.*
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @MvcController
 @Controller
@@ -22,7 +22,7 @@ class UserController(
     private val followingService: FollowingService,
 ) {
 
-    @Secured("ROLE_USER")
+    @Secured(Roles.USER)
     @GetMapping("/details")
     fun profile(
         @RequestParam("updateSuccess", required = false) updateSuccess: Boolean?,
@@ -43,7 +43,7 @@ class UserController(
         return "user/details"
     }
 
-    @Secured("ROLE_USER")
+    @Secured(Roles.USER)
     @PostMapping("/details/password")
     fun updatePassword(
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
@@ -65,7 +65,7 @@ class UserController(
         return "redirect:/user/details?updateSuccess=true"
     }
 
-    @Secured("ROLE_USER")
+    @Secured(Roles.USER)
     @GetMapping("/evaluate/{id}")
     fun updateTrustForm(
         @PathVariable("id") id: UUID,
@@ -91,7 +91,7 @@ class UserController(
         return "user/evaluate"
     }
 
-    @Secured("ROLE_USER")
+    @Secured(Roles.USER)
     @PostMapping("/evaluate/{id}")
     fun updateTrust(
         @PathVariable("id") id: UUID,
@@ -118,40 +118,23 @@ class UserController(
         return "redirect:/user/details/$id?updateSuccess=true"
     }
 
-    @Secured("ROLE_USER")
-    @PostMapping("/follow/{username}")
+    @Secured(Roles.USER)
+    @PostMapping("/follow/{id}")
     fun follow(
-        @PathVariable("username") username: String,
+        @PathVariable("id") id: UUID,
         request: HttpServletRequest,
-        model: Model,
     ): String {
-        // TODO: Do follow
-
+        followingService.follow(id)
         return "redirect:${request.getHeader("referer")}"
     }
 
-    @Secured("ROLE_USER")
-    @PostMapping("/unfollow/{username}")
+    @Secured(Roles.USER)
+    @PostMapping("/unfollow/{id}")
     fun unfollow(
-        @PathVariable("username") username: String,
-        model: Model,
+        @PathVariable("id") id: UUID
     ): String {
-        val user = currentUser().let { userService.findByIdOrNull(it.id) }
-
-        if (user == null) {
-            model.addAttribute("errorMessage", "User not found")
-            return "error/404"
-        }
-
-        val followed = user.followed.firstOrNull { it.followed.username == username }
-        if (followed == null) {
-            model.addAttribute("errorMessage", "You do not follow this user")
-            return "error/404"
-        }
-
-        // TODO: Unfollow
-
-        return "redirect:/user/details/$id?updateSuccess=true"
+        followingService.unfollow(id)
+        return "redirect:/user/details?updateSuccess=true"
     }
 }
 

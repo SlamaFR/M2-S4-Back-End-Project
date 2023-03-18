@@ -73,8 +73,8 @@ a {
     border-radius: 999px;
 }
 
-.p-1 {
-    padding: 1rem;
+.py {
+    padding-block: 1rem;
 }
 
 .hover-grow {
@@ -82,6 +82,13 @@ a {
 }
 .hover-grow:hover {
     transform: scale(1.02);
+}
+
+.success {
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+    background-color: green;
 }
 
 .error {

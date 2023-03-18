@@ -6,6 +6,7 @@ import com.kamelia.ugeoverflow.comment.CommentService
 import com.kamelia.ugeoverflow.comment.PostCommentDTO
 import com.kamelia.ugeoverflow.core.MdToHtmlService
 import com.kamelia.ugeoverflow.core.MvcController
+import com.kamelia.ugeoverflow.follow.FollowingService
 import com.kamelia.ugeoverflow.tag.TagDTO
 import com.kamelia.ugeoverflow.tag.TagService
 import com.kamelia.ugeoverflow.user.User
@@ -38,6 +39,7 @@ class QuestionController(
     private val voteService: VoteService,
     private val commentService: CommentService,
     private val mdToHtmlService: MdToHtmlService,
+    private val followingService: FollowingService,
 ) {
 
     @GetMapping
@@ -74,12 +76,12 @@ class QuestionController(
 
         val question = questionService.getQuestion(id)
 
-        val followButtonsToHide = mutableMapOf<String, Boolean>()
+        val followButtonsToHide = mutableMapOf<UUID, Boolean>()
         val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
         if (user != null) {
-//            user.followed.forEach { followButtonsToHide[it.followed.username] = true }
-//            user.let { followButtonsToHide[it.username] = true }
-//
+            followingService.getFollowedUsers().forEach { followButtonsToHide[it.id] = true }
+            followButtonsToHide[user.id] = true
+
 //            question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user.username }
         }
 
@@ -218,7 +220,7 @@ class QuestionsModel(
 )
 
 class HideFollowModel(
-    val map: Map<String, Boolean>,
+    val map: Map<UUID, Boolean>,
 )
 
 class ShowDeleteModel(
