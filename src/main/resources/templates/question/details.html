@@ -38,6 +38,26 @@
             </div>
         </div>
         <p th:text="${question.content}"></p>
+        <details>
+            <summary>Comments</summary>
+            <form th:action="@{/question/comment/{id}(id=${question.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
+                <label for="questionCommentContent">Post a new comment</label>
+                <textarea name="questionCommentContent" id="questionCommentContent" th:field="*{content}" style="resize: none"></textarea>
+                <div class="flex flex-row center">
+                    <button type="submit" class="hover-grow pill">Send</button>
+                </div>
+                <th:block th:if="${commentErrorMessages}">
+                    <span th:if="${commentErrorMessages[${question.id}]}" th:text="${commentErrorMessages[${question.id}]}"></span>
+                </th:block>
+            </form>
+            <div th:each="comment : ${question.comments}" class="flex flex-col border">
+                <div class="flex flex-row between">
+                    <h2 th:text="${comment.authorUsername}"></h2>
+                    <span th:text="${comment.creationDate}"></span>
+                </div>
+                <p th:text="${comment.content}"></p>
+            </div>
+        </details>
     </div>
 
     <hr class="w-xl">
@@ -85,12 +105,12 @@
                     <button type="submit" class="hover-grow pill">Send</button>
                 </div>
                 <th:block th:if="${commentErrorMessages}">
-                    <span th:if="${commentErrorMessages[${comment.id}]}" th:text="${commentErrorMessages[${comment.id}]}"></span>
+                    <span th:if="${commentErrorMessages[${answer.id}]}" th:text="${commentErrorMessages[${answer.id}]}"></span>
                 </th:block>
             </form>
             <div th:each="comment : ${answer.comments}" class="flex flex-col border">
                 <div class="flex flex-row between">
-                    <h2 th:text="${comment.author.username}"></h2>
+                    <h2 th:text="${comment.authorUsername}"></h2>
                     <span th:text="${comment.creationDate}"></span>
                 </div>
                 <p th:text="${comment.content}"></p>

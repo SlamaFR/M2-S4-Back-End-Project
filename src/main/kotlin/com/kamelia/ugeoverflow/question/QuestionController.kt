@@ -182,16 +182,34 @@ class QuestionController(
         return "redirect:${request.getHeader("referer")}"
     }
 
-    @PostMapping("/answer/{id}/{commentId}")
-    fun comment(
+    @PostMapping("/comment/{id}")
+    fun commentQuestion(
         @PathVariable("id") id: UUID,
-        @PathVariable("commentId") commentId: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
         bindingResult: BindingResult,
     ): String {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("commentErrorMessages", mapOf(commentId to "Invalid comment"))
+            model.addAttribute("commentErrorMessage", mapOf(id to "Invalid comment"))
+            return "redirect:/question/$id"
+        }
+
+        // TODO add comment to database
+        println(commentForm.content)
+
+        return "redirect:/question/$id"
+    }
+
+    @PostMapping("/answer/{id}/{answerId}")
+    fun commentAnswer(
+        @PathVariable("id") id: UUID,
+        @PathVariable("answerId") answerId: UUID,
+        @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
+        model: Model,
+        bindingResult: BindingResult,
+    ): String {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("commentErrorMessages", mapOf(answerId to "Invalid comment"))
             return "redirect:/question/$id"
         }
 
