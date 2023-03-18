@@ -15,14 +15,13 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(value = [InvalidRequestException::class])
     fun handleInvalidRequest(ex: InvalidRequestException): ResponseEntity<Any> =
         ResponseEntity.status(ex.statusCode).body(ex.message)
-
 }
 
 @ControllerAdvice(annotations = [MvcController::class])
 class MVCResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = [InvalidRequestException::class])
-    fun handleInvalidRequest(ex: InvalidRequestException): String = when(ex.statusCode) {
+    fun handleInvalidRequest(ex: InvalidRequestException): String = when (ex.statusCode) {
         401 -> "redirect:/auth?error=Please+log+in"
         403 -> "error/403"
         404 -> "error/404"
@@ -30,4 +29,6 @@ class MVCResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
         else -> "redirect:/error?error=Something+clearly+went+wrong"
     }
 
+    @ExceptionHandler(value = [Exception::class])
+    fun handleException(ex: Exception): String = "redirect:/error?error=Something+clearly+went+wrong"
 }
