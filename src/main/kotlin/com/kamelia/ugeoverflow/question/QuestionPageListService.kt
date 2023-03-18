@@ -18,16 +18,6 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import kotlin.collections.ArrayDeque
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.forEachIndexed
-import kotlin.collections.isNotEmpty
-import kotlin.collections.map
-import kotlin.collections.minusAssign
-import kotlin.collections.mutableSetOf
-import kotlin.collections.plusAssign
 
 
 @Service
@@ -127,7 +117,11 @@ class QuestionPageListService(
         filters: QuestionSearchFilterDTO?,
         usersToExclude: Set<UUID>,
     ): List<QuestionLightDTO> = getQuestions(0, max, filters) { b, r, _ ->
-        b.not(r.get<UUID>("author").`in`(usersToExclude))
+        if (usersToExclude.isNotEmpty()) {
+            b.not(r.get<UUID>("author").`in`(usersToExclude))
+        } else {
+            b.conjunction()
+        }
     }
 
     private fun getQuestions(
