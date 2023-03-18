@@ -54,7 +54,8 @@
             <button th:disabled="${page >= pageNumber - 1}" type="submit" class="pill hover-grow">Next</button>
         </form>
     </div>
-    <p>Page [[${page + 1}]] of [[${pageNumber}]]</p>
+    <p th:if="${pageNumber > 0}">Page [[${page + 1}]] of [[${pageNumber}]]</p>
+    <p th:unless="${pageNumber > 0}">No question.</p>
 
     <div class="flex flex-col center gap">
         <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}"
