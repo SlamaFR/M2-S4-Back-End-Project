@@ -44,14 +44,9 @@ class QuestionService(
 
     @Transactional
     fun deleteQuestion(id: UUID) {
-        val currentUser = currentUser()
         val question = questionRepository.findById(id).orElseThrow {
             InvalidRequestException.notFound("Question not found")
         }
-        if (question.author != currentUser) {
-            throw InvalidRequestException.forbidden("You are not the author of this question")
-        }
-
         questionRepository.delete(question)
     }
 

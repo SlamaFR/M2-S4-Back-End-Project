@@ -2,6 +2,7 @@ package com.kamelia.ugeoverflow.core
 
 import com.kamelia.ugeoverflow.comment.Comment
 import com.kamelia.ugeoverflow.user.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
@@ -23,7 +24,7 @@ abstract class AbstractCommentablePost(
         require(content.isNotBlank()) { "Post content cannot be blank" }
     }
 
-    @OneToMany
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "parentId")
     private var _comments: MutableSet<Comment> = mutableSetOf()
 

@@ -4,6 +4,7 @@ import com.kamelia.ugeoverflow.answer.Answer
 import com.kamelia.ugeoverflow.core.AbstractCommentablePost
 import com.kamelia.ugeoverflow.tag.Tag
 import com.kamelia.ugeoverflow.user.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
@@ -30,7 +31,7 @@ class Question(
         require(title.isNotBlank()) { "Question title cannot be blank" }
     }
 
-    @OneToMany
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "question_id")
     private var _answers: MutableSet<Answer> = mutableSetOf()
 
