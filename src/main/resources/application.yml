@@ -4,6 +4,9 @@ spring:
     driverClassName: ${DB_DRIVER:org.h2.Driver}
     username: ${DB_USER:admin}
     password: ${DB_PASSWORD:admin}
+  sql:
+    init:
+      mode: always
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,6 +17,7 @@ spring:
         globally_quoted_identifiers: true
         globally_quoted_identifiers_skip_column_definitions: true
     open-in-view: false
+    defer-datasource-initialization: true
   h2:
     console:
       enabled: ${DB_CONSOLE_ENABLED:false}

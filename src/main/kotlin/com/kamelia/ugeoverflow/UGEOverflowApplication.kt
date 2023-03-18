@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @SpringBootApplication(exclude = [UserDetailsServiceAutoConfiguration::class])
 class BackendProjectApplication {
 
-//    @Bean
-//    fun dummyTagsInsertion(tagRepository: TagRepository): CommandLineRunner = CommandLineRunner { _ ->
-//        tagRepository.saveAll(
-//            listOf("Spring", "Kotlin", "Java", "Web Application").map(::Tag)
-//        )
-//    }
+   // @Bean
+   // fun dummyTagsInsertion(tagRepository: TagRepository): CommandLineRunner = CommandLineRunner { _ ->
+   //     tagRepository.saveAll(
+   //         listOf("Spring", "Kotlin", "Java", "Web Application").map(::Tag)
+   //     )
+   // }
 
 }
 
