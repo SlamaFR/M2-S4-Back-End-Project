@@ -91,7 +91,7 @@ class QuestionController(
 
     @Secured(Roles.USER)
     @PostMapping("/vote/{questionId}/{answerId}")
-    fun voteComment(
+    fun voteAnswer(
         @PathVariable("questionId") questionId: UUID,
         @PathVariable("answerId") answerId: UUID,
         @RequestParam("vote", required = true) vote: Boolean,

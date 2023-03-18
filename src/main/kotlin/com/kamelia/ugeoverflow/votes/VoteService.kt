@@ -12,20 +12,39 @@ class VoteService(
     private val voteRepository: VoteRepository,
     private val answerRepository: AnswerRepository,
 ) {
-
+    
     @Transactional
-    fun voteAnswer(answerId: UUID, isUpvote: Boolean) {
+    fun voteAnswer(answerId: UUID, isUpvote: Boolean): VoteDTO {
         val user = currentUser()
         val answer = answerRepository.findById(answerId).orElseThrow {
             InvalidRequestException.notFound("Answer not found")
         }
 
-        if (voteRepository.existsByUserIdAndAnswerId(user.id, answerId)) {
-            throw InvalidRequestException.forbidden("You already voted this answer")
+        val vote = voteRepository.findByUserIdAndAnswerId(user.id, answerId)
+        return if (vote != null) {
+            if (vote.isUpvote != isUpvote) {
+                vote.isUpvote = isUpvote
+            }
+            vote.toDTO()
+        } else {
+            val newVote = Vote(user, isUpvote)
+            voteRepository.save(newVote)
+            answer.addVote(newVote)
+            newVote.toDTO()
+        }
+    }
+
+    @Transactional
+    fun removeVoteFromAnswer(answerId: UUID) {
+        val user = currentUser()
+        val answer = answerRepository.findById(answerId).orElseThrow {
+            InvalidRequestException.notFound("Answer not found")
         }
 
-        val vote = Vote(user, isUpvote)
-        voteRepository.save(vote)
-        answer.addVote(vote)
+        val vote = voteRepository.findByUserIdAndAnswerId(user.id, answerId)
+            ?: throw InvalidRequestException.notFound("You haven't voted this answer")
+
+        answer.removeVote(vote)
+        voteRepository.delete(vote)
     }
 }
