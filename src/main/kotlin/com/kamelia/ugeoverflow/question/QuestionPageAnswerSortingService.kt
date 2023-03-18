@@ -39,13 +39,13 @@ class QuestionPageAnswerSortingService(
             val userCoefficientMap = createUserCoefficientMap(user)
             set.asSequence()
                 .map {
-                    var isVotedByUser = false
+                    var userVote: Boolean? = null
                     val finalScore = it.votes.fold(.0) { acc, v ->
                         val voterInfo = userCoefficientMap[v.user.id]
                             ?: return@fold acc + v.isUpvote.voteToInt() // the voter is not in the map, so we use the default trust score
 
                         if (v.user.id == user.id) {
-                            isVotedByUser = true
+                            userVote = v.isUpvote
                         }
                         // score calculation according to the algorithm
                         acc + v.isUpvote.voteToInt() * max(
@@ -54,10 +54,10 @@ class QuestionPageAnswerSortingService(
                         )
                     }
 
-                    Triple(it, isVotedByUser, finalScore)
+                    Triple(it, userVote, finalScore)
                 }
                 .sortedByDescending { (_, _, score) -> score } // sort by the final score before converting the score to an int to avoid rounding errors
-                .map { (answer, votedByUser, score) -> answer.toDTO(score.toInt(), VoteDTO(votedByUser)) }
+                .map { (answer, userVote, score) -> answer.toDTO(score.toInt(), userVote?.let(::VoteDTO)) }
                 .toList()
         }
 
@@ -101,7 +101,6 @@ class QuestionPageAnswerSortingService(
     }
 
     private fun Boolean.voteToInt() = if (this) 1 else -1
-
 }
 
 private class UserInformation(
@@ -151,7 +150,5 @@ private class UserInformation(
         } else {
             0.0
         }
-
     }
-
 }
