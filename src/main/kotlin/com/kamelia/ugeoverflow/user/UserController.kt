@@ -2,13 +2,14 @@ package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.follow.FollowingService
+import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -23,6 +24,7 @@ import java.util.*
 class UserController(
     private val userService: UserService,
     private val followingService: FollowingService,
+    private val sessionManager: SessionManager,
 ) {
 
     @Secured(Roles.USER)
@@ -52,6 +54,7 @@ class UserController(
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
         model: Model,
         binding: BindingResult,
+        response: HttpServletResponse,
     ): String {
         if (binding.hasErrors() || updatePasswordForm.newPassword != updatePasswordForm.confirmPassword) {
             return "redirect:/user/details?updateSuccess=false"
@@ -63,7 +66,11 @@ class UserController(
             return "error/404"
         }
 
-        userService.updatePassword(user, updatePasswordForm.newPassword)
+        userService.updatePassword(PasswordUpdateDTO(updatePasswordForm.oldPassword, updatePasswordForm.newPassword))
+        sessionManager
+            .login(user.username, updatePasswordForm.newPassword)
+            .toCookies()
+            .forEach(response::addCookie)
 
         return "redirect:/user/details?updateSuccess=true"
     }
