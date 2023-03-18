@@ -13,7 +13,7 @@ import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.Roles
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
-import com.kamelia.ugeoverflow.votes.VoteService
+import com.kamelia.ugeoverflow.vote.VoteService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid

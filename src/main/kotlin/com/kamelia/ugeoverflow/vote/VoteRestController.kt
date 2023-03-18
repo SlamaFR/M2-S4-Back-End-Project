@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.votes
+package com.kamelia.ugeoverflow.vote
 
 import com.kamelia.ugeoverflow.utils.Roles
 import java.util.*
@@ -18,9 +18,7 @@ class VoteRestController(
 
     @Secured(Roles.USER)
     @PutMapping("/{answerId}/vote")
-    fun voteAnswer(@PathVariable answerId: UUID, @RequestParam("vote") vote: Boolean): ResponseEntity<Unit> {
-        voteService.voteAnswer(answerId, vote)
-        return ResponseEntity.ok().build()
-    }
+    fun voteAnswer(@PathVariable answerId: UUID, @RequestParam("vote") vote: Boolean): ResponseEntity<VoteState> =
+        ResponseEntity.ok(voteService.voteAnswer(answerId, vote))
 
 }

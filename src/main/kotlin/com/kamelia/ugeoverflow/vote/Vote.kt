@@ -1,4 +1,4 @@
-package com.kamelia.ugeoverflow.votes
+package com.kamelia.ugeoverflow.vote
 
 import com.kamelia.ugeoverflow.core.AbstractIdEntity
 import com.kamelia.ugeoverflow.user.User

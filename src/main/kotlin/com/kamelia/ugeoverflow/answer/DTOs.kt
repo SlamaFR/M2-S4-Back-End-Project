@@ -6,9 +6,9 @@ import com.kamelia.ugeoverflow.comment.CommentDTO
 import com.kamelia.ugeoverflow.comment.toDTO
 import com.kamelia.ugeoverflow.user.UserLightDTO
 import com.kamelia.ugeoverflow.user.toLightDTO
-import com.kamelia.ugeoverflow.votes.VoteDTO
+import com.kamelia.ugeoverflow.vote.VoteState
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class AnswerDTO(
     val id: UUID,
@@ -18,7 +18,7 @@ data class AnswerDTO(
     val creationDate: Instant,
     val note: Int,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    val userVote: VoteDTO?,
+    val userVote: VoteState?,
 )
 
 data class PostAnswerDTO(
@@ -27,7 +27,7 @@ data class PostAnswerDTO(
 
 fun Answer.toDTO(
     computedNote: Int = votes.sumOf { (if (it.isUpvote) 1 else 0).toInt() },
-    userVote: VoteDTO? = null,
+    userVote: VoteState? = null,
 ) = AnswerDTO(
     id,
     author.toLightDTO(),

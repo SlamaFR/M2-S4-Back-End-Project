@@ -2,7 +2,7 @@ package com.kamelia.ugeoverflow.answer
 
 import com.kamelia.ugeoverflow.core.AbstractCommentablePost
 import com.kamelia.ugeoverflow.user.User
-import com.kamelia.ugeoverflow.votes.Vote
+import com.kamelia.ugeoverflow.vote.Vote
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
