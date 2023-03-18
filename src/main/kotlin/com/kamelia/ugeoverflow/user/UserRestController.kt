@@ -66,4 +66,11 @@ class UserRestController(
     @GetMapping("${Routes.User.ROOT}/me")
     fun me(): ResponseEntity<UserDTO> = ResponseEntity.ok(userService.currentUserInformation())
 
+    @Secured(Roles.USER)
+    @PostMapping(Routes.User.UPDATE_PASSWORD)
+    fun updatePassword(@RequestBody @Valid passwordDTO: PasswordUpdateDTO): ResponseEntity<Nothing> {
+        userService.updatePassword(passwordDTO)
+        return ResponseEntity.ok().build()
+    }
+
 }

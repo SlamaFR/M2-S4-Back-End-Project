@@ -36,3 +36,11 @@ fun User.toLightDTO(): UserLightDTO = UserLightDTO(
     id,
     username,
 )
+
+@Validated
+data class PasswordUpdateDTO(
+    @NotBlank
+    val oldPassword: String,
+    @NotBlank
+    val newPassword: String,
+)

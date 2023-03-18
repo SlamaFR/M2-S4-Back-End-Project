@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow.user
 
 import com.kamelia.ugeoverflow.core.InvalidRequestException
+import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.utils.currentUser
 import jakarta.transaction.Transactional
 import java.util.*
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service
 class UserService(
     private val userRepository: UserRepository,
     private val hasher: PasswordEncoder,
+    private val sessionManager: SessionManager,
 ) {
 
     @Transactional
@@ -37,10 +39,21 @@ class UserService(
     }
 
     @Transactional
-    fun findByUsernameOrNull(username: String): User? = userRepository
-        .findByUsernameIgnoreCase(username)
+    fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
 
     @Transactional
-    fun findByIdOrNull(userId: UUID): User? = userRepository.findByIdOrNull(userId)
+    fun updatePassword(passwordUpdateDTO: PasswordUpdateDTO) {
+        val (oldPassword, newPassword) = passwordUpdateDTO
+        if (oldPassword == newPassword) {
+            throw InvalidRequestException.forbidden("New password must be different")
+        }
+        val user = currentUser()
+        if (!hasher.matches(oldPassword, user.password)) {
+            throw InvalidRequestException.forbidden("Old password is incorrect")
+        }
+        val hashedNew = hasher.encode(newPassword)
+        userRepository.updatePassword(user.id, hashedNew)
+        sessionManager.logoutAll(user.id)
+    }
 
 }
