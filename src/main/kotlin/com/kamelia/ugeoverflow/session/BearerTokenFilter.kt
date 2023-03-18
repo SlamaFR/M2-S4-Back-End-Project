@@ -3,13 +3,11 @@ package com.kamelia.ugeoverflow.session
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.core.toUUIDOrNull
-import com.kamelia.ugeoverflow.user.UserRepository
 import com.kamelia.ugeoverflow.utils.*
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.util.*
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -22,11 +20,7 @@ import kotlin.contracts.contract
 @Component
 class BearerTokenFilter(
     private val sessionManager: SessionManager,
-    private val userRepository: UserRepository,
 ) : OncePerRequestFilter() {
-
-    @Value("\${ugeoverflow.admin.username}")
-    private lateinit var adminName: String
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -98,7 +92,7 @@ class BearerTokenFilter(
             ?: throw InvalidRequestException.unauthorized("Invalid credentials")
 
         val tokens = UserTokensDTO(userId, token)
-        val roles = if (user.username == adminName) {
+        val roles = if (user.isAdmin) {
             listOf(Roles.ADMIN, Roles.USER)
         } else {
             listOf(Roles.USER)
