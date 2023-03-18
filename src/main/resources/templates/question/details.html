@@ -110,7 +110,7 @@
         </div>
         <details>
             <summary>Comments</summary>
-            <form th:if="${user != null}" th:action="@{/question/answer/{id}/{answerId}(id=${question.id},answerId=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
+            <form th:if="${user != null}" th:action="@{/question/answer/comment/{id}(id=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
                 <label for="commentContent">Post a new comment</label>
                 <textarea name="commentContent" id="commentContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
                 <div class="flex flex-row center">

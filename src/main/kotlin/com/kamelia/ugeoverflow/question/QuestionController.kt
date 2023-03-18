@@ -158,21 +158,21 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/answer/{id}/{answerId}")
+    @PostMapping("/answer/comment/{id}")
     fun commentAnswer(
         @PathVariable("id") id: UUID,
-        @PathVariable("answerId") answerId: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
         model: Model,
         bindingResult: BindingResult,
+        request: HttpServletRequest,
     ): String {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("commentErrorMessages", mapOf(answerId to "Invalid comment"))
-            return "redirect:/question/$id"
+            model.addAttribute("commentErrorMessages", mapOf(id to "Invalid comment"))
+            return "redirect:${request.getHeader("referer")}"
         }
 
-        commentService.postCommentOnAnswer(answerId, PostCommentDTO(commentForm.content))
-        return "redirect:/question/$id"
+        commentService.postCommentOnAnswer(id, PostCommentDTO(commentForm.content))
+        return "redirect:${request.getHeader("referer")}"
     }
 
     @Secured(Roles.USER)
