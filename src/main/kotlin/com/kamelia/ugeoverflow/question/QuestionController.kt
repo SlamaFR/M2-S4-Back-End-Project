@@ -77,12 +77,10 @@ class QuestionController(
         val followButtonsToHide = mutableMapOf<String, Boolean>()
         val deleteButtonsToShow = mutableMapOf<UUID, Boolean>()
         if (user != null) {
-            //user.followed.forEach { followButtonsToHide[it.followed.username] = true }
-            //user.let { followButtonsToHide[it.username] = true }
-            //
-            //question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user.username }
-        } else {
-            // TODO: hide shit jim said
+//            user.followed.forEach { followButtonsToHide[it.followed.username] = true }
+//            user.let { followButtonsToHide[it.username] = true }
+//
+//            question.comments.forEach { deleteButtonsToShow[it.id] = it.authorUsername == user.username }
         }
 
         model.addAttribute("question", question)

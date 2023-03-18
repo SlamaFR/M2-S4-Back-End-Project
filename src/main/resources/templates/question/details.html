@@ -26,7 +26,7 @@
         <div class="flex flex-row between">
             <div class="flex flex-row gap-sm center">
                 <h2 th:text="${question.author.username}"></h2>
-                <form th:if="${hideFollowForUser.map[question.author.username] == null || !hideFollowForUser.map[question.author.username]}" th:action="@{/user/follow/{user}(user=${question.author.username})}" th:method="POST">
+                <form th:if="${user != null && (hideFollowForUser.map[question.author.username] == null || !hideFollowForUser.map[question.author.username])}" th:action="@{/user/follow/{user}(user=${question.author.username})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
             </div>
@@ -42,7 +42,7 @@
         <p th:utext="${converter.convert(question.content)}"></p>
         <details>
             <summary>Comments</summary>
-            <form th:action="@{/question/comment/{id}(id=${question.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
+            <form th:if="${user != null}" th:action="@{/question/comment/{id}(id=${question.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
                 <label for="questionCommentContent">Post a new comment</label>
                 <textarea name="questionCommentContent" id="questionCommentContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
                 <div class="flex flex-row center">
@@ -66,7 +66,7 @@
 
     <hr class="w-xl">
 
-    <form th:action="@{/question/answer/{id}(id=${question.id})}" th:method="POST" th:object="${answerForm}" class="flex flex-col border w-xl gap-sm">
+    <form th:if="${user != null}" th:action="@{/question/answer/{id}(id=${question.id})}" th:method="POST" th:object="${answerForm}" class="flex flex-col border w-xl gap-sm">
         <label for="answerContent">Post a new answer</label>
         <textarea name="answerContent" id="answerContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
         <div class="flex flex-row center">
@@ -79,10 +79,10 @@
         <div class="flex flex-row between">
             <div class="flex flex-row gap-sm center">
                 <h2 th:text="${answer.author.username}"></h2>
-                <form th:if="${hideFollowForUser.map[answer.author.username] == null || !hideFollowForUser.map[answer.author.username]}" th:action="@{/user/follow/{user}(user=${answer.author.username})}" th:method="POST">
+                <form th:if="${user != null && (hideFollowForUser.map[answer.author.username] == null || !hideFollowForUser.map[answer.author.username])}" th:action="@{/user/follow/{user}(user=${answer.author.username})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Follow</button>
                 </form>
-                <form th:if="${showDeleteForUser.map[answer.id]}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
+                <form th:if="${user != null && (showDeleteForUser.map[answer.id] != null && showDeleteForUser.map[answer.id])}" th:action="@{/question/answer/delete/{id}(id=${answer.id})}" th:method="POST">
                     <button type="submit" class="hover-grow pill">Delete</button>
                 </form>
             </div>
@@ -96,18 +96,18 @@
                 <th:block th:utext="${converter.convert(answer.content)}"></th:block>
             </div>
             <div class="flex flex-row start gap">
-                <form th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
+                <form th:if="${user != null}" th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Downvote</button>
                 </form>
                 <span th:text="${answer.note}"></span>
-                <form th:action="@{/question/vote/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id})}" th:method="POST">
+                <form th:if="${user != null}" th:action="@{/question/vote/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id})}" th:method="POST">
                     <button class="hover-grow pill">Upvote</button>
                 </form>
             </div>
         </div>
         <details>
             <summary>Comments</summary>
-            <form th:action="@{/question/answer/{id}/{answerId}(id=${question.id},answerId=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
+            <form th:if="${user != null}" th:action="@{/question/answer/{id}/{answerId}(id=${question.id},answerId=${answer.id})}" th:method="POST" th:object="${commentForm}" class="flex flex-col border gap-sm">
                 <label for="commentContent">Post a new comment</label>
                 <textarea name="commentContent" id="commentContent" th:field="*{content}" rows="10" style="resize: none"></textarea>
                 <div class="flex flex-row center">
