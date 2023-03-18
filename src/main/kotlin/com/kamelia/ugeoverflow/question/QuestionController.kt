@@ -60,7 +60,8 @@ class QuestionController(
         )
 
         model.addAttribute("questionsModel", QuestionsModel(questions.toList()))
-        model.addAttribute("initialPage", actualPage)
+        model.addAttribute("page", actualPage)
+        model.addAttribute("pageNumber", questions.totalPages)
 
         return "question/list"
     }

@@ -45,15 +45,16 @@
 
     <div class="flex flex-row">
         <form th:action="@{/question}" th:method="GET">
-            <input type="hidden" name="page" id="page" th:value="${initialPage - 1}">
-            <button th:disabled="${initialPage <= 0}" type="submit" class="pill hover-grow">Previous</button>
+            <input type="hidden" name="page" id="previousPage" th:value="${page - 1}">
+            <button th:disabled="${page <= 0}" type="submit" class="pill hover-grow">Previous</button>
         </form>
 
         <form th:action="@{/question}" th:method="GET">
-            <input type="hidden" name="page" id="page" th:value="${initialPage + 1}">
-            <button th:disabled="${initialPage >= 10}" type="submit" class="pill hover-grow">Next</button>
+            <input type="hidden" name="page" id="nextPage" th:value="${page + 1}">
+            <button th:disabled="${page >= pageNumber - 1}" type="submit" class="pill hover-grow">Next</button>
         </form>
     </div>
+    <p>Page [[${page + 1}]] of [[${pageNumber}]]</p>
 
     <div class="flex flex-col center gap">
         <a th:each="question : ${questionsModel.questions}" th:href="@{/question/{id}(id=${question.id})}"

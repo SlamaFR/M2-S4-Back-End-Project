@@ -1,5 +1,6 @@
 body, html, main, header {
     overflow-x: hidden;
+    font-family: sans-serif;
 }
 
 a {
