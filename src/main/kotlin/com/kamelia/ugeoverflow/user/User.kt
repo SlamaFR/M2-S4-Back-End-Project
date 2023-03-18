@@ -22,6 +22,9 @@ class User(
         require(password.isNotBlank()) { "Password cannot be blank" }
     }
 
+    val isAdmin: Boolean
+        get() = username == "admin"
+
     @OneToMany
     @JoinColumn(name = "follower_id")
     private var _following: MutableSet<FollowedUser> = followedUsers.toMutableSet()

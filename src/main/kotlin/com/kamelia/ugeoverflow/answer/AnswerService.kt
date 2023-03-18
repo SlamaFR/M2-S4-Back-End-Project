@@ -32,7 +32,7 @@ class AnswerService(
         val answer = answerRepository.findById(answerId).orElseThrow {
             InvalidRequestException.notFound("Answer not found")
         }
-        if (answer.author != currentUser) {
+        if (answer.author != currentUser && !currentUser.isAdmin) {
             throw InvalidRequestException.forbidden("You are not the author of this answer")
         }
         answerRepository.delete(answer)
