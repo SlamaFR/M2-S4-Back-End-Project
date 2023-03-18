@@ -98,13 +98,13 @@
             <div>
                 <th:block th:utext="${converter.convert(answer.content)}"></th:block>
             </div>
-            <div class="flex flex-row start gap">
-                <form th:if="${user != null}" th:action="@{/question/vote/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id})}" th:method="POST">
-                    <button class="hover-grow pill">Downvote</button>
+            <div class="flex flex-row start gap" th:with="userVote=${answer?.userVote}">
+                <form th:action="@{/question/{path}/{id}/{answerId}?vote=false(id=${question.id},answerId=${answer.id},path=${userVote.isDownvote() ? 'unvote' : 'vote'})}" th:method="POST">
+                    <button th:disabled="${user == null}" class="hover-grow pill" th:classappend="${userVote.isDownvote() ? 'active' : ''}">Downvote</button>
                 </form>
                 <span th:text="${answer.note}"></span>
-                <form th:if="${user != null}" th:action="@{/question/vote/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id})}" th:method="POST">
-                    <button class="hover-grow pill">Upvote</button>
+                <form th:action="@{/question/{path}/{id}/{answerId}?vote=true(id=${question.id},answerId=${answer.id},path=${userVote.isUpvote() ? 'unvote' : 'vote'})}" th:method="POST">
+                    <button th:disabled="${user == null}" class="hover-grow pill" th:classappend="${userVote.isUpvote() ? 'active' : ''}">Upvote</button>
                 </form>
             </div>
         </div>

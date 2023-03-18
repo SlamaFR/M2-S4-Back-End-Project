@@ -102,6 +102,17 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
+    @PostMapping("/unvote/{questionId}/{answerId}")
+    fun unvoteAnswer(
+        @PathVariable("questionId") questionId: UUID,
+        @PathVariable("answerId") answerId: UUID,
+        model: Model,
+    ): String {
+        voteService.removeVoteFromAnswer(answerId)
+        return "redirect:/question/$questionId"
+    }
+
+    @Secured(Roles.USER)
     @PostMapping("/answer/{id}")
     fun answer(
         @PathVariable("id") id: UUID,
