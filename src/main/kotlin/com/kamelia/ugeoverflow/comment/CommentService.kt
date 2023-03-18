@@ -16,7 +16,6 @@ class CommentService(
     private val answerRepository: AnswerRepository
 ) {
 
-    @Transactional
     private fun postComment(commentable: AbstractCommentablePost, commentDTO: PostCommentDTO) {
         val currentUser = currentUser()
 
@@ -41,7 +40,6 @@ class CommentService(
         postComment(answer, commentDTO)
     }
 
-    @Transactional
     private fun deleteComment(commentable: AbstractCommentablePost, commentId: UUID) {
         val currentUser = currentUser()
         val comment = commentRepository.findById(commentId).orElseThrow {

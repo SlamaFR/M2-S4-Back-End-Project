@@ -6,7 +6,7 @@ import com.kamelia.ugeoverflow.comment.toDTO
 import com.kamelia.ugeoverflow.user.UserLightDTO
 import com.kamelia.ugeoverflow.user.toLightDTO
 import java.time.Instant
-import java.util.*
+import java.util.UUID
 
 data class AnswerDTO(
     val id: UUID,
@@ -27,7 +27,7 @@ fun Answer.toDTO(
     id,
     author.toLightDTO(),
     content,
-    postComments.map(Comment::toDTO),
+    postComments.map(Comment::toDTO).sortedByDescending { it.creationDate },
     creationDate,
     computedNote
 )

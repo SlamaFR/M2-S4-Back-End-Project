@@ -58,7 +58,7 @@
             <div th:each="comment : ${question.comments}" class="flex flex-col border">
                 <div class="flex flex-row between">
                     <h2 th:text="${comment.authorUsername}"></h2>
-                    <span th:text="${comment.creationDate}"></span>
+                    <span th:text="${#temporals.format(answer.creationDate, 'dd/MM/yyyy HH:mm')}"></span>
                 </div>
                 <div>
                     <th:block th:utext="${converter.convert(comment.content)}"></th:block>

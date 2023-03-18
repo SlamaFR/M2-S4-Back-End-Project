@@ -151,9 +151,7 @@ class QuestionController(
             return "redirect:/question/$id"
         }
 
-        // TODO add comment to database
-        println(commentForm.content)
-
+        commentService.postCommentOnQuestion(id, PostCommentDTO(commentForm.content))
         return "redirect:/question/$id"
     }
 

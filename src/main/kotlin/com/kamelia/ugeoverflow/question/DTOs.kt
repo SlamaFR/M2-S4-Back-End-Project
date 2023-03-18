@@ -71,7 +71,7 @@ inline fun Question.toDTO(
     title,
     content,
     answers.let(answerSorter),
-    postComments.map(Comment::toDTO),
+    postComments.map(Comment::toDTO).sortedByDescending { it.creationDate },
     tags.mapTo(mutableSetOf(), Tag::toDTO),
     creationDate,
 )
