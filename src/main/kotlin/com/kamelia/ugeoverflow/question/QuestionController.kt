@@ -12,7 +12,9 @@ import com.kamelia.ugeoverflow.tag.TagService
 import com.kamelia.ugeoverflow.user.User
 import com.kamelia.ugeoverflow.user.UserService
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import com.kamelia.ugeoverflow.utils.currentUserOrNull
+import com.kamelia.ugeoverflow.utils.referer
 import com.kamelia.ugeoverflow.vote.VoteService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -26,11 +28,8 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 
-val tags = listOf(TagDTO("questions"), TagDTO("answer"))
-
 @MvcController
 @Controller
-@RequestMapping("/question")
 class QuestionController(
     private val questionService: QuestionService,
     private val userService: UserService,
@@ -42,7 +41,7 @@ class QuestionController(
     private val followingService: FollowingService,
 ) {
 
-    @GetMapping
+    @GetMapping(Routes.Question.ROOT)
     fun list(
         @RequestParam("page", required = false) page: Int?,
         @RequestParam("searchName", required = false) searchName: String?,
@@ -66,7 +65,7 @@ class QuestionController(
         return "question/list"
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("${Routes.Question.ROOT}/{id}")
     fun details(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("answerForm") answerForm: CommentForm,
@@ -91,7 +90,7 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/vote/{questionId}/{answerId}")
+    @PostMapping("${Routes.Question.VOTE}/{questionId}/{answerId}")
     fun voteAnswer(
         @PathVariable("questionId") questionId: UUID,
         @PathVariable("answerId") answerId: UUID,
@@ -103,18 +102,18 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/unvote/{questionId}/{answerId}")
+    @PostMapping("${Routes.Question.UNVOTE}/{questionId}/{answerId}")
     fun unvoteAnswer(
         @PathVariable("questionId") questionId: UUID,
         @PathVariable("answerId") answerId: UUID,
         model: Model,
     ): String {
         voteService.removeVoteFromAnswer(answerId)
-        return "redirect:/question/$questionId"
+        return "redirect:${Routes.Question.ROOT}/$questionId"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/answer/{id}")
+    @PostMapping("${Routes.Question.Answer.ROOT}/{id}")
     fun answer(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("answerForm") answerForm: CommentForm,
@@ -123,35 +122,35 @@ class QuestionController(
     ): String {
         if (bindingResult.hasErrors()) {
             model.addAttribute("answerErrorMessage", "Invalid answer")
-            return "redirect:/question/$id"
+            return "redirect:${Routes.Question.ROOT}/$id"
         }
 
         answerService.postAnswer(id, PostAnswerDTO(answerForm.content))
 
-        return "redirect:/question/$id"
+        return "redirect:${Routes.Question.ROOT}/$id"
     }
 
     @Secured(Roles.ADMIN)
-    @PostMapping("/delete/{id}")
+    @PostMapping("${Routes.Question.DELETE}/{id}")
     fun deleteQuestion(
         @PathVariable("id") id: UUID,
     ): String {
         questionService.deleteQuestion(id)
-        return "redirect:/question"
+        return "redirect:${Routes.Question.ROOT}"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/answer/delete/{id}")
+    @PostMapping("${Routes.Question.Answer.DELETE}/{id}")
     fun deleteAnswer(
         @PathVariable("id") id: UUID,
         request: HttpServletRequest,
     ): String {
         answerService.deleteAnswer(id)
-        return "redirect:${request.getHeader("referer")}"
+        return "redirect:${request.referer}"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/comment/{id}")
+    @PostMapping("${Routes.Question.COMMENT}/{id}")
     fun commentQuestion(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
@@ -160,15 +159,15 @@ class QuestionController(
     ): String {
         if (bindingResult.hasErrors()) {
             model.addAttribute("commentErrorMessage", mapOf(id to "Invalid comment"))
-            return "redirect:/question/$id"
+            return "redirect:${Routes.Question.ROOT}/$id"
         }
 
         commentService.postCommentOnQuestion(id, PostCommentDTO(commentForm.content))
-        return "redirect:/question/$id"
+        return "redirect:${Routes.Question.ROOT}/$id"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/answer/comment/{id}")
+    @PostMapping("${Routes.Question.Answer.COMMENT}/{id}")
     fun commentAnswer(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("commentForm") commentForm: CommentForm,
@@ -178,15 +177,15 @@ class QuestionController(
     ): String {
         if (bindingResult.hasErrors()) {
             model.addAttribute("commentErrorMessages", mapOf(id to "Invalid comment"))
-            return "redirect:${request.getHeader("referer")}"
+            return "redirect:${request.referer}"
         }
 
         commentService.postCommentOnAnswer(id, PostCommentDTO(commentForm.content))
-        return "redirect:${request.getHeader("referer")}"
+        return "redirect:${request.referer}"
     }
 
     @Secured(Roles.USER)
-    @GetMapping("/create")
+    @GetMapping(Routes.Question.CREATE)
     fun createForm(
         @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
         model: Model,
@@ -196,7 +195,7 @@ class QuestionController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/create")
+    @PostMapping(Routes.Question.CREATE)
     fun create(
         @Valid @ModelAttribute("createQuestionForm") createQuestionForm: CreateQuestionForm,
         model: Model,
@@ -204,7 +203,7 @@ class QuestionController(
     ): String {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "Invalid question")
-            return "redirect:/question/create"
+            return "redirect:${Routes.Question.CREATE}"
         }
 
         val question = questionService.postQuestion(
@@ -215,7 +214,7 @@ class QuestionController(
             )
         )
 
-        return "redirect:/question/${question.id}"
+        return "redirect:${Routes.Question.ROOT}/${question.id}"
     }
 }
 

@@ -50,7 +50,7 @@ class BearerTokenFilter(
     }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        request.servletPath == Routes.User.REFRESH ||
+        request.servletPath == Routes.Api.User.REFRESH ||
         request.servletPath == Routes.Auth.REFRESH
 
     @OptIn(ExperimentalContracts::class)

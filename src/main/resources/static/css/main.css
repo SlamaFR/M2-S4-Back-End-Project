@@ -99,8 +99,16 @@ a {
     background-color: red;
 }
 
-.active {
-    background-color: orange;
+.upvote {
+    background-color: #ff4500;
+    color: white;
+    border-color: white;
+}
+
+.downvote {
+    background-color: #7193ff;
+    color: white;
+    border-color: white;
 }
 
 *[disabled] {

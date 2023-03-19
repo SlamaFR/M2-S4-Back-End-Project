@@ -11,6 +11,9 @@ WHERE NOT EXISTS(SELECT * FROM "tag" WHERE "name" = 'Java');
 INSERT INTO "tag" ("id", "name")
 SELECT X'00000000000000000000000000000003', 'Web Application'
 WHERE NOT EXISTS(SELECT * FROM "tag" WHERE "name" = 'Web Application');
+INSERT INTO "tag" ("id", "name")
+SELECT X'00000000000000000000000000000004', 'REST'
+WHERE NOT EXISTS(SELECT * FROM "tag" WHERE "name" = 'REST');
 
 -- Users
 INSERT INTO "user" ("id", "username", "password")
@@ -19,5 +22,3 @@ WHERE NOT EXISTS(SELECT * FROM "user" WHERE "username" = 'arnaud');
 INSERT INTO "user" ("id", "username", "password")
 SELECT X'00000000000000000000000000000001', 'admin', '$2b$12$uyby7879Sa9XoHooubGuveStJhRBudY2pu/l7w7tH46DzDvdvd3/C'
 WHERE NOT EXISTS(SELECT * FROM "user" WHERE "username" = 'admin');
-
-

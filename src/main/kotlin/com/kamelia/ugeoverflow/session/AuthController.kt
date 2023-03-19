@@ -21,25 +21,24 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @MvcController
 @Controller
-@RequestMapping("/auth")
 class AuthController(
     val userService: UserService,
     val sessionManager: SessionManager,
 ) {
 
-    @GetMapping
+    @GetMapping(Routes.Auth.ROOT)
     fun auth(
         @ModelAttribute("loginForm") loginForm: LoginForm,
         @ModelAttribute("registerForm") registerForm: RegisterForm,
     ): String = "session/auth"
 
-    @PostMapping("/login")
+    @PostMapping(Routes.Auth.LOGIN)
     fun login(
         @Valid @ModelAttribute("loginForm") loginForm: LoginForm,
         binding: BindingResult,
         response: HttpServletResponse
     ): String {
-        if (binding.hasErrors()) return "redirect:/auth"
+        if (binding.hasErrors()) return "redirect:${Routes.Auth.ROOT}"
 
         sessionManager
             .login(loginForm.username, loginForm.password)
@@ -49,14 +48,14 @@ class AuthController(
         return "redirect:/"
     }
 
-    @PostMapping("/register")
+    @PostMapping(Routes.Auth.REGISTER)
     fun register(
         @Valid @ModelAttribute("registerForm") registerForm: RegisterForm,
         binding: BindingResult,
         response: HttpServletResponse
     ): String {
         if (binding.hasErrors() || registerForm.password != registerForm.passwordConfirm) {
-            return "redirect:/auth"
+            return "redirect:${Routes.Auth.ROOT}"
         }
 
         userService.create(UserCredentialsDTO(registerForm.username, registerForm.password))
@@ -69,7 +68,7 @@ class AuthController(
     }
 
     @Secured(Roles.USER)
-    @GetMapping("/logout")
+    @GetMapping(Routes.Auth.LOGOUT)
     fun logout(
         request: HttpServletRequest,
         response: HttpServletResponse
@@ -85,20 +84,20 @@ class AuthController(
 
         response.removeCookie(Cookies.USER_ID)
         response.removeCookie(Cookies.ACCESS_TOKEN)
-        response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.REFRESH)
+        response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.ROOT)
 
         return "redirect:/"
     }
 
     @Secured(Roles.USER)
-    @GetMapping("/refresh")
+    @GetMapping(Routes.Auth.REFRESH)
     fun refresh(
         request: HttpServletRequest,
         response: HttpServletResponse
     ): String {
         val tokens = currentAuth().refreshedTokens
         tokens.toCookies().forEach(response::addCookie)
-        return "redirect:${request.getHeader("referer") ?: "/"}"
+        return "redirect:${request.referer ?: "/"}"
     }
 }
 

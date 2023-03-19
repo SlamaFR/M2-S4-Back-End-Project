@@ -39,7 +39,7 @@ class SessionRefreshFilter(
             } else {
                 response.removeCookie(Cookies.USER_ID)
                 response.removeCookie(Cookies.ACCESS_TOKEN)
-                response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.REFRESH)
+                response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.ROOT)
                 response.sendRedirect("/auth?error=Session+expired:+Please+log+in")
             }
             return
@@ -71,6 +71,6 @@ class SessionRefreshFilter(
     }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        request.servletPath != Routes.User.REFRESH && request.servletPath != Routes.Auth.REFRESH
+        request.servletPath != Routes.Api.User.REFRESH && request.servletPath != Routes.Auth.REFRESH
 
 }
