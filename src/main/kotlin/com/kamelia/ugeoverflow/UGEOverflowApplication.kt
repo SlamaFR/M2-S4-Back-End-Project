@@ -11,26 +11,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @EnableMethodSecurity(securedEnabled = true)
 @SpringBootApplication(exclude = [UserDetailsServiceAutoConfiguration::class])
-class BackendProjectApplication {
-
-   // @Bean
-   // fun dummyTagsInsertion(tagRepository: TagRepository): CommandLineRunner = CommandLineRunner { _ ->
-   //     tagRepository.saveAll(
-   //         listOf("Spring", "Kotlin", "Java", "Web Application").map(::Tag)
-   //     )
-   // }
-
-}
+class BackendProjectApplication
 
 fun main(args: Array<String>) {
     runApplication<BackendProjectApplication>(*args)
-}
-
-@RestController
-@RequestMapping("/api/v1/bidon")
-class DummyController {
-
-    @GetMapping
-    fun getBidon() = ResponseEntity.ok("bidon")
-
 }

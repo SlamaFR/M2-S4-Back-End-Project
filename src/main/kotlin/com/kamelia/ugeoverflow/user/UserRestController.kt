@@ -24,11 +24,11 @@ class UserRestController(
     private val userService: UserService,
 ) {
 
-    @PostMapping(Routes.User.REGISTER)
+    @PostMapping(Routes.Api.User.REGISTER)
     fun register(@RequestBody @Valid userDTO: UserCredentialsDTO): ResponseEntity<UserDTO> =
         ResponseEntity.ok(userService.create(userDTO))
 
-    @PostMapping(Routes.User.LOGIN)
+    @PostMapping(Routes.Api.User.LOGIN)
     fun login(
         @RequestBody @Valid userDTO: UserCredentialsDTO,
         response: HttpServletResponse,
@@ -38,7 +38,7 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping(Routes.User.LOGOUT)
+    @PostMapping(Routes.Api.User.LOGOUT)
     fun logout(@RequestBody refreshToken: String): ResponseEntity<Nothing> {
         val tokens = currentAuth().tokens
         val refreshTokenUUID = refreshToken.toUUIDFromBase64OrNull()
@@ -48,7 +48,7 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping(Routes.User.LOGOUT_ALL)
+    @PostMapping(Routes.Api.User.LOGOUT_ALL)
     fun logoutAll(): ResponseEntity<Nothing> {
         val tokens = currentAuth().tokens
         sessionManager.logoutAll(tokens.userId)
@@ -56,18 +56,18 @@ class UserRestController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping(Routes.User.REFRESH)
+    @PostMapping(Routes.Api.User.REFRESH)
     fun refresh(): ResponseEntity<TokensDTO> {
         val tokens = currentAuth().refreshedTokens
         return ResponseEntity.ok(tokens)
     }
 
     @Secured(Roles.USER)
-    @GetMapping("${Routes.User.ROOT}/me")
+    @GetMapping("${Routes.Api.User.ROOT}/me")
     fun me(): ResponseEntity<UserDTO> = ResponseEntity.ok(userService.currentUserInformation())
 
     @Secured(Roles.USER)
-    @PostMapping(Routes.User.UPDATE_PASSWORD)
+    @PostMapping(Routes.Api.User.UPDATE_PASSWORD)
     fun updatePassword(@RequestBody @Valid passwordDTO: PasswordUpdateDTO): ResponseEntity<Nothing> {
         userService.updatePassword(passwordDTO)
         return ResponseEntity.ok().build()

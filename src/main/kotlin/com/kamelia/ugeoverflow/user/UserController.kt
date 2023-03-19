@@ -4,7 +4,9 @@ import com.kamelia.ugeoverflow.core.MvcController
 import com.kamelia.ugeoverflow.follow.FollowingService
 import com.kamelia.ugeoverflow.session.SessionManager
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import com.kamelia.ugeoverflow.utils.currentUser
+import com.kamelia.ugeoverflow.utils.referer
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
@@ -20,7 +22,6 @@ import java.util.*
 
 @MvcController
 @Controller
-@RequestMapping("/user")
 class UserController(
     private val userService: UserService,
     private val followingService: FollowingService,
@@ -28,7 +29,7 @@ class UserController(
 ) {
 
     @Secured(Roles.USER)
-    @GetMapping("/details")
+    @GetMapping(Routes.User.Details.ROOT)
     fun profile(
         @RequestParam("updateSuccess", required = false) updateSuccess: Boolean?,
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
@@ -49,7 +50,7 @@ class UserController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/details/password")
+    @PostMapping(Routes.User.Details.PASSWORD)
     fun updatePassword(
         @Valid @ModelAttribute("updatePasswordForm") updatePasswordForm: UpdatePasswordForm,
         model: Model,
@@ -57,7 +58,7 @@ class UserController(
         response: HttpServletResponse,
     ): String {
         if (binding.hasErrors() || updatePasswordForm.newPassword != updatePasswordForm.confirmPassword) {
-            return "redirect:/user/details?updateSuccess=false"
+            return "redirect:${Routes.User.Details.ROOT}?updateSuccess=false"
         }
 
         val user = currentUser().let { userService.findByIdOrNull(it.id) }
@@ -72,11 +73,11 @@ class UserController(
             .toCookies()
             .forEach(response::addCookie)
 
-        return "redirect:/user/details?updateSuccess=true"
+        return "redirect:${Routes.User.Details.ROOT}?updateSuccess=true"
     }
 
     @Secured(Roles.USER)
-    @GetMapping("/evaluate/{id}")
+    @GetMapping("${Routes.User.EVALUATE}/{id}")
     fun updateTrustForm(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("updateTrustForm") updateTrustForm: UpdateTrustForm,
@@ -95,7 +96,7 @@ class UserController(
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/evaluate/{id}")
+    @PostMapping("${Routes.User.EVALUATE}/{id}")
     fun updateTrust(
         @PathVariable("id") id: UUID,
         @Valid @ModelAttribute("updateTrustForm") updateTrustForm: UpdateTrustForm,
@@ -103,7 +104,7 @@ class UserController(
         binding: BindingResult,
     ): String {
         val trust = updateTrustForm.trust
-        if (binding.hasErrors() || trust == null || trust < 1 || trust > 20) return "redirect:/user/details/$id?updateSuccess=false"
+        if (binding.hasErrors() || trust == null || trust < 1 || trust > 20) return "redirect:${Routes.User.Details.ROOT}/$id?updateSuccess=false"
 
         val followed = followingService.getFollowedUsers().firstOrNull { it.id == id }
         if (followed == null) {
@@ -113,26 +114,26 @@ class UserController(
 
         followingService.evaluateFollowed(followed.id, trust)
 
-        return "redirect:/user/details?updateSuccess=true"
+        return "redirect:${Routes.User.Details.ROOT}?updateSuccess=true"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/follow/{id}")
+    @PostMapping("${Routes.User.FOLLOW}/{id}")
     fun follow(
         @PathVariable("id") id: UUID,
         request: HttpServletRequest,
     ): String {
         followingService.follow(id)
-        return "redirect:${request.getHeader("referer")}"
+        return "redirect:${request.referer}"
     }
 
     @Secured(Roles.USER)
-    @PostMapping("/unfollow/{id}")
+    @PostMapping("${Routes.User.UNFOLLOW}/{id}")
     fun unfollow(
         @PathVariable("id") id: UUID
     ): String {
         followingService.unfollow(id)
-        return "redirect:/user/details?updateSuccess=true"
+        return "redirect:${Routes.User.Details.ROOT}?updateSuccess=true"
     }
 }
 

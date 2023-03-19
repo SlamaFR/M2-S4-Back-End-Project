@@ -58,7 +58,7 @@ data class TokensDTO(
             maxAge = 60 * 60 // 1 hour
         })
         add(Cookie(Cookies.REFRESH_TOKEN, refreshToken).apply {
-            path = Routes.Auth.REFRESH
+            path = Routes.Auth.ROOT
             maxAge = 60 * 60 * 24 * 30 // 30 days
         })
     }

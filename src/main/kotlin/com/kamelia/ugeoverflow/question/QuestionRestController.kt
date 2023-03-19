@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow.question
 
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import jakarta.validation.Valid
 import java.util.*
 import org.springframework.data.domain.Page
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/questions")
+@RequestMapping(Routes.Api.Question.ROOT)
 class QuestionRestController(
     private val questionService: QuestionService,
 ) {

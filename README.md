@@ -33,3 +33,11 @@ $ java -jar build/libs/uge-overflow-0.1.0.jar
 - `ACCESS_TOKEN_LIFETIME` : Access token lifetime in milliseconds. (default: `3600000`)
 - `REFRESH_TOKEN_LIFETIME` : Refresh token lifetime in milliseconds. (default: `2592000000`)
 - `CIRCLE_MAX_DEPTH` : Maximum depth of a circle of followed users. This is used to compute answers order. (default: `3`)
+
+## Question sorting algorithm
+
+See [question_sorting_formula.md](question_sorting_formula.md)
+
+## API
+
+A Postman collection is available [here](UGEOverflow.postman_collection.json).

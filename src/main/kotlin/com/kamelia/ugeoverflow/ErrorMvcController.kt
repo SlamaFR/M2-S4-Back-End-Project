@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow
 
 import com.kamelia.ugeoverflow.core.MvcController
+import com.kamelia.ugeoverflow.utils.Routes
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.stereotype.Controller
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 class ErrorMvcController : ErrorController {
 
-    @RequestMapping("/error")
+    @RequestMapping(Routes.Error.ROOT)
     fun handleError(
         @RequestParam(value = "code", required = false) code: Int?,
         response: HttpServletResponse,

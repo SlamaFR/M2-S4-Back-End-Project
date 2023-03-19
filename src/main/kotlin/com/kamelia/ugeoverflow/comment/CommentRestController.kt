@@ -1,6 +1,7 @@
 package com.kamelia.ugeoverflow.comment
 
 import com.kamelia.ugeoverflow.utils.Roles
+import com.kamelia.ugeoverflow.utils.Routes
 import java.util.UUID
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
@@ -11,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1")
 class CommentRestController(
     private val commentService: CommentService,
 ) {
 
     @Secured(Roles.USER)
-    @PostMapping("/questions/{questionId}/comments")
+    @PostMapping("${Routes.Api.Question.ROOT}/{questionId}/comments")
     fun postCommentOnQuestion(
         @PathVariable questionId: UUID,
         commentDTO: PostCommentDTO,
@@ -25,7 +25,7 @@ class CommentRestController(
         ResponseEntity.ok(commentService.postCommentOnQuestion(questionId, commentDTO))
 
     @Secured(Roles.USER)
-    @PostMapping("/answers/{answerId}/comments")
+    @PostMapping("${Routes.Api.Answer.ROOT}/{answerId}/comments")
     fun postCommentOnAnswer(
         @PathVariable answerId: UUID,
         commentDTO: PostCommentDTO,
@@ -33,7 +33,7 @@ class CommentRestController(
         ResponseEntity.ok(commentService.postCommentOnAnswer(answerId, commentDTO))
 
     @Secured(Roles.USER)
-    @DeleteMapping("/questions/{questionId}/comments/{commentId}")
+    @DeleteMapping("${Routes.Api.Question.ROOT}/{questionId}/comments/{commentId}")
     fun removeCommentFromQuestion(
         @PathVariable questionId: UUID,
         @PathVariable commentId: UUID,
@@ -41,7 +41,7 @@ class CommentRestController(
         ResponseEntity.ok(commentService.removeCommentFromQuestion(questionId, commentId))
 
     @Secured(Roles.USER)
-    @DeleteMapping("/answers/{answerId}/comments/{commentId}")
+    @DeleteMapping("${Routes.Api.Answer.ROOT}/{answerId}/comments/{commentId}")
     fun removeCommentFromAnswer(
         @PathVariable answerId: UUID,
         @PathVariable commentId: UUID,
