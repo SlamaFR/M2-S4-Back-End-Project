@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class TokenFactory protected constructor(
     @Value("\${ugeoverflow.session.access-token-lifetime:3600000}")
-    private val accessTokenLifetime: Long = 10, // 1 hour
+    private val accessTokenLifetime: Long, // 1 hour
     @Value("\${ugeoverflow.session.refresh-token-lifetime:2592000000}")
     private val refreshTokenLifetime: Long, // 30 days
 ) {
