@@ -165,7 +165,6 @@ private class UserSessionContext(val user: User) {
     fun hasRefreshToken(token: UUID) = refreshTokens.computeIfPresent(token) { _, value ->
         val (expiration, sessionToken) = value
         if (expiration < System.currentTimeMillis()) {
-            println("hi ?")
             sessionTokens.remove(sessionToken)
             null
         } else {

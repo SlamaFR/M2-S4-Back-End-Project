@@ -3,8 +3,7 @@ package com.kamelia.ugeoverflow.session
 import com.kamelia.ugeoverflow.core.InvalidRequestException
 import com.kamelia.ugeoverflow.core.toUUIDFromBase64OrNull
 import com.kamelia.ugeoverflow.core.toUUIDOrNull
-import com.kamelia.ugeoverflow.utils.Roles
-import com.kamelia.ugeoverflow.utils.Routes
+import com.kamelia.ugeoverflow.utils.*
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -28,29 +27,34 @@ class SessionRefreshFilter(
         try {
             auth(request)
         } catch (e: InvalidRequestException) {
-            response.status = e.statusCode
-            val writer = response.writer
-            writer.write(e.message ?: "Invalid request")
-            writer.flush()
+            if (request.servletPath.startsWith("/api")) {
+                response.status = e.statusCode
+                val writer = response.writer
+                writer.write(e.message ?: "Invalid request")
+                writer.flush()
+            } else {
+                response.removeCookie(Cookies.USER_ID)
+                response.removeCookie(Cookies.ACCESS_TOKEN)
+                response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.REFRESH)
+                response.sendRedirect("/auth?error=Session+expired:+Please+log+in")
+            }
         }
 
         filterChain.doFilter(request, response)
     }
 
     private fun auth(request: HttpServletRequest) {
-        println("aaaa")
-        val userId = request.getHeader("User-Id").toUUIDOrNull()
+        val userId = (request.getHeader("User-Id") ?: request.getCookieOrNull(Cookies.USER_ID)?.value)
+            ?.toUUIDOrNull()
             ?: throw InvalidRequestException.badRequest("Invalid credentials")
 
-        println("bbbb")
-        val token = request.getHeader("Refresh-Token").toUUIDFromBase64OrNull()
+        val token = (request.getHeader("Refresh-Token") ?: request.getCookieOrNull(Cookies.REFRESH_TOKEN)?.value)
+            ?.toUUIDFromBase64OrNull()
             ?: throw InvalidRequestException.badRequest("Invalid credentials")
 
-        println("cccc")
         val newTokens = sessionManager.verifyRefresh(userId, token)
             ?: throw InvalidRequestException.badRequest("Invalid credentials")
 
-        println("dddd")
         val auth = UsernamePasswordAuthenticationToken(
             null,
             newTokens,
@@ -61,6 +65,7 @@ class SessionRefreshFilter(
         SecurityContextHolder.getContext().authentication = auth
     }
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath != Routes.User.REFRESH
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
+        request.servletPath != Routes.User.REFRESH && request.servletPath != Routes.Auth.REFRESH
 
 }

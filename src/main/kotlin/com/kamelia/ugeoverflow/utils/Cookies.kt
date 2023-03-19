@@ -11,8 +11,8 @@ object Cookies {
     const val REFRESH_TOKEN = "refresh-token"
 }
 
-fun HttpServletResponse.removeCookie(name: String) = addCookie(Cookie(name, "").apply {
-    path = "/"
+fun HttpServletResponse.removeCookie(name: String, path: String = "/") = addCookie(Cookie(name, "").apply {
+    this.path = path
     maxAge = 0
 })
 

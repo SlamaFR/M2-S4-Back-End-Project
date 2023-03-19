@@ -34,4 +34,8 @@ object Routes {
 
     }
 
+    object Auth {
+        const val REFRESH = "/auth/refresh"
+    }
+
 }

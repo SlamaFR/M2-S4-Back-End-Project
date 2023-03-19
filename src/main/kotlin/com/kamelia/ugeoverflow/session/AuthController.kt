@@ -85,9 +85,20 @@ class AuthController(
 
         response.removeCookie(Cookies.USER_ID)
         response.removeCookie(Cookies.ACCESS_TOKEN)
-        response.removeCookie(Cookies.REFRESH_TOKEN)
+        response.removeCookie(Cookies.REFRESH_TOKEN, Routes.Auth.REFRESH)
 
         return "redirect:/"
+    }
+
+    @Secured(Roles.USER)
+    @GetMapping("/refresh")
+    fun refresh(
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ): String {
+        val tokens = currentAuth().refreshedTokens
+        tokens.toCookies().forEach(response::addCookie)
+        return "redirect:${request.getHeader("referer") ?: "/"}"
     }
 }
 

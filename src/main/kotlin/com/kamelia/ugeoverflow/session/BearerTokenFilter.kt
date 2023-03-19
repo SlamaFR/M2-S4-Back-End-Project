@@ -36,9 +36,8 @@ class BearerTokenFilter(
                 writer.write(e.message ?: "Invalid request")
                 writer.flush()
             } else {
-                response.removeCookie(Cookies.USER_ID)
                 response.removeCookie(Cookies.ACCESS_TOKEN)
-                response.sendRedirect("/auth?error=Please+log+in")
+                response.sendRedirect(Routes.Auth.REFRESH)
             }
             return
         }
@@ -50,10 +49,12 @@ class BearerTokenFilter(
         filterChain.doFilter(request, response)
     }
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.servletPath == Routes.User.REFRESH
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
+        request.servletPath == Routes.User.REFRESH ||
+        request.servletPath == Routes.Auth.REFRESH
 
     @OptIn(ExperimentalContracts::class)
-    private fun checkCredendtials(userId: UUID?, base64Token: String?): Boolean {
+    private fun checkCredentials(userId: UUID?, base64Token: String?): Boolean {
         contract { returns(true) implies (userId != null && base64Token != null) }
 
         if (userId == null) {
@@ -83,7 +84,7 @@ class BearerTokenFilter(
             ?.removePrefix("Bearer ")
             ?: request.getCookieOrNull(Cookies.ACCESS_TOKEN)?.value
 
-        if (!checkCredendtials(userId, base64Token)) return null
+        if (!checkCredentials(userId, base64Token)) return null
 
         val token = base64Token.toUUIDFromBase64OrNull()
             ?: throw InvalidRequestException.badRequest("Invalid credentials")
